@@ -1,13 +1,15 @@
-import 'package:tezster_dart/packages/taquito/context.dart';
+import 'package:tezster_dart/packages/taquito-michelson-encoder/src/schema/storage.dart';
+import 'package:tezster_dart/packages/taquito-rpc/src/types.dart';
 import 'package:tezster_dart/packages/taquito/src/contract/contract.dart';
 
 class EstimationProvider {}
 
-class StorageProvider {}
+class StorageProvider {
+  Future<T> getStorage<T>(String contract, var schema) {}
+}
 
-class ContractProvider extends StorageProvider {
-  at<T extends ContractAbstraction<ContractProvider>>(
-      String address,
-      contractAbstractionComposer(
-          ContractAbstraction<ContractProvider> abs, Context context)) {}
+abstract class ContractProvider extends StorageProvider {
+  Future<List<dynamic>> at<T extends ContractAbstraction<ContractProvider>>(
+    String address,
+  );
 }

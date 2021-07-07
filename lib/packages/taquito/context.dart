@@ -1,4 +1,5 @@
 import 'package:tezster_dart/packages/taquito-rpc/src/taquito-rpc.dart';
+import 'package:tezster_dart/packages/taquito/src/contract/rpc-contract-provider.dart';
 import 'package:tezster_dart/packages/taquito/src/contract/rpc-estimate-provider.dart';
 
 class Context {
@@ -9,7 +10,7 @@ class Context {
   Context(String rpc) {
     _rpcClient = RpcClient(rpc);
     estimate = new RPCEstimateProvider(this);
-    contract = RpccontractProvider();
+    contract = RpcContractProvider(this, estimate);
   }
 
   get rpc {

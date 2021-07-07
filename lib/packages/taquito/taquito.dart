@@ -1,5 +1,6 @@
 import 'package:tezster_dart/packages/taquito-rpc/src/taquito-rpc.dart';
 import 'package:tezster_dart/packages/taquito/context.dart';
+import 'package:tezster_dart/packages/taquito/src/contract/interface.dart';
 import 'package:tezster_dart/packages/taquito/src/wallet/wallet.dart';
 
 class SetProviderOptions {
@@ -28,7 +29,7 @@ class TezosToolkit {
     }
   }
 
-  get contract {
+  ContractProvider get contract {
     return _context.contract;
   }
 }

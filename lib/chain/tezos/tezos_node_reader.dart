@@ -44,13 +44,14 @@ class TezosNodeReader {
 
   static Future<Map<dynamic, dynamic>> getContractStorage(server, accountHash,
       {block = 'head', chainid = 'main'}) async {
-    return await HttpHelper.performGetRequest(server,
+    var storage = await HttpHelper.performGetRequest(server,
         'chains/$chainid/blocks/$block/context/contracts/$accountHash/storage');
+    // var data =
   }
 
   static getValueForBigMapKey(String server, String index, String key,
       {String block, String chainid}) async {
-    return await HttpHelper.performGetRequest(server,
-        'chains/$chainid/blocks/$block/context/big_maps/$index/$key');
+    return await HttpHelper.performGetRequest(
+        server, 'chains/$chainid/blocks/$block/context/big_maps/$index/$key');
   }
 }

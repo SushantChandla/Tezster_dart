@@ -1,3 +1,5 @@
+class StorageResponse extends MichelsonV1Expression {}
+
 class ScriptResponse extends ScriptedContracts {}
 
 class BigMapGetResponse extends MichelsonV1Expression {}
@@ -16,6 +18,23 @@ class ScriptedContracts {
 }
 
 class EntrypointsResponse {
-  Map<String, String> entrypoints;
+  Map<String, MichelsonV1Expression> entrypoints;
   //unreachable?: { path: ('Left' | 'Right')[] };
+}
+
+class BlockHeaderResponse {
+  String protocol;
+  String chainId;
+  String hash;
+  int level;
+  int proto;
+  String predecessor;
+  String timestamp;
+  int validationPass;
+  String operationHash;
+  List<String> fitness;
+  String context;
+  int priority;
+  String proofOfWorkNonce;
+  String signature;
 }
