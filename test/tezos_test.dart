@@ -125,8 +125,8 @@ void main() {
   });
 
   test("get contract storage", () async {
-    var data = await TezsterDart.getContractStorage(
+    var storage = await TezsterDart.getContractStorage(
         "https://mainnet.tezster.tech", "KT1X1LgNkQShpF9nRLYw3Dgdy4qp38MX617z");
-    
+    print(storage);
   });
 }

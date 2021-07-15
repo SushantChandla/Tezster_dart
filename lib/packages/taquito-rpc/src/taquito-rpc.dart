@@ -2,15 +2,9 @@ import 'package:tezster_dart/helper/http_helper.dart';
 import 'package:tezster_dart/packages/taquito-http-utils/src/taquito-http-utils.dart';
 import 'package:tezster_dart/packages/taquito-rpc/src/types.dart';
 
-// class RPCOptions {
-//   String block;
-//   RPCOptions(String block) {
-//     this.block = block;
-//   }
-// }
 
 const defaultChain = 'main';
-const String defaultRPCOptions = 'head'; //RPCOptions('head');
+const String defaultRPCOptions = 'head';
 
 class RpcClient {
   String url;
@@ -27,9 +21,8 @@ class RpcClient {
       {String block = defaultRPCOptions}) async {
     var response = await HttpHelper.performGetRequest(url,
         "chains/${this.chain}/blocks/$block/context/contracts/$address/storage");
-    StorageResponse storageResponse;
-    storageResponse.prim = response['prim'];
-    storageResponse.args = response['args'];
+    StorageResponse storageResponse =
+        StorageResponse(response['prim'], response['args'], response['annots']);
     return storageResponse;
   }
 
@@ -37,9 +30,8 @@ class RpcClient {
       {String block = defaultRPCOptions}) async {
     var response = await HttpHelper.performGetRequest(url,
         "chains/${this.chain}/blocks/$block/context/contracts/$address/script");
-    ScriptResponse scriptResponse;
-    scriptResponse.code = response['code'];
-    scriptResponse.storage = response['storage'];
+    ScriptResponse scriptResponse =
+        ScriptResponse(response['code'], response['storage']);
     return scriptResponse;
   }
 
@@ -47,30 +39,38 @@ class RpcClient {
       {String block = defaultRPCOptions}) async {
     var response = await HttpHelper.performGetRequest(url,
         "chains/${this.chain}/blocks/$block/context/contracts/$contract/entrypoints");
-    EntrypointsResponse entrypointsResponse;
-    entrypointsResponse.entrypoints = response['entrypoints'];
+    EntrypointsResponse entrypointsResponse =
+        EntrypointsResponse(response['entrypoints']);
     return entrypointsResponse;
   }
 
   Future<BlockHeaderResponse> getBlockHeader(
       {String block = defaultRPCOptions}) async {
     var response = await HttpHelper.performGetRequest(
-        url, "chains/$this.chain/blocks/$block/header");
-    BlockHeaderResponse blockHeaderResponse;
-    blockHeaderResponse.chainId = response['chian_id'];
-    blockHeaderResponse.context = response['context'];
-    blockHeaderResponse.fitness = response['fitness'];
-    blockHeaderResponse.hash = response['hash'];
-    blockHeaderResponse.level = response['level'];
-    blockHeaderResponse.operationHash = response['operation_hash'];
-    blockHeaderResponse.predecessor = response['[redecessor'];
-    blockHeaderResponse.priority = response['priority'];
-    blockHeaderResponse.proofOfWorkNonce = response['proof_of_work_nonce'];
-    blockHeaderResponse.proto = response['proto'];
-    blockHeaderResponse.protocol = response['protocol'];
-    blockHeaderResponse.signature = response['signature'];
-    blockHeaderResponse.timestamp = response['timestamp'];
-    blockHeaderResponse.validationPass = response['validation_pass'];
+        url, "chains/${this.chain}/blocks/$block/header");
+    BlockHeaderResponse blockHeaderResponse = BlockHeaderResponse(
+      response['protocol'],
+      response['chain_id'],
+      response['hash'],
+      response['level'],
+      response['proto'],
+      response['predecessor'],
+      response['timestamp'],
+      response['validation_pass'],
+      response['operations_hash'],
+      response['fitness'],
+      response['context'],
+      response['priority'],
+      response['proof_of_work_nonce'],
+      response['signature'],
+    );
     return blockHeaderResponse;
+  }
+
+  Future<SaplingDiffResponse> getSaplingDiffById(String id,
+      {String block = defaultRPCOptions}) async {
+    var response = await HttpHelper.performGetRequest(
+        url, "chains/${this.chain}/blocks/$block/context/sapling/$id/get_diff");
+    return response;
   }
 }

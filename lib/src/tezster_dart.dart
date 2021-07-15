@@ -346,11 +346,11 @@ class TezsterDart {
     assert(server != null);
     assert(accountHash != null);
     var tezos = TezosToolkit(server);
-    tezos.contract.at(accountHash).then((data) async {
-      print("data ===> $data");
-      var storage = await data[0].storage();
+    var storage;
+    await tezos.contract.at(accountHash).then((contract) async {
+      storage = await contract[0].storage();
     });
-    return await TezosNodeReader.getContractStorage(server, accountHash);
+    return storage;
   }
 
   static encodeBigMapKey(Uint8List key) {

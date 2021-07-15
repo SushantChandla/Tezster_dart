@@ -12,14 +12,19 @@ class ParameterSchema {
   }
 
   static fromRPCResponse(ScriptResponse script) {
-    MichelsonV1ExpressionExtended parameter;
+    Map<String, dynamic> parameter;
     if (script != null) {
       parameter =
-          script.code.firstWhere((element) => element.prim == 'parameter');
+          script.code.firstWhere((element) => element['prim'] == 'parameter');
     }
-    if (parameter != null && parameter.args.runtimeType == List) {
+    if (parameter == null && parameter['args'].runtimeType == List) {
       throw new Exception("'Invalid rpc response passed as arguments");
     }
+    MichelsonV1Expression data = MichelsonV1Expression();
+    data.prim = parameter['args'][0]['prim'];
+    data.args = parameter['args'][0]['args'];
+
+    return ParameterSchema(data);
   }
 
   get isMultipleEntryPoint {
@@ -35,7 +40,7 @@ class ParameterSchema {
     }
   }
 
-  Map<String, String> get extractSchema {
+  Map get extractSchema {
     return _root.extractSchema();
   }
 

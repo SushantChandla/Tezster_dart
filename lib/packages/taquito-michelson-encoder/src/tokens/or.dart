@@ -1,33 +1,43 @@
-import 'package:flutter/cupertino.dart';
 import 'package:tezster_dart/packages/taquito-michelson-encoder/src/tokens/token.dart';
 import 'package:tezster_dart/packages/taquito-rpc/src/types.dart';
 
 class OrToken extends ComparableToken {
   static String prim = 'or';
 
+  String get getPrim {
+    return prim;
+  }
+
   OrToken(MichelsonV1Expression val, int idx, var fac) : super(val, idx, fac);
 
   _traversal(
       Function getLeftValue(Token token), Function getRightValue(Token token)) {
-    var leftToken = this.createToken(this.val.args[0], this.idx);
+    MichelsonV1Expression data = MichelsonV1Expression();
+    data.prim = this.val.args[0]['prim'];
+    data.args = this.val.args[0]['args'];
+    data.annots = this.val.args[0]['annots'];
+    var leftToken = this.createToken(data, this.idx);
     var keyCount = 1;
     var leftValue;
     if (leftToken.runtimeType == OrToken && !leftToken.hasAnnotations()) {
-      leftValue = getLeftValue(leftToken);
+      leftValue = leftToken.extractSchema();
       keyCount = leftToken.extractSchema().keys.length;
     } else {
       leftValue = {
-        [leftToken.annot()]: getLeftValue(leftToken)
+        [leftToken.annot()]: leftToken.extractSchema()
       };
     }
-
-    var rightToken = this.createToken(this.val.args[0], this.idx + keyCount);
+    data = MichelsonV1Expression();
+    data.prim = this.val.args[1]['prim'];
+    data.args = this.val.args[1]['args'];
+    data.annots = this.val.args[1]['annots'];
+    var rightToken = this.createToken(data, this.idx + keyCount);
     var rightValue;
     if (rightValue.runtimeType == OrToken && !rightToken.hasAnnotations()) {
-      rightValue = getRightValue(rightToken);
+      rightValue = rightToken.extractSchema();
     } else {
       rightValue = {
-        [rightToken.annot()]: getRightValue(rightToken)
+        [rightToken.annot()]: rightToken.extractSchema()
       };
     }
 
@@ -40,13 +50,13 @@ class OrToken extends ComparableToken {
   @override
   extractSchema() {
     return _traversal(
-      (leftToken) => leftToken.extractSchema,
-      (rightToken) => rightToken.extractSchema,
+      (leftToken) => leftToken.extractSchema(),
+      (rightToken) => rightToken.extractSchema(),
     );
   }
 
   @override
-  dynamic execute(dynamic val, var semantic) {
+  execute(val, {semantics}) {
     var leftToken = this.createToken(this.val.args[0], this.idx);
     var keyCount = 1;
     if (leftToken.runtimeType == OrToken) {
@@ -57,15 +67,15 @@ class OrToken extends ComparableToken {
 
     if (val.prim == 'Right') {
       if (rightToken.runtimeType == OrToken) {
-        return rightToken.execute(val.args[0], semantic);
+        return rightToken.execute(val.args[0], semantics);
       } else {
         return {
-          [rightToken.annot()]: rightToken.execute(val.args[0], semantic),
+          [rightToken.annot()]: rightToken.execute(val.args[0], semantics),
         };
       }
     } else if (val.prim == 'Left') {
       if (leftToken.runtimeType == OrToken) {
-        return leftToken.execute(val.args[0], semantic);
+        return leftToken.execute(val.args[0], semantics);
       }
       return {
         [leftToken.annot()]: leftToken.execute(val.args[0].semantic),
@@ -73,5 +83,58 @@ class OrToken extends ComparableToken {
     } else {
       throw Exception('Was expecting Left or Right prim but got : ${val.prim}');
     }
+  }
+
+  @override
+  encodeObject(args) {
+    var lable = args.keys.toList()[0];
+
+    Token leftToken = this.createToken(this.val.args[0], this.idx);
+    var keyCount = 1;
+    if (leftToken.runtimeType == OrToken) {
+      keyCount = leftToken.extractSchema().keys.length;
+    }
+
+    Token rightToken = this.createToken(this.val.args[1], this.idx + keyCount);
+
+    if (leftToken.annot().toString() == lable.toString() &&
+        leftToken.runtimeType != OrToken) {
+      return {
+        'prim': 'Left',
+        'args': [leftToken.encodeObject(args[lable])]
+      };
+    } else if (rightToken.annot().toString() == lable.toString() &&
+        rightToken.runtimeType != OrToken) {
+      return {
+        'prim': 'Right',
+        'args': [rightToken.encodeObject(args[lable])]
+      };
+    } else {
+      if (leftToken.runtimeType == OrToken) {
+        var val = leftToken.encodeObject(args);
+        if (val != null) {
+          return {
+            'prim': 'Left',
+            'args': [val]
+          };
+        }
+      }
+
+      if (rightToken.runtimeType == OrToken) {
+        var val = rightToken.encodeObject(args);
+        if (val) {
+          return {
+            'prim': 'Right',
+            'args': [val]
+          };
+        }
+      }
+      return null;
+    }
+  }
+
+  @override
+  toKey(String val) {
+    return this.execute(val);
   }
 }

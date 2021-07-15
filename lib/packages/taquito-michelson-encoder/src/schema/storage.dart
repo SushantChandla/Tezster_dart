@@ -1,4 +1,3 @@
-import 'package:flutter/cupertino.dart';
 import 'package:tezster_dart/packages/taquito-michelson-encoder/src/tokens/bigmap.dart';
 import 'package:tezster_dart/packages/taquito-michelson-encoder/src/tokens/createToken.dart';
 import 'package:tezster_dart/packages/taquito-michelson-encoder/src/tokens/or.dart';
@@ -12,8 +11,10 @@ class Schema {
   Token _root;
   BigMapToken _bigMap;
 
+  bool schemaTypeSymbol = true;
+
   static isSchema(dynamic obj) {
-    return obj && obj[schemaTypeSymbol] == true;
+    return obj != null && obj.schemaTypeSymbol == true;
   }
 
   Schema(MichelsonV1Expression val) {
@@ -28,7 +29,19 @@ class Schema {
     }
   }
 
-  _isExpressionExtended(MichelsonV1ExpressionExtended val) {
+  typecheck(val) {
+    if (this._root.runtimeType == BigMapToken && val.runtimeType == int) {
+      return true;
+    }
+    try {
+      this._root.encodeObject(val);
+      return true;
+    } catch (ex) {
+      return false;
+    }
+  }
+
+  _isExpressionExtended(MichelsonV1Expression val) {
     if (val.prim != null && val.args.runtimeType == List) {
       return true;
     }
@@ -37,28 +50,41 @@ class Schema {
 
   _removeTopLevelAnnotation(dynamic obj) {
     if (_root.runtimeType == PairToken || _root.runtimeType == OrToken) {
-      if (_root.hasAnnotations() &&
-          obj.runtimeType == 'object' &&
-          obj.keys.length == 1) {
+      if (_root.hasAnnotations() && obj is Map && obj.keys.length == 1) {
         return obj[obj.keys.first];
       }
     }
+    return obj;
   }
 
-  execute(dynamic val, Semantics semantics) {
-    var storage = _root.execute(val, semantics);
-    return _removeTopLevelAnnotation(storage);
+  execute(dynamic val, var semantics) {
+    var storage = _root.execute(val, semantics: semantics);
+    var data = _removeTopLevelAnnotation(storage);
+    return data;
   }
 
   static fromRPCResponse(ScriptResponse script) {
-    MichelsonV1ExpressionExtended storage;
+    var storage;
     if (script != null) {
-      storage = script.code.firstWhere((element) => element.prim == 'storage');
+      storage =
+          script.code.firstWhere((element) => element['prim'] == 'storage');
     }
-    if (storage != null) {
+    if (storage == null) {
       throw new Exception("Invalid rpc response passed as arguments");
     }
 
-    return Schema(storage.args[0]);
+    MichelsonV1Expression data = MichelsonV1Expression();
+    data.prim = storage['args'][0]['prim'];
+    data.args = storage['args'][0]['args'];
+
+    return Schema(data);
+  }
+
+  executeOnBigMapValue(key, semantics) {
+    if (this._bigMap == null) {
+      throw Exception("No big map schema");
+    }
+
+    return this._bigMap.valueSchema.execute(key, semantics);
   }
 }

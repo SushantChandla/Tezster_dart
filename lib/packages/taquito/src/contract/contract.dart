@@ -91,7 +91,7 @@ isContractProvider(dynamic variableToCheck) {
 }
 
 class ContractAbstraction<T extends ContractProvider> {
-  Map<String, dynamic> methods = {};
+  Map<dynamic, dynamic> methods = {};
   Map<String, dynamic> views = {};
 
   Schema schema;
@@ -127,15 +127,17 @@ class ContractAbstraction<T extends ContractProvider> {
     ContractAbstraction<T> currentContract,
     String address,
     T provider,
-    Map<String, MichelsonV1Expression> entrypoints,
+    Map<String, dynamic> entrypoints,
     String chainId,
   ) {
     var parameterSchema = this.parameterSchema;
     var keys = entrypoints.keys;
     if (parameterSchema.isMultipleEntryPoint) {
       keys.forEach((smartContractMethodName) {
-        var smartContractMethodSchema =
-            new ParameterSchema(entrypoints[smartContractMethodName]);
+        MichelsonV1Expression data = MichelsonV1Expression();
+        data.prim = entrypoints[smartContractMethodName]['prim'];
+        data.args = entrypoints[smartContractMethodName]['args'] ?? null;
+        var smartContractMethodSchema = new ParameterSchema(data);
         var method = (List<dynamic> args) {
           validateArgs(
               args, smartContractMethodSchema, smartContractMethodName);
@@ -205,7 +207,7 @@ class ContractAbstraction<T extends ContractProvider> {
     }
   }
 
-  storage<T>() {
-    return this.storageProvider.getStorage<T>(this.address, this.schema);
+  storage<T>() async {
+    return await this.storageProvider.getStorage<T>(this.address, this.schema);
   }
 }

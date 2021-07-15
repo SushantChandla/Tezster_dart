@@ -2,10 +2,10 @@ import 'package:tezster_dart/packages/taquito-michelson-encoder/src/schema/stora
 import 'package:tezster_dart/packages/taquito/src/contract/interface.dart';
 
 class BigMapAbstraction {
-  double id;
+  BigInt id;
   Schema schema;
   ContractProvider provider;
-  BigMapAbstraction(double id, Schema schema, ContractProvider provider) {
+  BigMapAbstraction(BigInt id, Schema schema, ContractProvider provider) {
     this.id = id;
     this.schema = schema;
     this.provider = provider;

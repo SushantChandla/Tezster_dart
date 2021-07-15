@@ -32,4 +32,8 @@ class TezosToolkit {
   ContractProvider get contract {
     return _context.contract;
   }
+
+  get wallet {
+    return this._wallet;
+  }
 }

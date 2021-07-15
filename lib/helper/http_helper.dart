@@ -27,8 +27,10 @@ class HttpHelper {
     HttpClient httpClient = new HttpClient();
     HttpClientRequest request =
         await httpClient.getUrl(Uri.parse('$server/$command'));
-    HttpClientResponse response = await request.close();
-    String reply = await response.transform(utf8.decoder).join();
+    String reply;
+    await request.close().then((response) async {
+      reply = await response.transform(utf8.decoder).join();
+    });
     httpClient.close();
     return jsonDecode(reply);
   }
