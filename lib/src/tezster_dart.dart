@@ -16,6 +16,7 @@ import 'package:tezster_dart/chain/tezos/tezos_node_reader.dart';
 import 'package:tezster_dart/chain/tezos/tezos_node_writer.dart';
 import 'package:tezster_dart/helper/constants.dart';
 import 'package:tezster_dart/helper/http_helper.dart';
+import 'package:tezster_dart/packages/taquito/taquito.dart';
 import 'package:tezster_dart/reporting/tezos/tezos_conseil_client.dart';
 import 'package:tezster_dart/src/soft-signer/soft_signer.dart';
 import 'package:tezster_dart/tezster_dart.dart';
@@ -344,7 +345,12 @@ class TezsterDart {
   static getContractStorage(String server, String accountHash) async {
     assert(server != null);
     assert(accountHash != null);
-    return await TezosNodeReader.getContractStorage(server, accountHash);
+    var tezos = TezosToolkit(server);
+    var storage;
+    await tezos.contract.at(accountHash).then((contract) async {
+      storage = await contract[0].storage();
+    });
+    return storage;
   }
 
   static encodeBigMapKey(Uint8List key) {
