@@ -68,7 +68,7 @@ class PairToken extends ComparableToken {
       keyCount = leftToken.extractSchema().length;
     } else {
       leftValue = {
-        [leftToken.annot()]: getLeftValue(leftToken)
+        [leftToken?.annot() ?? ""]: getLeftValue(leftToken)
       };
     }
     data = MichelsonV1Expression();
@@ -103,8 +103,8 @@ class PairToken extends ComparableToken {
   @override
   extractSchema() {
     return _traversal(
-      (leftToken) => leftToken.extractSchema(),
-      (rightToken) => rightToken.extractSchema(),
+      (leftToken) => leftToken?.extractSchema(),
+      (rightToken) => rightToken?.extractSchema(),
     );
   }
 

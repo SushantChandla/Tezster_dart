@@ -27,15 +27,15 @@ class ListToken extends Token {
     michelsonV1Expression.prim = this.val.args[0]['prim'];
     michelsonV1Expression.args = this.val.args[0]['args'];
     michelsonV1Expression.annots = this.val.args[0]['annots'];
-    var schema = this.createToken(this.val.args[0], 0);
+    Token schema = this.createToken(this.val.args[0], 0);
 
     var err = this._isValid(val);
     if (err != null) {
       throw err;
     }
 
-    return val['reduce'](
-        (prev, current) => [...prev, schema.Execute(current, semantics)], []);
+    return val.reduce((prev, current) =>
+        [...prev, schema.execute(val, semantics: semantics)]);
   }
 
   @override
@@ -52,7 +52,7 @@ class ListToken extends Token {
       throw err;
     }
 
-    return args['reduce'](
-        (prev, current) => [...prev, schema.encodeObject(current)], []);
+    return args
+        .reduce((prev, currnet) => [...prev, schema.encodeObject(currnet)]);
   }
 }
