@@ -12,6 +12,7 @@ import 'package:tezster_dart/packages/taquito-michelson-encoder/src/tokens/map.d
 import 'package:tezster_dart/packages/taquito-michelson-encoder/src/tokens/option.dart';
 import 'package:tezster_dart/packages/taquito-michelson-encoder/src/tokens/or.dart';
 import 'package:tezster_dart/packages/taquito-michelson-encoder/src/tokens/pair.dart';
+import 'package:tezster_dart/packages/taquito-michelson-encoder/src/tokens/set.dart';
 import 'package:tezster_dart/packages/taquito-michelson-encoder/src/tokens/unit.dart';
 
 List<dynamic> tokens = [
@@ -30,4 +31,5 @@ List<dynamic> tokens = [
   MapToken,
   StringToken,
   BytesToken,
+  SetToken,
 ];

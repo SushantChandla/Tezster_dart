@@ -52,6 +52,7 @@ abstract class Token {
 
   dynamic extractSchema();
   dynamic execute(dynamic val, {var semantics});
+  // dynamic encode(List<dynamic> args);
   dynamic encodeObject(dynamic args);
 }
 
@@ -60,4 +61,8 @@ abstract class ComparableToken extends Token {
       : super(val, idx, fac);
 
   dynamic toKey(String val);
+
+  int compare(String o1, String o2) {
+    return o1.compareTo(o2);
+  }
 }

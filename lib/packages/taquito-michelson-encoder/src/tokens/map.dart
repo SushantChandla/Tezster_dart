@@ -35,8 +35,9 @@ class MapToken extends Token {
   execute(val, {semantics}) {
     var map = new MichelsonMap(this.val);
 
-    val.forEach((current) => map.set(this.keySchema.toKey(current.args[0]),
-        this.valueSchema.execute(current.args[1], semantics)));
+    val.forEach((current) => map.set(
+        this.keySchema.toKey(current['args'][0].toString()),
+        this.valueSchema.execute(current['args'][1], semantics: semantics)));
     return map;
   }
 

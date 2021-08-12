@@ -12,6 +12,7 @@ import 'package:tezster_dart/packages/taquito-michelson-encoder/src/tokens/map.d
 import 'package:tezster_dart/packages/taquito-michelson-encoder/src/tokens/option.dart';
 import 'package:tezster_dart/packages/taquito-michelson-encoder/src/tokens/or.dart';
 import 'package:tezster_dart/packages/taquito-michelson-encoder/src/tokens/pair.dart';
+import 'package:tezster_dart/packages/taquito-michelson-encoder/src/tokens/set.dart';
 import 'package:tezster_dart/packages/taquito-michelson-encoder/src/tokens/tokens.dart';
 import 'package:tezster_dart/packages/taquito-michelson-encoder/src/tokens/unit.dart';
 import 'package:tezster_dart/packages/taquito-rpc/src/types.dart';
@@ -69,6 +70,9 @@ createToken(MichelsonV1Expression val, int idx) {
       } else if (element == BytesToken) {
         objectType = "BytesToken";
         return BytesToken.prim == val.prim;
+      } else if (element == SetToken) {
+        objectType = "SetToken";
+        return SetToken.prim == val.prim;
       }
 
       return false;
@@ -109,5 +113,7 @@ createToken(MichelsonV1Expression val, int idx) {
     return MapToken(val, idx, createToken);
   } else if (objectType == "BytesToken") {
     return BytesToken(val, idx, createToken);
+  } else if (objectType == "SetToken") {
+    return SetToken(val, idx, createToken);
   }
 }

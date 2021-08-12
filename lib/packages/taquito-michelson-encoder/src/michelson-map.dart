@@ -7,11 +7,7 @@ var michelsonMapTypeSymbol = Symbol('taquito-michelson-map-type-symbol');
 isMapType(
   MichelsonV1Expression value,
 ) =>
-    {
-      value.args != null &&
-          value.args.runtimeType == List &&
-          value.args.length == 2,
-    };
+    value.args != null && value.args is List && value.args.length == 2;
 
 class MichelsonMap<K, T> {
   var _valueMap = new Map<String, T>();
