@@ -7,9 +7,7 @@ class BoolToken extends ComparableToken {
 
   @override
   execute(val, {semantics}) {
-    return (val as MichelsonV1Expression).prim.toLowerCase() == 'true'
-        ? true
-        : false;
+    return val['prim'].toLowerCase() == 'true' ? true : false;
   }
 
   encode(List<dynamic> args) {

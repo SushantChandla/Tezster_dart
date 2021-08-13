@@ -32,7 +32,7 @@ class AddressToken extends ComparableToken {
   @override
   encodeObject(val) {
     var err = this._isValid(val);
-    if (err) {
+    if (err != null) {
       throw err;
     }
 

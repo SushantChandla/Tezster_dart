@@ -34,7 +34,14 @@ class Schema {
       return false;
     }
     // ignore: deprecated_member_use
-    return int.parse(s.toString()) != null;
+    var integer;
+    try {
+      integer = int.parse(s.toString()) != null;
+      return true;
+    } catch (e) {
+      return false;
+    }
+    // return int.parse(s.toString()) != null;
   }
 
   typecheck(val) {

@@ -126,7 +126,7 @@ void main() {
 
   test("get contract storage", () async {
     Map storage = await TezsterDart.getContractStorage(
-        "https://mainnet.tezster.tech", "KT1NrAnSjrjp3Bycaw8YKPrDq2aXUTHhq8MF");
+        "https://mainnet.tezster.tech", "KT1A5P4ejnLix13jtadsfV9GCnXLMNnab8UT");
     print(storage);
   });
 }

@@ -4,6 +4,7 @@ import 'package:tezster_dart/packages/taquito-michelson-encoder/src/tokens/bls12
 import 'package:tezster_dart/packages/taquito-michelson-encoder/src/tokens/comparable/bool.dart';
 import 'package:tezster_dart/packages/taquito-michelson-encoder/src/tokens/comparable/bytes.dart';
 import 'package:tezster_dart/packages/taquito-michelson-encoder/src/tokens/comparable/int.dart';
+import 'package:tezster_dart/packages/taquito-michelson-encoder/src/tokens/comparable/mutez.dart';
 import 'package:tezster_dart/packages/taquito-michelson-encoder/src/tokens/comparable/string.dart';
 import 'package:tezster_dart/packages/taquito-michelson-encoder/src/tokens/contract.dart';
 import 'package:tezster_dart/packages/taquito-michelson-encoder/src/tokens/bigmap.dart';
@@ -42,4 +43,5 @@ List<dynamic> tokens = [
   Bls12381g2Token,
   IntToken,
   BoolToken,
+  MutezToken,
 ];

@@ -20,6 +20,8 @@ import 'package:tezster_dart/packages/taquito-michelson-encoder/src/tokens/token
 import 'package:tezster_dart/packages/taquito-michelson-encoder/src/tokens/unit.dart';
 import 'package:tezster_dart/packages/taquito-rpc/src/types.dart';
 
+import 'comparable/mutez.dart';
+
 createToken(MichelsonV1Expression val, int idx) {
   String objectType;
   if (val.runtimeType == List) {
@@ -85,6 +87,9 @@ createToken(MichelsonV1Expression val, int idx) {
       } else if (element == BoolToken) {
         objectType = "BoolToken";
         return BoolToken.prim == val.prim;
+      } else if (element == MutezToken) {
+        objectType = "MutezToken";
+        return MutezToken.prim == val.prim;
       }
 
       return false;
@@ -135,5 +140,7 @@ createToken(MichelsonV1Expression val, int idx) {
     return IntToken(val, idx, createToken);
   } else if (objectType == "BoolToken") {
     return BoolToken(val, idx, createToken);
+  } else if (objectType == "MutezToken") {
+    return MutezToken(val, idx, createToken);
   }
 }
