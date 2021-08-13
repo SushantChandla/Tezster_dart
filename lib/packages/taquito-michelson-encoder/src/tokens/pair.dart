@@ -25,7 +25,6 @@ collapse(var val, {String prim = 'pair'}) {
     return [val['args'][0], val['args'][1]];
   } else {
     if (val.args == null) {
-      print(null);
       throw Exception('Token has no arguments');
     }
     if (val.args.length > 2) {
@@ -58,9 +57,6 @@ class PairToken extends ComparableToken {
 
   _traversal(getLeftValue(Token token), getRightValue(Token token)) {
     var args = _args();
-    if (args == null) {
-      print(null);
-    }
     MichelsonV1Expression data = MichelsonV1Expression();
     data.prim = args[0]['prim'];
     data.args = args[0]['args'];
@@ -72,9 +68,7 @@ class PairToken extends ComparableToken {
       leftValue = getLeftValue(leftToken);
       keyCount = leftToken.extractSchema().length;
     } else {
-      leftValue = {
-        [leftToken.annot()]: getLeftValue(leftToken)
-      };
+      leftValue = {leftToken.annot(): getLeftValue(leftToken)};
     }
     data = MichelsonV1Expression();
     data.prim = args[1]['prim'];
@@ -85,9 +79,7 @@ class PairToken extends ComparableToken {
     if (rightToken.runtimeType == PairToken && !rightToken.hasAnnotations()) {
       rightValue = getRightValue(rightToken);
     } else {
-      rightValue = {
-        [rightToken.annot()]: getRightValue(rightToken)
-      };
+      rightValue = {rightToken.annot(): getRightValue(rightToken)};
     }
 
     var res = {};

@@ -8,7 +8,7 @@ class StorageProvider {
 }
 
 abstract class ContractProvider extends StorageProvider {
-  Future<List<dynamic>> at<T extends ContractAbstraction<ContractProvider>>(
-      String address,
-      {contractAbstractionComposer});
+  Future<ContractAbstraction>
+      at<T extends ContractAbstraction<ContractProvider>>(String address,
+          {contractAbstractionComposer});
 }

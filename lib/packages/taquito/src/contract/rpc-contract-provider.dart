@@ -41,7 +41,7 @@ class RpcContractProvider extends OperationEmitter
         storage, smartContractAbstractionSemantic(this)) as T;
   }
 
-  Future<List<dynamic>> at<T extends ContractAbstraction<ContractProvider>>(
+  Future<ContractAbstraction> at<T extends ContractAbstraction<ContractProvider>>(
     String address, {
     contractAbstractionComposer,
   }) async {
@@ -54,7 +54,7 @@ class RpcContractProvider extends OperationEmitter
     var chainId = blockHeader.chainId;
     var abs = new ContractAbstraction(
         address, script, this, this, entrypoints, chainId);
-    return [abs, context];
+    return abs;
   }
 
   @override

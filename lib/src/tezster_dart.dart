@@ -346,9 +346,9 @@ class TezsterDart {
     assert(server != null);
     assert(accountHash != null);
     var tezos = TezosToolkit(server);
-    var storage;
+    Map storage;
     await tezos.contract.at(accountHash).then((contract) async {
-      storage = await contract[0].storage();
+      storage = await contract.storage();
     });
     return storage;
   }

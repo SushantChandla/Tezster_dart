@@ -23,9 +23,7 @@ class OrToken extends ComparableToken {
       leftValue = leftToken.extractSchema();
       keyCount = leftToken.extractSchema().keys.length;
     } else {
-      leftValue = {
-        [leftToken.annot()]: leftToken.extractSchema()
-      };
+      leftValue = {leftToken.annot(): leftToken.extractSchema()};
     }
     data = MichelsonV1Expression();
     data.prim = this.val.args[1]['prim'];
@@ -36,9 +34,7 @@ class OrToken extends ComparableToken {
     if (rightValue.runtimeType == OrToken && !rightToken.hasAnnotations()) {
       rightValue = rightToken.extractSchema();
     } else {
-      rightValue = {
-        [rightToken.annot()]: rightToken.extractSchema()
-      };
+      rightValue = {rightToken.annot(): rightToken.extractSchema()};
     }
 
     var res = {};
