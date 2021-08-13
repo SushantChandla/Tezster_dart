@@ -1,4 +1,7 @@
+import 'package:tezster_dart/packages/taquito-michelson-encoder/src/tokens/bls12_381_fr.dart';
+import 'package:tezster_dart/packages/taquito-michelson-encoder/src/tokens/comparable/bool.dart';
 import 'package:tezster_dart/packages/taquito-michelson-encoder/src/tokens/comparable/bytes.dart';
+import 'package:tezster_dart/packages/taquito-michelson-encoder/src/tokens/comparable/int.dart';
 import 'package:tezster_dart/packages/taquito-michelson-encoder/src/tokens/comparable/string.dart';
 import 'package:tezster_dart/packages/taquito-michelson-encoder/src/tokens/contract.dart';
 import 'package:tezster_dart/packages/taquito-michelson-encoder/src/tokens/bigmap.dart';
@@ -73,6 +76,15 @@ createToken(MichelsonV1Expression val, int idx) {
       } else if (element == SetToken) {
         objectType = "SetToken";
         return SetToken.prim == val.prim;
+      } else if (element == Bls12381frToken) {
+        objectType = "Bls12381frToken";
+        return Bls12381frToken.prim == val.prim;
+      } else if (element == IntToken) {
+        objectType = "IntToken";
+        return IntToken.prim == val.prim;
+      } else if (element == BoolToken) {
+        objectType = "BoolToken";
+        return BoolToken.prim == val.prim;
       }
 
       return false;
@@ -111,9 +123,17 @@ createToken(MichelsonV1Expression val, int idx) {
     return TimestampToken(val, idx, createToken);
   } else if (objectType == "MapToken") {
     return MapToken(val, idx, createToken);
+  } else if (objectType == "StringToken") {
+    return StringToken(val, idx, createToken);
   } else if (objectType == "BytesToken") {
     return BytesToken(val, idx, createToken);
   } else if (objectType == "SetToken") {
     return SetToken(val, idx, createToken);
+  } else if (objectType == "Bls12381frToken") {
+    return Bls12381frToken(val, idx, createToken);
+  } else if (objectType == "IntToken") {
+    return IntToken(val, idx, createToken);
+  } else if (objectType == "BoolToken") {
+    return BoolToken(val, idx, createToken);
   }
 }

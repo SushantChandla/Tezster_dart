@@ -1,4 +1,9 @@
+import 'package:tezster_dart/packages/taquito-michelson-encoder/src/tokens/bls12_381_fr.dart';
+import 'package:tezster_dart/packages/taquito-michelson-encoder/src/tokens/bls12_381_g1.dart';
+import 'package:tezster_dart/packages/taquito-michelson-encoder/src/tokens/bls12_381_g2.dart';
+import 'package:tezster_dart/packages/taquito-michelson-encoder/src/tokens/comparable/bool.dart';
 import 'package:tezster_dart/packages/taquito-michelson-encoder/src/tokens/comparable/bytes.dart';
+import 'package:tezster_dart/packages/taquito-michelson-encoder/src/tokens/comparable/int.dart';
 import 'package:tezster_dart/packages/taquito-michelson-encoder/src/tokens/comparable/string.dart';
 import 'package:tezster_dart/packages/taquito-michelson-encoder/src/tokens/contract.dart';
 import 'package:tezster_dart/packages/taquito-michelson-encoder/src/tokens/bigmap.dart';
@@ -32,4 +37,9 @@ List<dynamic> tokens = [
   StringToken,
   BytesToken,
   SetToken,
+  Bls12381frToken,
+  Bls12381g1Token,
+  Bls12381g2Token,
+  IntToken,
+  BoolToken,
 ];

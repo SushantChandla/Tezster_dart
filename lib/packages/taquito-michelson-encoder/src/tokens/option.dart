@@ -87,7 +87,7 @@ class OptionToken extends ComparableToken {
   }
 
   @override
-  toKey(String val) {
+  toKey(dynamic val) {
     this.execute(val);
   }
 }

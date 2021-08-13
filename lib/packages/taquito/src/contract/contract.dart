@@ -137,6 +137,7 @@ class ContractAbstraction<T extends ContractProvider> {
         MichelsonV1Expression data = MichelsonV1Expression();
         data.prim = entrypoints[smartContractMethodName]['prim'];
         data.args = entrypoints[smartContractMethodName]['args'] ?? null;
+        data.annots = entrypoints[smartContractMethodName]['args'] ?? null;
         var smartContractMethodSchema = new ParameterSchema(data);
         var method = (List<dynamic> args) {
           validateArgs(

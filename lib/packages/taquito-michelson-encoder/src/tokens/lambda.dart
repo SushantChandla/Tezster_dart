@@ -9,11 +9,12 @@ class LambdaToken extends Token {
 
   @override
   execute(val, {semantics}) {
-    if (val.string != null) {
-      return val.string;
-    } else {
-      return val;
-    }
+    return val;
+    // if (val.string != null) {
+    //   return val.string;
+    // } else {
+    //   return val;
+    // }
   }
 
   @override
@@ -23,10 +24,11 @@ class LambdaToken extends Token {
     michelsonV1Expression.args = this.val.args[0]['args'];
     michelsonV1Expression.annots = this.val.args[0]['annots'];
     var leftToken = this.createToken(michelsonV1Expression, this.idx);
-    michelsonV1Expression.prim = this.val.args[1]['prim'];
-    michelsonV1Expression.args = this.val.args[1]['args'];
-    michelsonV1Expression.annots = this.val.args[1]['annots'];
-    var rightToken = this.createToken(michelsonV1Expression, this.idx + 1);
+    MichelsonV1Expression michelsonV1Expression1 = MichelsonV1Expression();
+    michelsonV1Expression1.prim = this.val.args[1]['prim'];
+    michelsonV1Expression1.args = this.val.args[1]['args'];
+    michelsonV1Expression1.annots = this.val.args[1]['annots'];
+    var rightToken = this.createToken(michelsonV1Expression1, this.idx + 1);
     return {
       [LambdaToken.prim]: {
         'parameters': leftToken.extractSchema(),

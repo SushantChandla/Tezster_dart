@@ -1,3 +1,4 @@
+import 'package:tezster_dart/packages/taquito-michelson-encoder/src/tokens/or.dart';
 import 'package:tezster_dart/packages/taquito-michelson-encoder/src/tokens/token.dart';
 import 'package:tezster_dart/packages/taquito-rpc/src/types.dart';
 
@@ -24,6 +25,7 @@ collapse(var val, {String prim = 'pair'}) {
     return [val['args'][0], val['args'][1]];
   } else {
     if (val.args == null) {
+      print(null);
       throw Exception('Token has no arguments');
     }
     if (val.args.length > 2) {
@@ -56,6 +58,9 @@ class PairToken extends ComparableToken {
 
   _traversal(getLeftValue(Token token), getRightValue(Token token)) {
     var args = _args();
+    if (args == null) {
+      print(null);
+    }
     MichelsonV1Expression data = MichelsonV1Expression();
     data.prim = args[0]['prim'];
     data.args = args[0]['args'];
@@ -68,7 +73,7 @@ class PairToken extends ComparableToken {
       keyCount = leftToken.extractSchema().length;
     } else {
       leftValue = {
-        [leftToken?.annot() ?? ""]: getLeftValue(leftToken)
+        [leftToken.annot()]: getLeftValue(leftToken)
       };
     }
     data = MichelsonV1Expression();
@@ -99,6 +104,32 @@ class PairToken extends ComparableToken {
         (rightToken) => rightToken.execute(args[1], semantics: semantics));
     return data;
   }
+
+  // extractSignature() {
+  //   var args = this._args();
+  //   MichelsonV1Expression data = MichelsonV1Expression();
+  //   data.prim = args[0]['prim'];
+  //   data.args = args[0]['args'];
+  //   data.annots = args[0]['annots'];
+  //   var leftToken = this.createToken(data, this.idx);
+  //   var keyCount = 1;
+  //   if (leftToken.runtimeType == OrToken) {
+  //     keyCount = leftToken.extractSchema().keys.length;
+  //   }
+  //   data.prim = args[1]['prim'];
+  //   data.args = args[1]['args'];
+  //   data.annots = args[1]['annots'];
+  //   var rightToken = this.createToken(data, this.idx + keyCount);
+
+  //   var newSig = [];
+
+  //   for (var leftSig in leftToken.extractSignature()) {
+  //     for (var rightSig in rightToken.extractSignature()) {
+  //       newSig.add([...leftSig, ...rightSig]);
+  //     }
+  //   }
+  //   return newSig;
+  // }
 
   @override
   extractSchema() {
@@ -152,7 +183,7 @@ class PairToken extends ComparableToken {
   }
 
   @override
-  toKey(String val) {
+  toKey(dynamic val) {
     return this.execute(val);
   }
 }

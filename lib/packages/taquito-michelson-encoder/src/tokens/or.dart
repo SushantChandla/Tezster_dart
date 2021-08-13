@@ -134,7 +134,7 @@ class OrToken extends ComparableToken {
   }
 
   @override
-  toKey(String val) {
+  toKey(dynamic val) {
     return this.execute(val);
   }
 }

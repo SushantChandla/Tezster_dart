@@ -14,19 +14,21 @@ String jsonStringify(dat, {opts}) {
   if (opts == null) opts = {};
   if (opts.runtimeType == Function) opts = {'cmp': opts};
 
-  var cycles = (opts.cycles.runtimeType == bool) ? opts.cycles : false;
+  var cycles = (opts['cycles'].runtimeType == bool) ? opts.cycles : false;
 
   bool cmp = opts['cmp'] != null;
 
   var seen = [];
 
   stringify(node) {
-    if (node != null && jsonEncode(node) != null && node.toJSON is Function) {
+    if (node != null &&
+        jsonEncode(node) != null &&
+        jsonEncode(node) is Function) {
       node = node.toJSON();
     }
 
     if (node == null) return;
-    if (node.runtimeType == int) return node.isFinite ? '' + node : 'null';
+    if (node.runtimeType == int) return node.isFinite ? "$node" : 'null';
     if (!node is Map) return JsonEncoder().convert(node);
 
     var i, out;

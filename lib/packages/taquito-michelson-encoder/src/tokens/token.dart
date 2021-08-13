@@ -60,7 +60,7 @@ abstract class ComparableToken extends Token {
   ComparableToken(MichelsonV1Expression val, int idx, var fac)
       : super(val, idx, fac);
 
-  dynamic toKey(String val);
+  dynamic toKey(dynamic val);
 
   int compare(String o1, String o2) {
     return o1.compareTo(o2);

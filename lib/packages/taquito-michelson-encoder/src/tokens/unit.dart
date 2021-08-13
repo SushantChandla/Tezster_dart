@@ -23,7 +23,7 @@ class UnitToken extends ComparableToken {
   }
 
   @override
-  toKey(String val) {
+  toKey(dynamic val) {
     return unitValue;
   }
 }

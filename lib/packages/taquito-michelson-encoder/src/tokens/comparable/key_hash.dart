@@ -7,9 +7,9 @@ class KeyHashToken extends ComparableToken {
 
   KeyHashToken(dynamic val, int idx, var fac) : super(val, idx, fac);
 
-  _isValid(value){
+  _isValid(value) {
     if (validateKeyHash(value) != ValidationResult.VALID) {
-      return  Exception("KeyHash is not valid: $value");
+      return Exception("KeyHash is not valid: $value");
     }
 
     return null;
@@ -39,8 +39,8 @@ class KeyHashToken extends ComparableToken {
   }
 
   @override
-  toKey(String val) {
-    if (val != null) {
+  toKey(dynamic val) {
+    if (val != null && val is String) {
       return val;
     }
 

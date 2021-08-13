@@ -29,7 +29,16 @@ class Schema {
     }
   }
 
+  bool isNumeric(s) {
+    if (s == null) {
+      return false;
+    }
+    // ignore: deprecated_member_use
+    return int.parse(s.toString()) != null;
+  }
+
   typecheck(val) {
+    if (!(val is int)) val = isNumeric(val) ? int.parse(val) : val;
     if (this._root.runtimeType == BigMapToken && val.runtimeType == int) {
       return true;
     }

@@ -25,7 +25,7 @@ class TimestampToken extends ComparableToken {
   }
 
   @override
-  toKey(String val) {
-    return val;
+  toKey(dynamic val) {
+    return val.values.toList().first;
   }
 }
