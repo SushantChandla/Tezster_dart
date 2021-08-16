@@ -41,4 +41,10 @@ class LambdaToken extends Token {
   encodeObject(val) {
     return val;
   }
+
+  @override
+  encode(List args) {
+    // TODO: implement encode
+    throw UnimplementedError();
+  }
 }

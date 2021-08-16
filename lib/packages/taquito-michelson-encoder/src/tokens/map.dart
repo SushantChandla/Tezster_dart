@@ -73,4 +73,10 @@ class MapToken extends Token {
 
     return data;
   }
+
+  @override
+  encode(List args) {
+    // TODO: implement encode
+    throw UnimplementedError();
+  }
 }

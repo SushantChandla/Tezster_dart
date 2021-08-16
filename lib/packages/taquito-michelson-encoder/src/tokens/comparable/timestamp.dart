@@ -28,4 +28,10 @@ class TimestampToken extends ComparableToken {
   toKey(dynamic val) {
     return val.values.toList().first;
   }
+
+  @override
+  encode(List args) {
+    // TODO: implement encode
+    throw UnimplementedError();
+  }
 }

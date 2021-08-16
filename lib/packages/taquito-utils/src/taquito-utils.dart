@@ -41,3 +41,7 @@ dynamic encodeKeyHash(String value) {
     return b58cencode(value.substring(2), pref[value.substring(0, 2)]);
   }
 }
+
+bytes2Char(val) {
+  return hex.encode(val);
+}

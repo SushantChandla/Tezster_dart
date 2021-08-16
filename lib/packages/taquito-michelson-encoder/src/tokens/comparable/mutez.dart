@@ -51,4 +51,10 @@ class MutezToken extends ComparableToken {
 
     return o1 < o2 ? -1 : 1;
   }
+
+  @override
+  encode(List args) {
+    // TODO: implement encode
+    throw UnimplementedError();
+  }
 }

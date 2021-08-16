@@ -11,4 +11,5 @@ abstract class ContractProvider extends StorageProvider {
   Future<ContractAbstraction>
       at<T extends ContractAbstraction<ContractProvider>>(String address,
           {contractAbstractionComposer});
+  getBigMapKeyByID(id, keyToEncode, schema, block);
 }

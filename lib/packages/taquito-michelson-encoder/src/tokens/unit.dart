@@ -26,4 +26,9 @@ class UnitToken extends ComparableToken {
   toKey(dynamic val) {
     return unitValue;
   }
+
+  @override
+  encode(List args) {
+    throw UnimplementedError();
+  }
 }

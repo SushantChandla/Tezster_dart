@@ -46,4 +46,10 @@ class KeyHashToken extends ComparableToken {
 
     return encodeKeyHash(val);
   }
+
+  @override
+  encode(List args) {
+    // TODO: implement encode
+    throw UnimplementedError();
+  }
 }

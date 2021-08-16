@@ -103,4 +103,39 @@ class Schema {
 
     return this._bigMap.valueSchema.execute(key, semantics);
   }
+
+  FindFirstInTopLevelPair<T extends MichelsonV1Expression>(storage, valueType) {
+    return _findValue(_root.val, storage, valueType);
+  }
+
+  _findValue(schema, storage, valueToFind) {
+    if (_deepEqual(valueToFind, schema)) {
+      return storage;
+    }
+    if (schema is List || schema['prim'] == 'pair') {
+      var sch = collapse(schema);
+      var str = collapse(storage, prim: 'Pair');
+      if (sch.args == null || str.args == null) {
+        throw new Exception('Tokens have no arguments'); // unlikely
+      }
+      return _findValue(sch.args[0], str.args[0], valueToFind) ||
+          _findValue(sch.args[1], str.args[1], valueToFind);
+    }
+  }
+
+  _deepEqual(a, b) {
+    var ac = collapse(a);
+    var bc = collapse(b);
+    return ac.prim == bc.prim &&
+        (ac.args == null && bc.args == null ||
+            ac.args != null &&
+                bc.args != null &&
+                ac.args.length == bc.args.length &&
+                ac.args.every((v, i) => _deepEqual(v, bc.args[i]))) &&
+        (ac.annots == null && bc.annots == null ||
+            ac.annots != null &&
+                bc.annots != null &&
+                ac.annots.length == bc.annots.length &&
+                ac.annots.every((v, i) => v == bc.annots[i]));
+  }
 }

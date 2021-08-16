@@ -46,4 +46,10 @@ class NatToken extends ComparableToken {
   toKey(dynamic val) {
     return int.tryParse(val.values.toList().first) ?? 0;
   }
+
+  @override
+  encode(List args) {
+    // TODO: implement encode
+    throw UnimplementedError();
+  }
 }

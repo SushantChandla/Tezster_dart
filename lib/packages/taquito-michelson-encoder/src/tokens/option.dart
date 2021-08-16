@@ -90,4 +90,10 @@ class OptionToken extends ComparableToken {
   toKey(dynamic val) {
     this.execute(val);
   }
+
+  @override
+  encode(List args) {
+    // TODO: implement encode
+    throw UnimplementedError();
+  }
 }

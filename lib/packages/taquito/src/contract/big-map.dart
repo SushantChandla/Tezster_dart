@@ -18,4 +18,17 @@ class BigMapAbstraction {
   toString() {
     return this.id.toString();
   }
+
+  get<T>(keyToEncode, block) async {
+    try {
+      // var  id = await this.provider.getBigMapKeyByID<T>(this.id.toString(), keyToEncode, this.schema, block);
+      return id;
+    } catch (e) {
+      // if (e instanceof HttpResponseError && e.status === STATUS_CODE.NOT_FOUND) {
+      // return undefined;
+      // } else {
+      // throw e;
+      // }
+    }
+  }
 }

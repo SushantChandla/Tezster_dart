@@ -52,7 +52,7 @@ abstract class Token {
 
   dynamic extractSchema();
   dynamic execute(dynamic val, {var semantics});
-  // dynamic encode(List<dynamic> args);
+  dynamic encode(List<dynamic> args);
   dynamic encodeObject(dynamic args);
 }
 

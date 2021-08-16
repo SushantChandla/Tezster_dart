@@ -64,4 +64,17 @@ class RpcContractProvider extends OperationEmitter
         : await this.context.rpc.getSaplingDiffById(id);
     return saplingState;
   }
+
+  @override
+  getBigMapKeyByID(id, keyToEncode, schema, block)async {
+   var  _key= schema.EncodeBigMapKey(keyToEncode).key;
+   var _type=schema.EncodeBigMapKey(keyToEncode).type;
+    // var packed  = await this.context. .packData({ data: key, type });
+
+    // const encodedExpr = encodeExpr(packed);
+
+    // const bigMapValue = block? await this.context.rpc.getBigMapExpr(id.toString(), encodedExpr, { block: String(block) }) : await this.context.rpc.getBigMapExpr(id.toString(), encodedExpr);
+
+    // return schema.ExecuteOnBigMapValue(bigMapValue, smartContractAbstractionSemantic(this)) as T;
+  }
 }

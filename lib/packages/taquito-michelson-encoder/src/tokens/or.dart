@@ -133,4 +133,10 @@ class OrToken extends ComparableToken {
   toKey(dynamic val) {
     return this.execute(val);
   }
+
+  @override
+  encode(List args) {
+    // TODO: implement encode
+    throw UnimplementedError();
+  }
 }

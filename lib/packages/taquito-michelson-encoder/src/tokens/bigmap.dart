@@ -84,4 +84,10 @@ class BigMapToken extends Token {
           ]
         });
   }
+
+  @override
+  encode(List args) {
+    // TODO: implement encode
+    throw UnimplementedError();
+  }
 }

@@ -25,4 +25,10 @@ class StringToken extends ComparableToken {
   toKey(val) {
     return val;
   }
+
+  @override
+  encode(List args) {
+    // TODO: implement encode
+    throw UnimplementedError();
+  }
 }

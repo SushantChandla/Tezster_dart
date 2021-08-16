@@ -47,4 +47,10 @@ class AddressToken extends ComparableToken {
 
     return encodePubKey(val);
   }
+
+  @override
+  encode(List args) {
+    // TODO: implement encode
+    throw UnimplementedError();
+  }
 }

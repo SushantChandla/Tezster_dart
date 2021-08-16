@@ -55,4 +55,9 @@ class ListToken extends Token {
     return args
         .reduce((prev, currnet) => [...prev, schema.encodeObject(currnet)]);
   }
+
+  @override
+  encode(List args) {
+    throw UnimplementedError();
+  }
 }

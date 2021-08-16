@@ -2,7 +2,6 @@ import 'package:tezster_dart/helper/http_helper.dart';
 import 'package:tezster_dart/packages/taquito-http-utils/src/taquito-http-utils.dart';
 import 'package:tezster_dart/packages/taquito-rpc/src/types.dart';
 
-
 const defaultChain = 'main';
 const String defaultRPCOptions = 'head';
 
@@ -71,6 +70,37 @@ class RpcClient {
       {String block = defaultRPCOptions}) async {
     var response = await HttpHelper.performGetRequest(
         url, "chains/${this.chain}/blocks/$block/context/sapling/$id/get_diff");
+    return response;
+  }
+
+  getChainId() {
+    return HttpHelper.performGetRequest(url, '/chains/${this.chain}/chain_id');
+  }
+
+  Future<BigInt> getBalance(address, {block = defaultRPCOptions}) async {
+    var balance = await HttpHelper.performGetRequest(url,
+        '/chains/${this.chain}/blocks/${block}/context/contracts/${address}/balance',
+        respondJson: false);
+    return BigInt.parse(balance);
+  }
+
+  getBlock({block = defaultRPCOptions}) async {
+    var response = await HttpHelper.performGetRequest(
+        url, '/chains/${this.chain}/blocks/${block}');
+    return response;
+  }
+
+  runCode(code, {block = defaultRPCOptions}) {
+    var response = HttpHelper.performPostRequest(url,
+        '/chains/${this.chain}/blocks/$block/helpers/scripts/run_code', code);
+    // await this.httpBackend.createRequest<any>(
+    //   {
+    //     url: this.createURL(`/chains/${this.chain}/blocks/${block}/helpers/scripts/run_code`),
+    //     method: 'POST',
+    //   },
+    //   code
+    // );
+
     return response;
   }
 }

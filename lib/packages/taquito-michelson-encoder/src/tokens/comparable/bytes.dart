@@ -53,4 +53,10 @@ class BytesToken extends ComparableToken {
 
     return val;
   }
+
+  @override
+  encode(List args) {
+    // TODO: implement encode
+    throw UnimplementedError();
+  }
 }

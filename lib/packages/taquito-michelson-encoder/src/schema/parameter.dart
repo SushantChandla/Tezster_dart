@@ -47,4 +47,18 @@ class ParameterSchema {
   get extractSignatures {
     return _root.extractSignature();
   }
+
+  encode(args) {
+    try {
+      return _root.encode(args.reverse());
+    } catch (ex) {
+      throw new Exception(
+        'Unable to encode storage object. $ex',
+      );
+    }
+  }
+
+  execute(val, {semantics}) {
+    return _root.execute(val, semantics: semantics);
+  }
 }
