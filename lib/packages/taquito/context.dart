@@ -6,6 +6,7 @@ class Context {
   RpcClient _rpcClient;
   var estimate;
   var contract;
+  var metadataProvider;
 
   Context(String rpc) {
     _rpcClient = RpcClient(rpc);

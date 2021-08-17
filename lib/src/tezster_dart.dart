@@ -17,6 +17,7 @@ import 'package:tezster_dart/chain/tezos/tezos_node_writer.dart';
 import 'package:tezster_dart/helper/constants.dart';
 import 'package:tezster_dart/helper/http_helper.dart';
 import 'package:tezster_dart/packages/taquito/taquito.dart';
+import 'package:tezster_dart/packages/tzip-12/composer.dart';
 import 'package:tezster_dart/reporting/tezos/tezos_conseil_client.dart';
 import 'package:tezster_dart/src/soft-signer/soft_signer.dart';
 import 'package:tezster_dart/tezster_dart.dart';
@@ -73,7 +74,7 @@ class TezsterDart {
     Uint8List seed = bip39.mnemonicToSeed(mnemonic);
 
     if (derivationPath != null && derivationPath.length > 0) {
-      KeyData keysource =await ED25519_HD_KEY.derivePath(derivationPath, seed);
+      KeyData keysource = await ED25519_HD_KEY.derivePath(derivationPath, seed);
       var combinedKey = Uint8List.fromList(keysource.key + keysource.chainCode);
       keys = SodiumUtils.publicKey(combinedKey);
     } else {
@@ -374,5 +375,16 @@ class TezsterDart {
     assert(key != null);
     return await TezosNodeReader.getValueForBigMapKey(server, index, key,
         block: 'head', chainid: 'main');
+  }
+
+  static getTokenMetaData(
+      String server, String contractAddress, int tokenId) async {
+    assert(server != null);
+    assert(contractAddress != null);
+    var tezos = TezosToolkit(server);
+    var contract = await tezos.contract.at(contractAddress);
+
+    tzip12(contract, tezos.context);
+    return contract.call('tzip12').getTokenMetadata(tokenId);
   }
 }

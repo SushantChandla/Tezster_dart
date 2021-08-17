@@ -104,6 +104,13 @@ class ContractAbstraction<T extends ContractProvider> {
   EntrypointsResponse entrypoints;
   String chainId;
 
+  Map<String,Function> functions={};
+
+  dynamic call(String name){
+    if(functions.containsKey(name))return functions[name];
+    throw Exception("Function not found");
+  }
+
   ContractAbstraction(
       String address,
       ScriptResponse script,

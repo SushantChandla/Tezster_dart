@@ -129,4 +129,9 @@ void main() {
         "https://mainnet.tezster.tech", "KT1A5P4ejnLix13jtadsfV9GCnXLMNnab8UT");
     print(storage);
   });
+
+  test("get tokenMetaData", () async {
+    print(await TezsterDart.getTokenMetaData("https://mainnet.tezster.tech",
+        'KT1A5P4ejnLix13jtadsfV9GCnXLMNnab8UT', 1));
+  });
 }

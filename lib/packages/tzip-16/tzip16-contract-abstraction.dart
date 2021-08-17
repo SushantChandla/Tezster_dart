@@ -4,8 +4,6 @@ import 'package:tezster_dart/packages/taquito-utils/src/taquito-utils.dart';
 import 'package:tezster_dart/packages/taquito/context.dart';
 import 'package:tezster_dart/packages/taquito/src/contract/big-map.dart';
 import 'package:tezster_dart/packages/taquito/src/contract/contract.dart';
-import 'package:tezster_dart/packages/taquito/src/contract/interface.dart';
-import 'package:tezster_dart/packages/taquito/src/wallet/wallet.dart';
 import 'package:tezster_dart/packages/tzip-16/errors.dart';
 import 'package:tezster_dart/packages/tzip-16/metadata-provider.dart';
 import 'package:tezster_dart/packages/tzip-16/viewKind/viewFactory.dart';
@@ -21,12 +19,14 @@ var metadataBigMapType = MichelsonV1Expression()
 class Tzip16ContractAbstraction {
   MetadataProviderInterface _metadataProvider;
   MetadataEnvelope _metadataEnvelope;
-  ViewFactory _viewFactory;
-  dynamic _metadataViewsObject;
-  dynamic context;
+  ViewFactory _viewFactory = new ViewFactory();
+  dynamic _metadataViewsObject = {};
+  Context context;
   ContractAbstraction constractAbstraction;
-  Tzip16ContractAbstraction(this.constractAbstraction, this.context,
-      this._metadataEnvelope, this._metadataProvider);
+  Tzip16ContractAbstraction(
+    this.constractAbstraction,
+    this.context,
+  ) : _metadataProvider = context.metadataProvider;
 
   BigMapAbstraction findMetadataBigMap() {
     var metadataBigMapId = this
@@ -101,13 +101,12 @@ class Tzip16ContractAbstraction {
     }
   }
 
-  getUriOrFail()async  {
-        BigMapAbstraction metadataBigMap = this.findMetadataBigMap();
-        // var uri = await metadataBigMap.;
-        // if (!uri) {
-        //     throw new UriNotFound();
-        // }
-        // return uri;
+  getUriOrFail() async {
+    BigMapAbstraction metadataBigMap = this.findMetadataBigMap();
+    var uri = await metadataBigMap.get('');
+    if (uri==null) {
+      throw new UriNotFound();
     }
-
+    return uri;
+  }
 }

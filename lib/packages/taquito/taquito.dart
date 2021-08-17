@@ -18,7 +18,7 @@ class TezosToolkit {
     _wallet = Wallet(_context);
     setProvider(rpc: _rpcClient);
   }
-
+  Context get context=>_context;
   setProvider({RpcClient rpc}) {
     setRpcProvider(rpc);
   }
