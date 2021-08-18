@@ -2,13 +2,19 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:tezster_dart/tezster_dart.dart';
 
 void main() {
-  TestWidgetsFlutterBinding.ensureInitialized();
   String testPrivateKey =
       "edskRdVS5H9YCRAG8yqZkX2nUTbGcaDqjYgopkJwRuPUnYzCn3t9ZGksncTLYe33bFjq29pRhpvjQizCCzmugMGhJiXezixvdC";
   String testForgedOperation =
       "713cb068fe3ac078351727eb5c34279e22b75b0cf4dc0a8d3d599e27031db136040cb9f9da085607c05cac1ca4c62a3f3cfb8146aa9b7f631e52f877a1d363474404da8130b0b940ee";
   String testMnemonics =
       "luxury bulb roast timber sense stove sugar sketch goddess host meadow decorate gather salmon funny person canoe daring machine network camp moment wrong dice";
+
+  KeyStoreModel _keyStoreModel = KeyStoreModel(
+    secretKey:
+        "edskRrDH2TF4DwKU1ETsUjyhxPC8aCTD6ko5YDguNkJjRb3PiBm8Upe4FGFmCrQqzSVMDLfFN22XrQXATcA3v41hWnAhymgQwc",
+    publicKey: "edpku4ZfXDzF7CjPkX5LS8JFg1Znab3UKdhp18maKq2MrR82Gm9BTc",
+    publicKeyHash: "tz1aPUfTyjtUcSnCfSvyykT67atDtVu7FePX",
+  );
 
   test('Get Keys From Mnemonics and PassPhrase', () async {
     List<String> keys =
@@ -17,6 +23,14 @@ void main() {
         "edskRdVS5H9YCRAG8yqZkX2nUTbGcaDqjYgopkJwRuPUnYzCn3t9ZGksncTLYe33bFjq29pRhpvjQizCCzmugMGhJiXezixvdC");
     expect(keys[1], "edpkuLog552hecagkykJ3fTvop6grTMhfZY4TWbvchDWdYyxCHcrQL");
     expect(keys[2], "tz1g85oYHLFKDpNfDHPeBUbi3S7pUsgCB28q");
+  });
+
+  test('Restore account from secret key', () {
+    List<String> keys =
+        TezsterDart.getKeysFromSecretKey(_keyStoreModel.secretKey);
+    expect(keys[0], _keyStoreModel.secretKey);
+    expect(keys[1], _keyStoreModel.publicKey);
+    expect(keys[2], _keyStoreModel.publicKeyHash);
   });
 
   test('Sign Operation Group', () async {
@@ -44,35 +58,20 @@ void main() {
   });
 
   test('Create Soft Signer', () async {
-    var keyStore = KeyStoreModel(
-      publicKey: 'edpkuh9tUmMMVKJVqG4bJxNLsCob6y8wXycshi6Pn11SQ5hx7SAVjf',
-      secretKey:
-          'edskRs9KBdoU675PBVyHdM3fqixemkykm7hgHeXAYKUjdoVn3Aev8dP11p47zc4iuWJsefSP4t2vdHPoQisQC3DjZY3ZbbSP9Y',
-      publicKeyHash: 'tz1LRibbLEEWpaXb4aKrXXgWPvx9ue9haAAV',
-    );
-
     await TezsterDart.createSigner(
-        TezsterDart.writeKeyWithHint(keyStore.secretKey, 'edsk'));
+        TezsterDart.writeKeyWithHint(_keyStoreModel.secretKey, 'edsk'));
   });
 
   test('send-Transaction-Operation', () async {
-    var keyStore = KeyStoreModel(
-      publicKey: 'edpkuh9tUmMMVKJVqG4bJxNLsCob6y8wXycshi6Pn11SQ5hx7SAVjf',
-      secretKey:
-          'edskRs9KBdoU675PBVyHdM3fqixemkykm7hgHeXAYKUjdoVn3Aev8dP11p47zc4iuWJsefSP4t2vdHPoQisQC3DjZY3ZbbSP9Y',
-      publicKeyHash: 'tz1LRibbLEEWpaXb4aKrXXgWPvx9ue9haAAV',
-    );
-
     var signer = await TezsterDart.createSigner(
-        TezsterDart.writeKeyWithHint(keyStore.secretKey, 'edsk'));
-    print(signer);
+        TezsterDart.writeKeyWithHint(_keyStoreModel.secretKey, 'edsk'));
     const server = 'https://testnet.tezster.tech';
 
     var result = await TezsterDart.sendTransactionOperation(
       server,
       signer,
-      keyStore,
-      'tz1LRibbLEEWpaXb4aKrXXgWPvx9ue9haAAV',
+      _keyStoreModel,
+      'tz1dTkCS1NQwapmafZwCoqBq1QhXmopKDLcj',
       500000,
       1500,
     );
@@ -81,27 +80,35 @@ void main() {
   });
 
   test('send-Delegation-Operation', () async {
-    var keyStore = KeyStoreModel(
-      publicKey: 'edpkunM8fmwNb8NqcKZ1WiBrZQqvuN1NRY3FrSRer9HEySaPAkqgqt',
-      secretKey:
-          'edskRjFXdYtHUrkLh7cs6b8EQigNi5uFGYxSsC3CgpvaA86Xcvo4TxrcmK155jY3c9hyxaQK8s8cfFXscEUFwdTjhFLf3P5LVX',
-      publicKeyHash: 'tz1csxCjsefVvKzWWAvhkoVn3M67wxaozGGs',
-    );
-
     var signer = await TezsterDart.createSigner(
-        TezsterDart.writeKeyWithHint(keyStore.secretKey, 'edsk'));
-    print(signer);
+        TezsterDart.writeKeyWithHint(_keyStoreModel.secretKey, 'edsk'));
     const server = 'https://testnet.tezster.tech';
 
     var result = await TezsterDart.sendDelegationOperation(
       server,
       signer,
-      keyStore,
-      'tz1RUGhq8sQpfGu1W2kf7MixqWX7oxThBFLr',
+      _keyStoreModel,
+      'tz1dTkCS1NQwapmafZwCoqBq1QhXmopKDLcj',
       10000,
     );
 
     expect(true,
         result['operationGroupID'] != null && result['operationGroupID'] != '');
+  });
+
+  test('restore identity from mnemonic', () async {
+    List<String> keys = await TezsterDart.restoreIdentityFromDerivationPath(
+        "m/44'/1729'/0'/0'",
+        "curious roof motor parade analyst riot chronic actor pony random ring slot");
+    expect(keys[0],
+        'edskRzZLyGkhw9fmibXfqyMuEtEaa8Lxfqz9VBAq7LZbb4AfNQrgbtwW7Tv8qRyr44M89KrTTdLoxML29wEXc2864QuG1xWijP');
+    expect(keys[1], 'edpkvPPibVYfQd7uohshcoS7Q2XXTD6vgsJWBrYHmDypkVabWh8czs');
+    expect(keys[2], 'tz1Kx6NQZ2M4a9FssBswKyT25USCXWHcTbw7');
+  });
+
+  test("get contract storage", () async {
+    var storage = await TezsterDart.getContractStorage(
+        "https://mainnet.tezster.tech", "KT1X1LgNkQShpF9nRLYw3Dgdy4qp38MX617z");
+    print(storage);
   });
 }

@@ -1,3 +1,14 @@
+# [2.1.2-beta.2]
+
+* Restore Keys from secret-key
+* Restore Keys from mnemonic and derivationPath.
+
+# [2.1.2-beta.1]
+
+* Operation Gas fee calculator optimisation
+* Michelson grammar improvements
+* Minor bug fixes
+
 # [2.1.2-beta]
 
 * Support for florence mainnet and testnet

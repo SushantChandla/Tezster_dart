@@ -41,4 +41,10 @@ class TezosNodeReader {
         server, 'chains/$chainid/blocks/$hash');
     return response;
   }
+
+  static getValueForBigMapKey(String server, String index, String key,
+      {String block, String chainid}) async {
+    return await HttpHelper.performGetRequest(
+        server, 'chains/$chainid/blocks/$block/context/big_maps/$index/$key');
+  }
 }

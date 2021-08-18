@@ -8,6 +8,7 @@ var bLOCKS = 'blocks';
 var oPERATIONS = 'operations';
 
 class TezosConseilClient {
+  static const String ACCOUNTS = "accounts";
   static awaitOperationConfirmation(serverInfo, network, hash, duration,
       {blocktime = 60}) async {
     if (blocktime == null) blocktime = 60;
@@ -65,5 +66,16 @@ class TezosConseilClient {
 
   static getOperations(serverInfo, network, query) {
     return getTezosEntityData(serverInfo, network, oPERATIONS, query);
+  }
+
+  static getAccount(serverInfo, network, accountId) async {
+    var query = ConseilQueryBuilder.setLimit(
+        ConseilQueryBuilder.addPredicate(ConseilQueryBuilder.blankQuery(),
+            'account_id', QueryTypes.conseilOperator['EQ'], [accountId],
+            invert: false),
+        1);
+
+    var r = await getTezosEntityData(serverInfo, network, ACCOUNTS, query);
+    return r[0];
   }
 }
