@@ -14,9 +14,9 @@ import 'package:bs58check/bs58check.dart' as bs58check;
 import 'package:tezster_dart/chain/tezos/tezos_message_utils.dart';
 import 'package:tezster_dart/chain/tezos/tezos_node_reader.dart';
 import 'package:tezster_dart/chain/tezos/tezos_node_writer.dart';
+import 'package:tezster_dart/contracts/contract.dart';
 import 'package:tezster_dart/helper/constants.dart';
 import 'package:tezster_dart/helper/http_helper.dart';
-import 'package:tezster_dart/packages/taquito/taquito.dart';
 import 'package:tezster_dart/reporting/tezos/tezos_conseil_client.dart';
 import 'package:tezster_dart/src/soft-signer/soft_signer.dart';
 import 'package:tezster_dart/tezster_dart.dart';
@@ -342,17 +342,6 @@ class TezsterDart {
         server, signer, keyStore, fee, offset);
   }
 
-  static getContractStorage(String server, String accountHash) async {
-    assert(server != null);
-    assert(accountHash != null);
-    var tezos = TezosToolkit(server);
-    var storage;
-    await tezos.contract.at(accountHash).then((contract) async {
-      storage = await contract[0].storage();
-    });
-    return storage;
-  }
-
   static encodeBigMapKey(Uint8List key) {
     assert(key != null);
     return TezosMessageUtils.encodeBigMapKey(key);
@@ -374,5 +363,11 @@ class TezsterDart {
     assert(key != null);
     return await TezosNodeReader.getValueForBigMapKey(server, index, key,
         block: 'head', chainid: 'main');
+  }
+
+  static Contract getContract(String rpcServer, String address) {
+    assert(rpcServer != null);
+    assert(address != null);
+    return Contract(rpcServer: rpcServer, address: address);
   }
 }
