@@ -18,7 +18,7 @@ class Contract {
   }) async {
     var response = await HttpHelper.performGetRequest(rpcServer,
         "chains/$chain/blocks/$block/context/contracts/$address/script");
-  
+    
     var schema = Schema.fromFromScript(response);
     var storageResponse = MichelsonV1Expression();
     var storage = await HttpHelper.performGetRequest(rpcServer,

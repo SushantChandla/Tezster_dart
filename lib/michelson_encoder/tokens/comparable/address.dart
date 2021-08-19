@@ -1,6 +1,7 @@
-import 'package:tezster_dart/michelson_encoder/tokens/token.dart';
+
 import 'package:tezster_dart/michelson_encoder/helpers/utils.dart';
 import 'package:tezster_dart/michelson_encoder/helpers/validators.dart';
+import 'package:tezster_dart/michelson_encoder/tokens/token.dart';
 
 class AddressToken extends ComparableToken {
   static String prim = "address";
@@ -21,7 +22,7 @@ class AddressToken extends ComparableToken {
       return val['string'];
     }
 
-    return encodePubKey(val['bytes']);
+    return encodePubKey(val.bytes);
   }
 
   @override
@@ -32,7 +33,7 @@ class AddressToken extends ComparableToken {
   @override
   encodeObject(val) {
     var err = this._isValid(val);
-    if (err) {
+    if (err != null) {
       throw err;
     }
 
@@ -40,11 +41,17 @@ class AddressToken extends ComparableToken {
   }
 
   @override
-  toKey(String val) {
+  toKey(dynamic val) {
     if (val != null) {
       return val;
     }
 
     return encodePubKey(val);
+  }
+
+  @override
+  encode(List args) {
+    // TODO: implement encode
+    throw UnimplementedError();
   }
 }

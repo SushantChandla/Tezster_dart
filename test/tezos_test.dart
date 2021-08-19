@@ -106,9 +106,9 @@ void main() {
     expect(keys[2], 'tz1Kx6NQZ2M4a9FssBswKyT25USCXWHcTbw7');
   });
 
-  test("schema Conversion", () async {
+  test("Get Contract Storage", () async {
     var contract = TezsterDart.getContract(
-        "https://mainnet.tezster.tech", "KT1X1LgNkQShpF9nRLYw3Dgdy4qp38MX617z");
+        "https://mainnet-tezos.giganode.io", "KT1Emzc1jNBKhUgpb2dxNHtAjcq1i2N11wBp");
     Map x = await contract.getStorage();
     print(x);
   });

@@ -1,15 +1,17 @@
-import 'package:tezster_dart/michelson_encoder/tokens/token.dart';
+
+
 import 'package:tezster_dart/michelson_encoder/helpers/utils.dart';
 import 'package:tezster_dart/michelson_encoder/helpers/validators.dart';
+import 'package:tezster_dart/michelson_encoder/tokens/token.dart';
 
 class KeyHashToken extends ComparableToken {
   static String prim = 'key_hash';
 
   KeyHashToken(dynamic val, int idx, var fac) : super(val, idx, fac);
 
-  _isValid(value){
+  _isValid(value) {
     if (validateKeyHash(value) != ValidationResult.VALID) {
-      return  Exception("KeyHash is not valid: $value");
+      return Exception("KeyHash is not valid: $value");
     }
 
     return null;
@@ -39,11 +41,12 @@ class KeyHashToken extends ComparableToken {
   }
 
   @override
-  toKey(String val) {
-    if (val != null) {
+  toKey(dynamic val) {
+    if (val != null && val is String) {
       return val;
     }
 
     return encodeKeyHash(val);
   }
+
 }

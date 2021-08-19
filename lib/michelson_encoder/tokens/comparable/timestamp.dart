@@ -1,3 +1,4 @@
+
 import 'package:tezster_dart/michelson_encoder/tokens/token.dart';
 
 class TimestampToken extends ComparableToken {
@@ -10,7 +11,7 @@ class TimestampToken extends ComparableToken {
     if (val['string'] != null) {
       return DateTime.parse(val['string'].toString()).toIso8601String();
     } else if (val['int'] != null) {
-      return DateTime.fromMillisecondsSinceEpoch(int.parse(val['int']));
+      return DateTime.fromMillisecondsSinceEpoch(val['int']);
     }
   }
 
@@ -25,7 +26,13 @@ class TimestampToken extends ComparableToken {
   }
 
   @override
-  toKey(String val) {
-    return val;
+  toKey(dynamic val) {
+    return val.values.toList().first;
+  }
+
+  @override
+  encode(List args) {
+    // TODO: implement encode
+    throw UnimplementedError();
   }
 }

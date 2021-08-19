@@ -46,11 +46,17 @@ class BytesToken extends ComparableToken {
   }
 
   @override
-  toKey(String val) {
+  toKey(dynamic val) {
     if (val != null) {
       return val;
     }
 
     return val;
+  }
+
+  @override
+  encode(List args) {
+    // TODO: implement encode
+    throw UnimplementedError();
   }
 }

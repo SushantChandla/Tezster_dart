@@ -1,9 +1,13 @@
 
 import 'package:tezster_dart/michelson_encoder/michelson_expression.dart';
 import 'package:tezster_dart/michelson_encoder/tokens/bigmap.dart';
+import 'package:tezster_dart/michelson_encoder/tokens/bls12_381_fr.dart';
 import 'package:tezster_dart/michelson_encoder/tokens/comparable/address.dart';
+import 'package:tezster_dart/michelson_encoder/tokens/comparable/bool.dart';
 import 'package:tezster_dart/michelson_encoder/tokens/comparable/bytes.dart';
+import 'package:tezster_dart/michelson_encoder/tokens/comparable/int.dart';
 import 'package:tezster_dart/michelson_encoder/tokens/comparable/key_hash.dart';
+import 'package:tezster_dart/michelson_encoder/tokens/comparable/mutez.dart';
 import 'package:tezster_dart/michelson_encoder/tokens/comparable/nat.dart';
 import 'package:tezster_dart/michelson_encoder/tokens/comparable/string.dart';
 import 'package:tezster_dart/michelson_encoder/tokens/comparable/timestamp.dart';
@@ -14,6 +18,7 @@ import 'package:tezster_dart/michelson_encoder/tokens/map.dart';
 import 'package:tezster_dart/michelson_encoder/tokens/option.dart';
 import 'package:tezster_dart/michelson_encoder/tokens/or.dart';
 import 'package:tezster_dart/michelson_encoder/tokens/pair.dart';
+import 'package:tezster_dart/michelson_encoder/tokens/set.dart';
 import 'package:tezster_dart/michelson_encoder/tokens/tokens.dart';
 import 'package:tezster_dart/michelson_encoder/tokens/unit.dart';
 
@@ -70,6 +75,21 @@ createToken(MichelsonV1Expression val, int idx) {
       } else if (element == BytesToken) {
         objectType = "BytesToken";
         return BytesToken.prim == val.prim;
+      } else if (element == SetToken) {
+        objectType = "SetToken";
+        return SetToken.prim == val.prim;
+      } else if (element == Bls12381frToken) {
+        objectType = "Bls12381frToken";
+        return Bls12381frToken.prim == val.prim;
+      } else if (element == IntToken) {
+        objectType = "IntToken";
+        return IntToken.prim == val.prim;
+      } else if (element == BoolToken) {
+        objectType = "BoolToken";
+        return BoolToken.prim == val.prim;
+      } else if (element == MutezToken) {
+        objectType = "MutezToken";
+        return MutezToken.prim == val.prim;
       }
 
       return false;
@@ -108,7 +128,19 @@ createToken(MichelsonV1Expression val, int idx) {
     return TimestampToken(val, idx, createToken);
   } else if (objectType == "MapToken") {
     return MapToken(val, idx, createToken);
+  } else if (objectType == "StringToken") {
+    return StringToken(val, idx, createToken);
   } else if (objectType == "BytesToken") {
     return BytesToken(val, idx, createToken);
+  } else if (objectType == "SetToken") {
+    return SetToken(val, idx, createToken);
+  } else if (objectType == "Bls12381frToken") {
+    return Bls12381frToken(val, idx, createToken);
+  } else if (objectType == "IntToken") {
+    return IntToken(val, idx, createToken);
+  } else if (objectType == "BoolToken") {
+    return BoolToken(val, idx, createToken);
+  } else if (objectType == "MutezToken") {
+    return MutezToken(val, idx, createToken);
   }
 }

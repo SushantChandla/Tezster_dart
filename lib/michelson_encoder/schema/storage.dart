@@ -81,7 +81,7 @@ class Schema {
   // }
 
   static fromFromScript(Map<String, dynamic> script) {
-    if (!script.containsKey('code') || !script.containsKey('storage')) {
+    if (!script.containsKey('code')) {
       throw Exception('InvalidScript');
     }
     var storage =
