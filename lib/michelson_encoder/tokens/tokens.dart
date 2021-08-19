@@ -1,4 +1,3 @@
-
 import 'package:tezster_dart/michelson_encoder/tokens/bigmap.dart';
 import 'package:tezster_dart/michelson_encoder/tokens/bls12_381_fr.dart';
 import 'package:tezster_dart/michelson_encoder/tokens/bls12_381_g1.dart';
@@ -22,8 +21,8 @@ import 'package:tezster_dart/michelson_encoder/tokens/pair.dart';
 import 'package:tezster_dart/michelson_encoder/tokens/set.dart';
 import 'package:tezster_dart/michelson_encoder/tokens/unit.dart';
 
-List<dynamic> tokens = [
-    PairToken,
+List<Type> tokens = [
+  PairToken,
   OrToken,
   OptionToken,
   BigMapToken,

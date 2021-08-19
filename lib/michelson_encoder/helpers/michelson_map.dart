@@ -77,18 +77,18 @@ class MichelsonMap<K, T> {
     if (!isMapType(mapType)) {
       throw new Exception('mapType is not a valid michelson map type');
     }
-    MichelsonV1Expression manType = MichelsonV1Expression();
-    manType.prim = mapType.args[0]['prim'];
-    manType.args = mapType.args[0]['args'];
-    manType.annots = mapType.args[0]['annots'];
+    // MichelsonV1Expression manType = MichelsonV1Expression();
+    // manType.prim = mapType.args[0]['prim'];
+    // manType.args = mapType.args[0]['args'];
+    // manType.annots = mapType.args[0]['annots'];
 
-    _keySchema = new Schema(manType);
+    _keySchema = new Schema(mapType.args[0]);
 
-    manType.prim = mapType.args[1]['prim'];
-    manType.args = mapType.args[1]['args'];
-    manType.annots = mapType.args[1]['annots'];
+    // manType.prim = mapType.args[1]['prim'];
+    // manType.args = mapType.args[1]['args'];
+    // manType.annots = mapType.args[1]['annots'];
 
-    _valueSchema = new Schema(manType);
+    _valueSchema = new Schema(mapType.args[1]);
   }
 
   Iterable<K> keys() sync* {

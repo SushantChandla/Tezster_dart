@@ -1,4 +1,3 @@
-
 import 'package:tezster_dart/michelson_encoder/michelson_expression.dart';
 import 'package:tezster_dart/michelson_encoder/tokens/token.dart';
 
@@ -9,7 +8,7 @@ class UnitToken extends ComparableToken {
 
   @override
   execute(val, {var semantics}) {
-    return  Symbol('');
+    return Symbol('');
   }
 
   @override
@@ -19,11 +18,11 @@ class UnitToken extends ComparableToken {
 
   @override
   encodeObject(args) {
-    return {'prim': 'Unit'};
+    return {'prim': 'unit'};
   }
 
   @override
   toKey(String val) {
-    return  Symbol('');
+    return Symbol('');
   }
 }

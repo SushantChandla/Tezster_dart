@@ -19,15 +19,15 @@ class LambdaToken extends Token {
 
   @override
   extractSchema() {
-    MichelsonV1Expression michelsonV1Expression = MichelsonV1Expression();
-    michelsonV1Expression.prim = this.val.args[0]['prim'];
-    michelsonV1Expression.args = this.val.args[0]['args'];
-    michelsonV1Expression.annots = this.val.args[0]['annots'];
-    var leftToken = this.createToken(michelsonV1Expression, this.idx);
-    michelsonV1Expression.prim = this.val.args[1]['prim'];
-    michelsonV1Expression.args = this.val.args[1]['args'];
-    michelsonV1Expression.annots = this.val.args[1]['annots'];
-    var rightToken = this.createToken(michelsonV1Expression, this.idx + 1);
+    // MichelsonV1Expression michelsonV1Expression = MichelsonV1Expression();
+    // michelsonV1Expression.prim = this.val.args[0]['prim'];
+    // michelsonV1Expression.args = this.val.args[0]['args'];
+    // michelsonV1Expression.annots = this.val.args[0]['annots'];
+    var leftToken = this.createToken(val.args[0], this.idx);
+    // michelsonV1Expression.prim = this.val.args[1]['prim'];
+    // michelsonV1Expression.args = this.val.args[1]['args'];
+    // michelsonV1Expression.annots = this.val.args[1]['annots'];
+    var rightToken = this.createToken(val.args[1], this.idx + 1);
     return {
       [LambdaToken.prim]: {
         'parameters': leftToken.extractSchema(),

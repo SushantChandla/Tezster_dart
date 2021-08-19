@@ -1,4 +1,3 @@
-
 import 'package:tezster_dart/michelson_encoder/helpers/utils.dart';
 import 'package:tezster_dart/michelson_encoder/helpers/validators.dart';
 import 'package:tezster_dart/michelson_encoder/tokens/token.dart';
@@ -22,7 +21,7 @@ class AddressToken extends ComparableToken {
       return val['string'];
     }
 
-    return encodePubKey(val.bytes);
+    return encodePubKey(val['bytes']);
   }
 
   @override
@@ -47,11 +46,5 @@ class AddressToken extends ComparableToken {
     }
 
     return encodePubKey(val);
-  }
-
-  @override
-  encode(List args) {
-    // TODO: implement encode
-    throw UnimplementedError();
   }
 }

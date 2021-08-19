@@ -1,4 +1,3 @@
-
 import 'package:tezster_dart/michelson_encoder/michelson_expression.dart';
 import 'package:tezster_dart/michelson_encoder/tokens/bigmap.dart';
 import 'package:tezster_dart/michelson_encoder/tokens/bls12_381_fr.dart';
@@ -24,7 +23,7 @@ import 'package:tezster_dart/michelson_encoder/tokens/unit.dart';
 
 createToken(MichelsonV1Expression val, int idx) {
   String objectType;
-  if (val.runtimeType == List) {
+  if (val is List) {
     return new PairToken(val, idx, createToken(val, idx));
   }
 
@@ -53,7 +52,7 @@ createToken(MichelsonV1Expression val, int idx) {
         return NatToken.prim == val.prim;
       } else if (element == UnitToken) {
         objectType = "UnitToken";
-        return UnitToken.prim == val.prim;
+        return UnitToken.prim == val.prim.toLowerCase();
       } else if (element == ContractToken) {
         objectType = "ContractToken";
         return ContractToken.prim == val.prim;

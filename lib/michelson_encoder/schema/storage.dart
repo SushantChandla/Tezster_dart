@@ -90,9 +90,7 @@ class Schema {
       throw new Exception("Invalid rpc response passed as arguments");
     }
 
-    MichelsonV1Expression data = MichelsonV1Expression();
-    data.prim = storage['args'][0]['prim'];
-    data.args = storage['args'][0]['args'];
+    MichelsonV1Expression data = MichelsonV1Expression.j(storage['args'][0]);
 
     return Schema(data);
   }

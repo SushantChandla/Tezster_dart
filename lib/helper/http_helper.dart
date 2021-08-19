@@ -24,7 +24,6 @@ class HttpHelper {
   }
 
   static Future<dynamic> performGetRequest(server, command) async {
-    
     HttpClient httpClient = new HttpClient();
     HttpClientRequest request =
         await httpClient.getUrl(Uri.parse('$server/$command'));

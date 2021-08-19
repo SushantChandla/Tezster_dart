@@ -1,10 +1,9 @@
-
-
 import 'package:tezster_dart/michelson_encoder/michelson_expression.dart';
 
 class TokenValidationError implements Exception {
   String name = "ValidationError";
   String message;
+
 
   TokenValidationError(dynamic value, Token token, String baseMessage) {
     var annot = token.annot();
@@ -18,6 +17,7 @@ abstract class Token {
   int idx;
   var fac;
   var createToken;
+  static String prim;
   Token(MichelsonV1Expression val, int idx, var fac) {
     this.val = val;
     this.idx = idx;

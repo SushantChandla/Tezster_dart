@@ -1,4 +1,3 @@
-
 import 'package:tezster_dart/michelson_encoder/michelson_expression.dart';
 import 'package:tezster_dart/michelson_encoder/tokens/token.dart';
 
@@ -13,10 +12,7 @@ class OrToken extends ComparableToken {
 
   _traversal(
       Function getLeftValue(Token token), Function getRightValue(Token token)) {
-    MichelsonV1Expression data = MichelsonV1Expression();
-    data.prim = this.val.args[0]['prim'];
-    data.args = this.val.args[0]['args'];
-    data.annots = this.val.args[0]['annots'];
+     MichelsonV1Expression data = MichelsonV1Expression.j(val.args[0]);
     var leftToken = this.createToken(data, this.idx);
     var keyCount = 1;
     var leftValue;
@@ -25,20 +21,17 @@ class OrToken extends ComparableToken {
       keyCount = leftToken.extractSchema().keys.length;
     } else {
       leftValue = {
-        [leftToken.annot()]: leftToken.extractSchema()
+        leftToken.annot(): leftToken.extractSchema()
       };
     }
-    data = MichelsonV1Expression();
-    data.prim = this.val.args[1]['prim'];
-    data.args = this.val.args[1]['args'];
-    data.annots = this.val.args[1]['annots'];
+     data = MichelsonV1Expression.j(val.args[1]);
     var rightToken = this.createToken(data, this.idx + keyCount);
     var rightValue;
     if (rightValue.runtimeType == OrToken && !rightToken.hasAnnotations()) {
       rightValue = rightToken.extractSchema();
     } else {
       rightValue = {
-        [rightToken.annot()]: rightToken.extractSchema()
+        rightToken.annot(): rightToken.extractSchema()
       };
     }
 
@@ -58,28 +51,36 @@ class OrToken extends ComparableToken {
 
   @override
   execute(val, {semantics}) {
-    var leftToken = this.createToken(this.val.args[0], this.idx);
+    MichelsonV1Expression data = MichelsonV1Expression.j(this.val.args[0]);
+    var leftToken = this.createToken(data, this.idx);
     var keyCount = 1;
     if (leftToken.runtimeType == OrToken) {
       keyCount = leftToken.extractSchema().keys.length;
     }
+    data = MichelsonV1Expression.j(this.val.args[1]);
+    var rightToken = this.createToken(data, this.idx + keyCount);
+    MichelsonV1Expression x;
+    if(val is Map){
+      x=MichelsonV1Expression.j(val);
+    }else{
+    x=val;
+    }
 
-    var rightToken = this.createToken(this.val.args[1], this.idx + keyCount);
-
-    if (val.prim == 'Right') {
+    MichelsonV1Expression t = MichelsonV1Expression.j(x.args[0]);
+    if (x.prim == 'Right') {
       if (rightToken.runtimeType == OrToken) {
-        return rightToken.execute(val.args[0], semantics);
+        return rightToken.execute(t,semantics: semantics);
       } else {
         return {
-          [rightToken.annot()]: rightToken.execute(val.args[0], semantics),
+          [rightToken.annot()]: rightToken.execute(t,semantics:  semantics),
         };
       }
-    } else if (val.prim == 'Left') {
+    } else if (x.prim == 'Left') {
       if (leftToken.runtimeType == OrToken) {
-        return leftToken.execute(val.args[0], semantics);
+        return leftToken.execute(t,semantics:  semantics);
       }
       return {
-        [leftToken.annot()]: leftToken.execute(val.args[0].semantic),
+        [leftToken.annot()]: leftToken.execute(t,semantics:  semantics),
       };
     } else {
       throw Exception('Was expecting Left or Right prim but got : ${val.prim}');

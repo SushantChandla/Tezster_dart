@@ -108,7 +108,7 @@ void main() {
 
   test("Get Contract Storage", () async {
     var contract = TezsterDart.getContract(
-        "https://mainnet-tezos.giganode.io", "KT1Emzc1jNBKhUgpb2dxNHtAjcq1i2N11wBp");
+        "https://mainnet.api.tez.ie/", "KT1BA9igcUcgkMT4LEEQzwURsdMpQayfb6i4");
     Map x = await contract.getStorage();
     print(x);
   });

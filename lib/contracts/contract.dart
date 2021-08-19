@@ -1,6 +1,9 @@
+import 'dart:convert';
+
 import 'package:tezster_dart/contracts/big-map.dart';
 import 'package:tezster_dart/contracts/sapling-state-abstraction.dart';
 import 'package:tezster_dart/helper/http_helper.dart';
+import 'package:tezster_dart/helper/temp.dart';
 import 'package:tezster_dart/michelson_encoder/michelson_expression.dart';
 import 'package:tezster_dart/michelson_encoder/schema/storage.dart';
 
@@ -18,22 +21,21 @@ class Contract {
   }) async {
     var response = await HttpHelper.performGetRequest(rpcServer,
         "chains/$chain/blocks/$block/context/contracts/$address/script");
-    
+    // var response = jsonDecode(code);
     var schema = Schema.fromFromScript(response);
-    var storageResponse = MichelsonV1Expression();
+
     var storage = await HttpHelper.performGetRequest(rpcServer,
         "chains/$chain/blocks/$block/context/contracts/$address/storage");
-
-
-    storageResponse.annots = storage['annots'];
-    storageResponse.args = storage['args'];
-    storageResponse.prim = storage['prim'];
+    // var storage = jsonDecode(storage_temp);
+    var storageResponse = MichelsonV1Expression(
+        prim: storage['prim'], args: storage['args'], annots: ['annots']);
     return schema.execute(storageResponse, _smartContractAbstractionSemantic());
   }
 
   dynamic _smartContractAbstractionSemantic() {
     return {
       'big_map': (val, code) {
+        if (val is MichelsonV1Expression) return {};
         if (val == null || !val.containsKey('int') || val['int'] == null) {
           return {};
         } else {

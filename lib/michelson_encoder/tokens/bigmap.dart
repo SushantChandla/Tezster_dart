@@ -15,18 +15,12 @@ class BigMapToken extends Token {
       : super(val, idx, fac);
 
   get valueSchema {
-    MichelsonV1Expression michelsonV1Expression = MichelsonV1Expression();
-    michelsonV1Expression.prim = this.val.args[1]['prim'];
-    michelsonV1Expression.args = this.val.args[1]['args'];
-    michelsonV1Expression.annots = this.val.args[1]['annots'];
+    MichelsonV1Expression michelsonV1Expression = MichelsonV1Expression.j(val.args[1]);
     return this.createToken(michelsonV1Expression, 0);
   }
 
   ComparableToken get keySchema {
-    MichelsonV1Expression michelsonV1Expression = MichelsonV1Expression();
-    michelsonV1Expression.prim = this.val.args[0]['prim'];
-    michelsonV1Expression.args = this.val.args[0]['args'];
-    michelsonV1Expression.annots = this.val.args[0]['annots'];
+     MichelsonV1Expression michelsonV1Expression = MichelsonV1Expression.j(val.args[0]);
     return (this.createToken(michelsonV1Expression, 0)) as ComparableToken;
   }
 

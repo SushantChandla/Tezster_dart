@@ -24,10 +24,10 @@ class ListToken extends Token {
 
   @override
   execute(val, {semantics}) {
-    MichelsonV1Expression michelsonV1Expression = MichelsonV1Expression();
-    michelsonV1Expression.prim = this.val.args[0]['prim'];
-    michelsonV1Expression.args = this.val.args[0]['args'];
-    michelsonV1Expression.annots = this.val.args[0]['annots'];
+    // MichelsonV1Expression michelsonV1Expression = MichelsonV1Expression();
+    // michelsonV1Expression.prim = this.val.args[0]['prim'];
+    // michelsonV1Expression.args = this.val.args[0]['args'];
+    // michelsonV1Expression.annots = this.val.args[0]['annots'];
     var schema = this.createToken(this.val.args[0], 0);
 
     var err = this._isValid(val);

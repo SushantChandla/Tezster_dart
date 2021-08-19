@@ -19,30 +19,24 @@ class OptionToken extends ComparableToken {
   }
 
   Token subToken() {
-    MichelsonV1Expression data = MichelsonV1Expression();
-    data.prim = this.val.args[0]['prim'];
-    data.args = this.val.args[0]['args'];
-    data.annots = this.val.args[0]['annots'];
-    return this.createToken(data, this.idx);
+    // MichelsonV1Expression data = MichelsonV1Expression();
+    // data.prim = this.val.args[0]['prim'];
+    // data.args = this.val.args[0]['args'];
+    // data.annots = this.val.args[0]['annots'];
+    return this.createToken(val.args[0], this.idx);
   }
 
   @override
   extractSchema() {
-    MichelsonV1Expression data = MichelsonV1Expression();
-    data.prim = this.val.args[0]['prim'];
-    data.args = this.val.args[0]['args'];
-    data.annots = this.val.args[0]['annots'];
+     MichelsonV1Expression data = MichelsonV1Expression.j(val.args[0]);
     var schema = this.createToken(data, 0);
     return schema.extractSchema();
   }
 
   @override
   extractSignature() {
-    MichelsonV1Expression data = MichelsonV1Expression();
-    data.prim = this.val.args[0]['prim'];
-    data.args = this.val.args[0]['args'];
-    data.annots = this.val.args[0]['annots'];
-    var schema = this.createToken(data, 0);
+    MichelsonV1Expression data = MichelsonV1Expression.j(val.args[0]);
+    var schema = this.createToken(val.args[0], 0);
     return [...schema.extractSignature(), []];
   }
 
@@ -52,22 +46,16 @@ class OptionToken extends ComparableToken {
       if (val['prim'] == 'None') {
         return null;
       }
-      MichelsonV1Expression data = MichelsonV1Expression();
-      data.prim = this.val.args[0]['prim'];
-      data.args = this.val.args[0]['args'];
-      data.annots = this.val.args[0]['annots'];
+      MichelsonV1Expression data = MichelsonV1Expression.j(this.val.args[0]);
       var schema = this.createToken(data, 0);
       return schema.execute(val['args'][0], semantics: semantics);
     } else {
       if (val.prim == 'None') {
         return null;
       }
-      MichelsonV1Expression data = MichelsonV1Expression();
-      data.prim = this.val.args[0]['prim'];
-      data.args = this.val.args[0]['args'];
-      data.annots = this.val.args[0]['annots'];
+      MichelsonV1Expression data = MichelsonV1Expression.j(this.val.args[0]);
       var schema = this.createToken(data, 0);
-      return schema.execute(val.args[0], semantics: semantics);
+      return schema.execute(data, semantics: semantics);
     }
   }
 

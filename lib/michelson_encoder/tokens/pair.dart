@@ -23,7 +23,7 @@ collapse(var val, {String prim = 'pair'}) {
     }
     return [val['args'][0], val['args'][1]];
   } else {
-    if (val.args == null) {
+    if (val.args == null || val.args.isEmpty) {
       throw Exception('Token has no arguments');
     }
     if (val.args.length > 2) {
@@ -43,11 +43,7 @@ class PairToken extends ComparableToken {
   static String prim = 'pair';
 
   PairToken(MichelsonV1Expression val, int idx, var fac)
-      : super(
-            val.runtimeType == List
-                ? {'prim': PairToken.prim, 'args': val}
-                : val,
-            idx,
+      : super(val is List ? {'prim': PairToken.prim, 'args': val} : val, idx,
             fac);
 
   List _args() {
@@ -55,11 +51,8 @@ class PairToken extends ComparableToken {
   }
 
   _traversal(getLeftValue(Token token), getRightValue(Token token)) {
-    var args = _args();
-    MichelsonV1Expression data = MichelsonV1Expression();
-    data.prim = args[0]['prim'];
-    data.args = args[0]['args'];
-    data.annots = args[0]['annots'];
+    List args = _args();
+    MichelsonV1Expression data = MichelsonV1Expression.j(args[0]);
     Token leftToken = this.createToken(data, this.idx);
     var keyCount = 1;
     var leftValue;
@@ -69,10 +62,7 @@ class PairToken extends ComparableToken {
     } else {
       leftValue = {leftToken.annot(): getLeftValue(leftToken)};
     }
-    data = MichelsonV1Expression();
-    data.prim = args[1]['prim'];
-    data.args = args[1]['args'];
-    data.annots = args[1]['annots'];
+    data = MichelsonV1Expression.j(args[1]);
     var rightToken = this.createToken(data, this.idx + keyCount);
     var rightValue;
     if (rightToken.runtimeType == PairToken && !rightToken.hasAnnotations()) {

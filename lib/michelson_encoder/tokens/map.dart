@@ -8,18 +8,18 @@ class MapToken extends Token {
   MapToken(dynamic val, int idx, var fac) : super(val, idx, fac);
 
   get valueSchema {
-    MichelsonV1Expression data = MichelsonV1Expression();
-    data.prim = this.val.args[1]['prim'];
-    data.args = this.val.args[1]['args'];
-    data.annots = this.val.args[1]['annots'];
+    MichelsonV1Expression data = MichelsonV1Expression.j(val.args[1]);
+    // data.prim = this.val.args[1]['prim'];
+    // data.args = this.val.args[1]['args'];
+    // data.annots = this.val.args[1]['annots'];
     return this.createToken(data, 0);
   }
 
   ComparableToken get keySchema {
-    MichelsonV1Expression data = MichelsonV1Expression();
-    data.prim = this.val.args[0]['prim'];
-    data.args = this.val.args[0]['args'];
-    data.annots = this.val.args[0]['annots'];
+    MichelsonV1Expression data = MichelsonV1Expression.j(val.args[0]);
+    // data.prim = this.val.args[0]['prim'];
+    // data.args = this.val.args[0]['args'];
+    // data.annots = this.val.args[0]['annots'];
     return this.createToken(data, 0);
   }
 

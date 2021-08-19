@@ -7,11 +7,7 @@ class SetToken extends Token {
   SetToken(MichelsonV1Expression val, int idx, fac) : super(val, idx, fac);
 
   ComparableToken get keySchema {
-    var m= MichelsonV1Expression();
-    m..prim=val.args[0]['prim'];
-    m..args=val.args[0]['args'];
-    m..args=val.args[0]['annots'];
-    return createToken(m, 0);
+    return createToken(MichelsonV1Expression.j(val.args[0]), 0);
   }
 
   _isValid(value) {
