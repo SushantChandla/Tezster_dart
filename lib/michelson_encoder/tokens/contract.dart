@@ -44,4 +44,10 @@ class ContractToken extends Token {
     }
     return {'string': val};
   }
+
+  @override
+  encode(List args) {
+    // TODO: implement encode
+    throw UnimplementedError();
+  }
 }

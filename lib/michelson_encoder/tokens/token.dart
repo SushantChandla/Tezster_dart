@@ -4,7 +4,6 @@ class TokenValidationError implements Exception {
   String name = "ValidationError";
   String message;
 
-
   TokenValidationError(dynamic value, Token token, String baseMessage) {
     var annot = token.annot();
     var annotText = annot != null ? annot : '';
@@ -54,12 +53,20 @@ abstract class Token {
 
   dynamic extractSchema();
   dynamic execute(dynamic val, {var semantics});
+  dynamic encode(List<dynamic> args);
   dynamic encodeObject(dynamic args);
 }
 
 abstract class ComparableToken extends Token {
   ComparableToken(MichelsonV1Expression val, int idx, var fac)
       : super(val, idx, fac);
+  compare(o1, o2) {
+    if (o1 == o2) {
+      return 0;
+    }
 
-  dynamic toKey(String val);
+    return o1 < o2 ? -1 : 1;
+  }
+
+  dynamic toKey(dynamic val);
 }

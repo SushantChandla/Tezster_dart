@@ -10,39 +10,42 @@ enum ValidationResult {
   VALID,
 }
 
-List<String> implicitPrefix = [prefixLowercase['TZ1'], prefixLowercase['TZ2'], prefixLowercase['TZ3']];
+List<String> implicitPrefix = [
+  prefixLowercase['TZ1'],
+  prefixLowercase['TZ2'],
+  prefixLowercase['TZ3']
+];
 List<String> contractPrefix = [prefixLowercase['KT1']];
 
 isValidPrefix(value) {
-  if (value.runtimeType != String) {
-    return false;
+  if (value is String) {
+    return prefix.containsKey(value);
   }
-
-  return prefix.containsKey([value.toString().toUpperCase()]);
+  return false;
 }
 
 validatePrefixedValue(value, List prefixes) {
-  RegExp match = new RegExp("^(\" + ${prefixes.join('|')} + \")\n");
-  if (match.stringMatch(value) == null ||
-      match.stringMatch(value).length == 0) {
+  var match = RegExp("^(${prefixes.join('|')})").allMatches(value);
+
+  if (match == null || match.isEmpty) {
     return ValidationResult.NO_PREFIX_MATCHED;
   }
 
-  var prefixKey = match.stringMatch(value);
+  var prefixKey = match.first.group(0).toUpperCase();
 
   if (!isValidPrefix(prefixKey)) {
     return ValidationResult.NO_PREFIX_MATCHED;
   }
 
   // Remove annotation from contract address before doing the validation
-  RegExp contractAddress = new RegExp("^(KT1\\w{33})(\\%(.*))?");
-  if (contractAddress != null) {
-    value = contractAddress.stringMatch(value);
+  var contractAddress = RegExp(r"/^(KT1\w{33})(\%(.*))?/").allMatches(value);
+  if (contractAddress != null && contractAddress.isNotEmpty) {
+    value = contractAddress.first.group(0);
   }
 
   // decodeUnsafe return undefined if decoding fail
-  Uint8List decoded = bs58check.decodeRaw(value);
-  if (decoded != null) {
+  Uint8List decoded = bs58check.decode(value);
+  if (decoded == null) {
     return ValidationResult.INVALID_CHECKSUM;
   }
 

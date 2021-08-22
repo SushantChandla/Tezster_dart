@@ -5,14 +5,10 @@ import 'package:tezster_dart/michelson_encoder/schema/storage.dart';
 
 var michelsonMapTypeSymbol = Symbol('michelson-map-type-symbol');
 
-isMapType(
+bool isMapType(
   MichelsonV1Expression value,
 ) =>
-    {
-      value.args != null &&
-          value.args.runtimeType == List &&
-          value.args.length == 2,
-    };
+    value.args != null && value.args is List && value.args.length == 2;
 
 class MichelsonMap<K, T> {
   var _valueMap = new Map<String, T>();
@@ -77,18 +73,12 @@ class MichelsonMap<K, T> {
     if (!isMapType(mapType)) {
       throw new Exception('mapType is not a valid michelson map type');
     }
-    // MichelsonV1Expression manType = MichelsonV1Expression();
-    // manType.prim = mapType.args[0]['prim'];
-    // manType.args = mapType.args[0]['args'];
-    // manType.annots = mapType.args[0]['annots'];
+    MichelsonV1Expression t = MichelsonV1Expression.j(mapType.args[0]);
 
-    _keySchema = new Schema(mapType.args[0]);
+    _keySchema = new Schema(t);
 
-    // manType.prim = mapType.args[1]['prim'];
-    // manType.args = mapType.args[1]['args'];
-    // manType.annots = mapType.args[1]['annots'];
-
-    _valueSchema = new Schema(mapType.args[1]);
+    t = MichelsonV1Expression.j(mapType.args[1]);
+    _valueSchema = new Schema(t);
   }
 
   Iterable<K> keys() sync* {

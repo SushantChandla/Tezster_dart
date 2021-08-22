@@ -1,4 +1,3 @@
-
 import 'package:tezster_dart/michelson_encoder/michelson_expression.dart';
 import 'package:tezster_dart/michelson_encoder/tokens/createToken.dart';
 import 'package:tezster_dart/michelson_encoder/tokens/option.dart';
@@ -45,7 +44,21 @@ class ParameterSchema {
     return _root.extractSchema();
   }
 
+  encode(args) {
+    try {
+      return _root.encode(args.reverse());
+    } catch (ex) {
+      throw new Exception(
+        'Unable to encode storage object. $ex',
+      );
+    }
+  }
+
   get extractSignatures {
     return _root.extractSignature();
+  }
+
+  execute(val, {semantics}) {
+    return _root.execute(val, semantics: semantics);
   }
 }

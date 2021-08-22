@@ -49,4 +49,16 @@ class KeyHashToken extends ComparableToken {
     return encodeKeyHash(val);
   }
 
+  @override
+   encode(List args) {
+    var val = args.removeLast();
+
+    var err = this._isValid(val);
+    if (err!=null) {
+      throw err;
+    }
+
+    return { String: val };
+  }
+
 }

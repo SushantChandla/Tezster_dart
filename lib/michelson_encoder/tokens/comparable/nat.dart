@@ -1,4 +1,3 @@
-
 import 'package:tezster_dart/michelson_encoder/tokens/token.dart';
 
 class NatToken extends ComparableToken {
@@ -13,12 +12,16 @@ class NatToken extends ComparableToken {
             fac);
 
   _isValid(bigNumber) {
+    if (bigNumber is String) {
+      var x = BigInt.tryParse(bigNumber);
+      if (x != null) return true;
+    }
     if (bigNumber.runtimeType != int) {
       return new Exception("Value is not a number: $val");
     } else if (bigNumber < 0) {
       return new Exception("Value cannot be negative: $val");
     } else {
-      return null;
+      return true;
     }
   }
 
@@ -36,7 +39,7 @@ class NatToken extends ComparableToken {
   encodeObject(val) {
     var err = this._isValid(val);
 
-    if (err != null) {
+    if (err == null) {
       throw err;
     }
 
@@ -45,12 +48,18 @@ class NatToken extends ComparableToken {
 
   @override
   toKey(dynamic val) {
-    return int.tryParse(val.values.toList().first) ?? 0;
+    return int.tryParse(val.values.first) ?? 0;
   }
 
   @override
-  encode(List args) {
-    // TODO: implement encode
-    throw UnimplementedError();
+  encode(args) {
+    var val = args.removeLast();
+
+    var err = this._isValid(val);
+    if (err != null) {
+      throw err;
+    }
+
+    return {int: BigInt.from(val)};
   }
 }

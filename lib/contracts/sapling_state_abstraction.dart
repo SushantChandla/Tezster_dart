@@ -6,12 +6,12 @@ class SaplingStateAbstraction {
     this.id = id;
   }
 
-  getSaplingDiff(
-    String rpc,
-    int block,
-  ) async {
-    return _getSaplingDiffById(rpc, this.id.toString());
-  }
+  // getSaplingDiff(
+  //   String rpc,
+  //   int block,
+  // ) async {
+  //   return _getSaplingDiffById(rpc, this.id.toString());
+  // }
 
   getId() {
     return this.id.toString();

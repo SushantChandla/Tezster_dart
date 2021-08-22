@@ -20,10 +20,16 @@ class SetToken extends Token {
 
   @override
   encodeObject(args) {
-    var err = _isValid(args);
+    var err;
+    if (args is List) {
+      err = _isValid(args);
+    } else {
+      err = _isValid(args.values.toList());
+    }
     if (err != null) {
       throw err;
     }
+    return {};
   }
 
   @override
@@ -32,8 +38,13 @@ class SetToken extends Token {
       return val;
     }
     return val.reduce((prev, current) {
-      var temp_list = prev.values;
-      return [...temp_list, keySchema.execute(current, semantics: semantics)];
+      var tempList;
+      if (prev is Map)
+        tempList = prev.values;
+      else {
+        tempList = prev;
+      }
+      return [...tempList, keySchema.execute(current, semantics: semantics)];
     });
   }
 
@@ -42,18 +53,14 @@ class SetToken extends Token {
     return SetToken.prim;
   }
 
-  // @override
-  // encode(List args) {
-  //   List val = args[args.length - 1];
-
-  //   var err = _isValid(val);
-  //   if (err != null) {
-  //     throw err;
-  //   }
-
-  //   // val.sort((a, b) => this.keySchema.compare(a, b));
-
-  //   return val.reduce(
-  //       (prev, current) => [...prev, this.keySchema.encodeObject(current)]);
-  // }
+  @override
+  encode(List args) {
+    List val = args[args.length - 1];
+    var err = _isValid(val);
+    if (err != null) {
+      throw err;
+    }
+    return val.reduce(
+        (prev, current) => [...prev, this.keySchema.encodeObject(current)]);
+  }
 }

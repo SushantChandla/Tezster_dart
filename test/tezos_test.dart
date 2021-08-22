@@ -1,4 +1,5 @@
 import 'package:flutter_test/flutter_test.dart';
+import 'package:tezster_dart/contracts/tzip16/tzip16-contract.dart';
 import 'package:tezster_dart/tezster_dart.dart';
 
 void main() {
@@ -108,8 +109,16 @@ void main() {
 
   test("Get Contract Storage", () async {
     var contract = TezsterDart.getContract(
-        "https://mainnet.api.tez.ie/", "KT1BA9igcUcgkMT4LEEQzwURsdMpQayfb6i4");
+        "https://mainnet.api.tez.ie", "KT1DLif2x9BtK6pUq9ZfFVVyW5wN2kau9rkW");
     Map x = await contract.getStorage();
     print(x);
+  });
+
+  test('Tzip 16 metadata test', () async {
+    var tzip16Contract = Tzip16Contract(
+        contract: 'KT1RJ6PbjHpwc3M5rw5s2Nbmefwbuwbdxton',
+        rpc: 'https://mainnet.tezster.tech/');
+    await tzip16Contract.getStorage();
+    var meteData = await tzip16Contract.getMetadata();
   });
 }

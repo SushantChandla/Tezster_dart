@@ -9,6 +9,9 @@
 .history
 .svn/
 
+test/Carthagenet_1
+test/Carthagenet_2
+
 # IntelliJ related
 *.iml
 *.ipr

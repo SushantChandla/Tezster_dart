@@ -11,7 +11,8 @@ class TimestampToken extends ComparableToken {
     if (val['string'] != null) {
       return DateTime.parse(val['string'].toString()).toIso8601String();
     } else if (val['int'] != null) {
-      return DateTime.fromMillisecondsSinceEpoch(val['int']);
+      int x=int.parse(val['int']);
+      return DateTime.fromMillisecondsSinceEpoch(x);
     }
   }
 

@@ -22,7 +22,11 @@ class UnitToken extends ComparableToken {
   }
 
   @override
-  toKey(String val) {
+  toKey(dynamic val) {
     return Symbol('');
+  }
+
+  encode(args) {
+    return {prim: 'Unit'};
   }
 }

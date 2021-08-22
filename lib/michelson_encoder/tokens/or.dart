@@ -12,7 +12,7 @@ class OrToken extends ComparableToken {
 
   _traversal(
       Function getLeftValue(Token token), Function getRightValue(Token token)) {
-     MichelsonV1Expression data = MichelsonV1Expression.j(val.args[0]);
+    MichelsonV1Expression data = MichelsonV1Expression.j(val.args[0]);
     var leftToken = this.createToken(data, this.idx);
     var keyCount = 1;
     var leftValue;
@@ -20,19 +20,15 @@ class OrToken extends ComparableToken {
       leftValue = leftToken.extractSchema();
       keyCount = leftToken.extractSchema().keys.length;
     } else {
-      leftValue = {
-        leftToken.annot(): leftToken.extractSchema()
-      };
+      leftValue = {leftToken.annot(): leftToken.extractSchema()};
     }
-     data = MichelsonV1Expression.j(val.args[1]);
+    data = MichelsonV1Expression.j(val.args[1]);
     var rightToken = this.createToken(data, this.idx + keyCount);
     var rightValue;
     if (rightValue.runtimeType == OrToken && !rightToken.hasAnnotations()) {
       rightValue = rightToken.extractSchema();
     } else {
-      rightValue = {
-        rightToken.annot(): rightToken.extractSchema()
-      };
+      rightValue = {rightToken.annot(): rightToken.extractSchema()};
     }
 
     var res = {};
@@ -60,27 +56,27 @@ class OrToken extends ComparableToken {
     data = MichelsonV1Expression.j(this.val.args[1]);
     var rightToken = this.createToken(data, this.idx + keyCount);
     MichelsonV1Expression x;
-    if(val is Map){
-      x=MichelsonV1Expression.j(val);
-    }else{
-    x=val;
+    if (val is Map) {
+      x = MichelsonV1Expression.j(val);
+    } else {
+      x = val;
     }
 
     MichelsonV1Expression t = MichelsonV1Expression.j(x.args[0]);
     if (x.prim == 'Right') {
       if (rightToken.runtimeType == OrToken) {
-        return rightToken.execute(t,semantics: semantics);
+        return rightToken.execute(t, semantics: semantics);
       } else {
         return {
-          [rightToken.annot()]: rightToken.execute(t,semantics:  semantics),
+          [rightToken.annot()]: rightToken.execute(t, semantics: semantics),
         };
       }
     } else if (x.prim == 'Left') {
       if (leftToken.runtimeType == OrToken) {
-        return leftToken.execute(t,semantics:  semantics);
+        return leftToken.execute(t, semantics: semantics);
       }
       return {
-        [leftToken.annot()]: leftToken.execute(t,semantics:  semantics),
+        [leftToken.annot()]: leftToken.execute(t, semantics: semantics),
       };
     } else {
       throw Exception('Was expecting Left or Right prim but got : ${val.prim}');
@@ -136,7 +132,56 @@ class OrToken extends ComparableToken {
   }
 
   @override
-  toKey(String val) {
+  toKey(dynamic val) {
     return this.execute(val);
+  }
+
+  encode(args) {
+    var label = args[args.length - 1];
+
+    var leftToken = createToken(this.val.args[0], this.idx);
+    var keyCount = 1;
+    if (leftToken is OrToken) {
+      keyCount = leftToken.extractSchema().length;
+    }
+
+    var rightToken = this.createToken(this.val.args[1], this.idx + keyCount);
+
+    if (leftToken.annot().toString() == label.toString() &&
+        !(leftToken is OrToken)) {
+      args.removeLast();
+      return {
+        prim: 'Left',
+        args: [leftToken.Encode(args)]
+      };
+    } else if (rightToken.annot().toString() == label.toString() &&
+        !(rightToken is OrToken)) {
+      args.removeLast();
+      return {
+        prim: 'Right',
+        args: [rightToken.Encode(args)]
+      };
+    } else {
+      if (leftToken is OrToken) {
+        var val = leftToken.encode(args);
+        if (val) {
+          return {
+            prim: 'Left',
+            args: [val]
+          };
+        }
+      }
+
+      if (rightToken is OrToken) {
+        var val = rightToken.encode(args);
+        if (val) {
+          return {
+            prim: 'Right',
+            args: [val]
+          };
+        }
+      }
+      return null;
+    }
   }
 }

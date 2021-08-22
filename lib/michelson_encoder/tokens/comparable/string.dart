@@ -1,4 +1,3 @@
-
 import 'package:tezster_dart/michelson_encoder/michelson_expression.dart';
 import 'package:tezster_dart/michelson_encoder/tokens/token.dart';
 
@@ -14,7 +13,7 @@ class StringToken extends ComparableToken {
 
   @override
   execute(val, {semantics}) {
-    return val[val.keys.toList()[0]];
+    return val[val.keys.first];
   }
 
   @override
@@ -29,7 +28,7 @@ class StringToken extends ComparableToken {
 
   @override
   encode(List args) {
-    // TODO: implement encode
-    throw UnimplementedError();
+    var val = args.removeLast();
+    return {String: val};
   }
 }

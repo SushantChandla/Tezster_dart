@@ -96,9 +96,10 @@ class PairToken extends ComparableToken {
 
   List<Token> _tokens() {
     var cnt = 0;
-    List data = [];
+    List<Token> data = [];
     this._args().forEach((a) {
-      Token tok = this.createToken(a, this.idx + cnt);
+      var m = MichelsonV1Expression.j(a);
+      Token tok = this.createToken(m, this.idx + cnt);
       if (tok.runtimeType == PairToken) {
         cnt += tok.extractSchema().keys.length;
       } else {
@@ -112,7 +113,7 @@ class PairToken extends ComparableToken {
   @override
   encodeObject(args) {
     var leftToken = this._tokens()[0];
-    var rightToken = this._tokens()[0];
+    var rightToken = this._tokens()[1];
 
     var leftValue;
     if (leftToken.runtimeType == PairToken && !leftToken.hasAnnotations()) {
@@ -138,7 +139,15 @@ class PairToken extends ComparableToken {
   }
 
   @override
-  toKey(String val) {
+  toKey(dynamic val) {
     return this.execute(val);
+  }
+
+  @override
+  encode(List args) {
+    return {
+      prim: 'Pair',
+      args: _tokens().map((t) => t.encode(args)),
+    };
   }
 }

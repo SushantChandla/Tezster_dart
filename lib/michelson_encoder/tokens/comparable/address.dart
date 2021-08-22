@@ -17,6 +17,8 @@ class AddressToken extends ComparableToken {
 
   @override
   execute(val, {semantics}) {
+    if (val is String) return val;
+
     if (val['string'] != null) {
       return val['string'];
     }
@@ -31,7 +33,7 @@ class AddressToken extends ComparableToken {
 
   @override
   encodeObject(val) {
-    var err = this._isValid(val);
+    var err = this._isValid(execute(val));
     if (err != null) {
       throw err;
     }
@@ -46,5 +48,15 @@ class AddressToken extends ComparableToken {
     }
 
     return encodePubKey(val);
+  }
+
+  @override
+  encode(List args) {
+    var val = args.removeLast();
+    var err = this._isValid(val);
+    if (err != null) {
+      throw err;
+    }
+    return {'string': val};
   }
 }

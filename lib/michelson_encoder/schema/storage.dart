@@ -34,11 +34,12 @@ class Schema {
       return true;
     }
     try {
-      this._root.encodeObject(val);
-      return true;
+      var x = this._root.encodeObject(val);
+      if (x != null) return true;
     } catch (ex) {
       return false;
     }
+    return false;
   }
 
   _isExpressionExtended(MichelsonV1Expression val) {
@@ -61,6 +62,73 @@ class Schema {
     var storage = _root.execute(val, semantics: semantics);
     var data = _removeTopLevelAnnotation(storage);
     return data;
+  }
+
+  findFirstInTopLevelPair<T extends MichelsonV1Expression>(storage, valueType) {
+    return _findValue(_root.val, storage, valueType);
+  }
+
+  _findValue(schema, storage, valueToFind) {
+    if (_deepEqual(valueToFind, schema)) {
+      return storage;
+    }
+
+    if (schema is List ||
+        (schema is MichelsonV1Expression && schema.prim == 'pair') ||
+        schema is Map && schema['prim'] == 'pair') {
+      var sch = collapse(schema);
+      var str = collapse(storage, prim: 'Pair');
+      // if (sch['args'] == null || str['args'] == null) {
+      //   throw new Exception('Tokens have no arguments'); // unlikely
+      // }
+      return _findValue(sch[0], str[0], valueToFind) ||
+          _findValue(sch[1], str[1], valueToFind);
+    }
+  }
+
+  _deepEqual(a, b) {
+    var ac1 = collapse(a);
+    var bc1 = collapse(b);
+    if (ac1 is List && bc1 is List) {
+      for (int i = 0; i < ac1.length; i++) {
+        var ac = ac1[i];
+        var bc = bc1[i];
+        if (!(ac['prim'] == bc['prim'] &&
+            (ac['args'] == null && bc['args'] == null ||
+                ac['args'] != null &&
+                    bc['args'] != null &&
+                    ac['args'].length == ac['args'].length &&
+                    allListEqual(ac['args'], bc['args']) &&
+                    (ac['annots'] == null && bc['annots'] == null ||
+                        ac['annots'] != null &&
+                            bc['annots'] != null &&
+                            ac['annots'].length == bc['annots'].length &&
+                            allListEqual(ac['annots'], bc['annots']))))) {
+          return false;
+        }
+      }
+      return true;
+    }
+    return false;
+    // else if (ac.runtimeType == bc.runtimeType) {
+    //   if (ac is List) {
+    //     if (ac.length != bc.length) return false;
+    //     for (int i = 0; i < ac.length; i++) {
+    //       if (ac[i] != bc[i]) {
+    //         return false;
+    //       }
+    //     }
+    //     return true;
+    //   }
+    // }
+    // return false;
+  }
+
+  bool allListEqual(List a, List b) {
+    for (int i = 0; i < a.length; i++) {
+      if (a[i] != b[i]) return false;
+    }
+    return true;
   }
 
   // static fromRPCResponse(ScriptResponse script) {

@@ -1,4 +1,3 @@
-
 import 'package:tezster_dart/michelson_encoder/michelson_expression.dart';
 import 'package:tezster_dart/michelson_encoder/tokens/token.dart';
 
@@ -8,17 +7,17 @@ class MutezToken extends ComparableToken {
 
   @override
   execute(val, {semantics}) {
-    return BigInt.parse((val[val.keys()[0]]));
+    return BigInt.parse(val[val.keys.first]);
   }
 
   @override
   encodeObject(val) {
     _isValid(val);
-    return {int: BigInt.parse(val).toString()};
+    return {int: BigInt.parse(val.toString()).toString()};
   }
 
   _isValid(val) {
-    var bigNumber = BigInt.tryParse(val);
+    var bigNumber = BigInt.tryParse(val.toString());
     if (bigNumber == null) {
       throw Exception('$val is not a number');
     } else {

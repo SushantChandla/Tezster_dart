@@ -11,6 +11,7 @@ import 'package:tezster_dart/michelson_encoder/tokens/comparable/nat.dart';
 import 'package:tezster_dart/michelson_encoder/tokens/comparable/string.dart';
 import 'package:tezster_dart/michelson_encoder/tokens/comparable/timestamp.dart';
 import 'package:tezster_dart/michelson_encoder/tokens/contract.dart';
+import 'package:tezster_dart/michelson_encoder/tokens/key.dart';
 import 'package:tezster_dart/michelson_encoder/tokens/lambda.dart';
 import 'package:tezster_dart/michelson_encoder/tokens/list.dart';
 import 'package:tezster_dart/michelson_encoder/tokens/map.dart';
@@ -89,6 +90,9 @@ createToken(MichelsonV1Expression val, int idx) {
       } else if (element == MutezToken) {
         objectType = "MutezToken";
         return MutezToken.prim == val.prim;
+      } else if (element == KeyToken) {
+        objectType = "KeyToken";
+        return KeyToken.prim == val.prim;
       }
 
       return false;
@@ -141,5 +145,7 @@ createToken(MichelsonV1Expression val, int idx) {
     return BoolToken(val, idx, createToken);
   } else if (objectType == "MutezToken") {
     return MutezToken(val, idx, createToken);
+  } else if (objectType == "KeyToken") {
+    return KeyToken(val, idx, createToken);
   }
 }

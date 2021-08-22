@@ -23,7 +23,8 @@ class HttpHelper {
     return reply;
   }
 
-  static Future<dynamic> performGetRequest(server, command) async {
+  static Future<dynamic> performGetRequest(server, command,
+      {bool responseJson = true}) async {
     HttpClient httpClient = new HttpClient();
     HttpClientRequest request =
         await httpClient.getUrl(Uri.parse('$server/$command'));
@@ -32,6 +33,7 @@ class HttpHelper {
       reply = await response.transform(utf8.decoder).join();
     });
     httpClient.close();
+    if (!responseJson) return reply;
     return jsonDecode(reply);
   }
 }

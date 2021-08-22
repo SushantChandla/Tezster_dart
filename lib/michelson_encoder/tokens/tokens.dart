@@ -12,6 +12,7 @@ import 'package:tezster_dart/michelson_encoder/tokens/comparable/nat.dart';
 import 'package:tezster_dart/michelson_encoder/tokens/comparable/string.dart';
 import 'package:tezster_dart/michelson_encoder/tokens/comparable/timestamp.dart';
 import 'package:tezster_dart/michelson_encoder/tokens/contract.dart';
+import 'package:tezster_dart/michelson_encoder/tokens/key.dart';
 import 'package:tezster_dart/michelson_encoder/tokens/lambda.dart';
 import 'package:tezster_dart/michelson_encoder/tokens/list.dart';
 import 'package:tezster_dart/michelson_encoder/tokens/map.dart';
@@ -44,4 +45,5 @@ List<Type> tokens = [
   IntToken,
   BoolToken,
   MutezToken,
+  KeyToken,
 ];

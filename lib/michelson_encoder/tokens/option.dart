@@ -28,7 +28,7 @@ class OptionToken extends ComparableToken {
 
   @override
   extractSchema() {
-     MichelsonV1Expression data = MichelsonV1Expression.j(val.args[0]);
+    MichelsonV1Expression data = MichelsonV1Expression.j(val.args[0]);
     var schema = this.createToken(data, 0);
     return schema.extractSchema();
   }
@@ -75,7 +75,24 @@ class OptionToken extends ComparableToken {
   }
 
   @override
-  toKey(String val) {
+  toKey(dynamic val) {
     this.execute(val);
+  }
+
+  @override
+  encode(args) {
+    var value = args;
+    if (value == null) {
+      return {prim: 'None'};
+    } else if (value is List && (value[value.length - 1] == null)) {
+      value.removeLast();
+      return {prim: 'None'};
+    }
+
+    var schema = this.createToken(this.val.args[0], 0);
+    return {
+      prim: 'Some',
+      args: [schema.Encode(args)]
+    };
   }
 }

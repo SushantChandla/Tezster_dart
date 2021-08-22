@@ -1,4 +1,4 @@
-
+import 'package:tezster_dart/michelson_encoder/helpers/constants.dart';
 import 'package:tezster_dart/michelson_encoder/michelson_expression.dart';
 import 'package:tezster_dart/michelson_encoder/tokens/token.dart';
 
@@ -14,29 +14,32 @@ class ListToken extends Token {
 
   ListToken(MichelsonV1Expression val, int idx, var fac) : super(val, idx, fac);
 
-  ListValidationError _isValid(dynamic value) {
-    if (value.runtimeType == List) {
-      return null;
+  List _isValid(dynamic value) {
+    if (value is List) {
+      return value;
     }
+    if (value is MichelsonV1Expression) return value.args;
 
-    return new ListValidationError(value, this, 'Value must be an array');
+    throw ListValidationError(value, this, 'Value must be an array');
   }
 
   @override
   execute(val, {semantics}) {
-    // MichelsonV1Expression michelsonV1Expression = MichelsonV1Expression();
-    // michelsonV1Expression.prim = this.val.args[0]['prim'];
-    // michelsonV1Expression.args = this.val.args[0]['args'];
-    // michelsonV1Expression.annots = this.val.args[0]['annots'];
-    var schema = this.createToken(this.val.args[0], 0);
+    MichelsonV1Expression michelsonV1Expression =
+        MichelsonV1Expression.j(this.val.args[0]);
+    var schema = this.createToken(michelsonV1Expression, 0);
 
-    var err = this._isValid(val);
-    if (err != null) {
-      throw err;
-    }
+    List v = this._isValid(val);
 
-    return val['reduce'](
-        (prev, current) => [...prev, schema.Execute(current, semantics)], []);
+    return v.reduce((prev, current) {
+      var temlist;
+      if (prev is Map) {
+        temlist = prev.values;
+      } else {
+        temlist = prev;
+      }
+      return [...temlist, schema.execute(current, semantics: semantics)];
+    });
   }
 
   @override
@@ -55,5 +58,20 @@ class ListToken extends Token {
 
     return args['reduce'](
         (prev, current) => [...prev, schema.encodeObject(current)], []);
+  }
+
+  @override
+  encode(List args) {
+    var val = args.removeLast();
+
+    var err = _isValid(val);
+    if (err != null) {
+      throw err;
+    }
+
+    var schema = this.createToken(this.val.args[0], 0);
+    return val.reduce((prev, current) {
+      return [...prev, schema.EncodeObject(current)];
+    }, []);
   }
 }

@@ -7,6 +7,9 @@ class IntToken extends ComparableToken {
 
   @override
   execute(val, {semantics}) {
+    if (val is MichelsonV1Expression) {
+      return BigInt.parse((val.jsonCopy[val.jsonCopy.keys.toList().first]));
+    }
     return BigInt.parse((val[val.keys.toList().first]));
   }
 

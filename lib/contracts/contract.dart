@@ -1,9 +1,6 @@
-import 'dart:convert';
-
-import 'package:tezster_dart/contracts/big-map.dart';
-import 'package:tezster_dart/contracts/sapling-state-abstraction.dart';
+import 'package:tezster_dart/contracts/big_map.dart';
+import 'package:tezster_dart/contracts/sapling_state_abstraction.dart';
 import 'package:tezster_dart/helper/http_helper.dart';
-import 'package:tezster_dart/helper/temp.dart';
 import 'package:tezster_dart/michelson_encoder/michelson_expression.dart';
 import 'package:tezster_dart/michelson_encoder/schema/storage.dart';
 
@@ -11,6 +8,8 @@ class Contract {
   String address;
   String rpcServer;
   Schema contractSchema;
+  Map script;
+  Map contractStorage;
   Contract({this.rpcServer, this.address})
       : assert(rpcServer != null),
         assert(address != null);
@@ -19,17 +18,14 @@ class Contract {
     String block = 'head',
     String chain = 'main',
   }) async {
-    var response = await HttpHelper.performGetRequest(rpcServer,
+    script = await HttpHelper.performGetRequest(rpcServer,
         "chains/$chain/blocks/$block/context/contracts/$address/script");
-    // var response = jsonDecode(code);
-    var schema = Schema.fromFromScript(response);
-
-    var storage = await HttpHelper.performGetRequest(rpcServer,
+    contractSchema = Schema.fromFromScript(script);
+    contractStorage = await HttpHelper.performGetRequest(rpcServer,
         "chains/$chain/blocks/$block/context/contracts/$address/storage");
-    // var storage = jsonDecode(storage_temp);
-    var storageResponse = MichelsonV1Expression(
-        prim: storage['prim'], args: storage['args'], annots: ['annots']);
-    return schema.execute(storageResponse, _smartContractAbstractionSemantic());
+    var storageResponse = MichelsonV1Expression.j(contractStorage);
+    return contractSchema.execute(
+        storageResponse, _smartContractAbstractionSemantic());
   }
 
   dynamic _smartContractAbstractionSemantic() {
@@ -50,5 +46,11 @@ class Contract {
         }
       }
     };
+  }
+
+  Future getSaplingDiffById(String id, {block = 'head', chain = 'main'}) async {
+    var saplingState = await HttpHelper.performGetRequest(
+        rpcServer, "chains/$chain/blocks/$block/context/sapling/$id/get_diff");
+    return saplingState;
   }
 }
