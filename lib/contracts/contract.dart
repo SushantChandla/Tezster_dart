@@ -18,14 +18,24 @@ class Contract {
     String block = 'head',
     String chain = 'main',
   }) async {
-    script = await HttpHelper.performGetRequest(rpcServer,
-        "chains/$chain/blocks/$block/context/contracts/$address/script");
-    contractSchema = Schema.fromFromScript(script);
-    contractStorage = await HttpHelper.performGetRequest(rpcServer,
-        "chains/$chain/blocks/$block/context/contracts/$address/storage");
+    await verifySchemaAndStorage(block: block, chain: chain);
     var storageResponse = MichelsonV1Expression.j(contractStorage);
     return contractSchema.execute(
         storageResponse, _smartContractAbstractionSemantic());
+  }
+
+  Future<bool> verifySchemaAndStorage({
+    String block = 'head',
+    String chain = 'main',
+  }) async {
+    if (contractSchema == null) {
+      script = await HttpHelper.performGetRequest(rpcServer,
+          "chains/$chain/blocks/$block/context/contracts/$address/script");
+      contractSchema = Schema.fromFromScript(script);
+    }
+    contractStorage = await HttpHelper.performGetRequest(rpcServer,
+        "chains/$chain/blocks/$block/context/contracts/$address/storage");
+    return true;
   }
 
   dynamic _smartContractAbstractionSemantic() {
@@ -35,7 +45,13 @@ class Contract {
         if (val == null || !val.containsKey('int') || val['int'] == null) {
           return {};
         } else {
-          return BigMapAbstraction(BigInt.from(double.parse(val['int'])));
+          return BigMapAbstraction(
+              BigInt.from(
+                double.parse(val['int']),
+              ),
+              code is MichelsonV1Expression
+                  ? Schema(code)
+                  : Schema(MichelsonV1Expression.j(code)));
         }
       },
       'sapling_state': (val) {
@@ -46,11 +62,5 @@ class Contract {
         }
       }
     };
-  }
-
-  Future getSaplingDiffById(String id, {block = 'head', chain = 'main'}) async {
-    var saplingState = await HttpHelper.performGetRequest(
-        rpcServer, "chains/$chain/blocks/$block/context/sapling/$id/get_diff");
-    return saplingState;
   }
 }

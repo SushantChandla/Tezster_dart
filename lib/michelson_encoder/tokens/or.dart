@@ -184,4 +184,12 @@ class OrToken extends ComparableToken {
       return null;
     }
   }
+
+  @override
+  Map toBigMapKey(val) {
+    return {
+      'key': this.encodeObject(val),
+      'type': typeWithoutAnnotations(val),
+    };
+  }
 }

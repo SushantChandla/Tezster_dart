@@ -23,7 +23,8 @@ class OptionToken extends ComparableToken {
     // data.prim = this.val.args[0]['prim'];
     // data.args = this.val.args[0]['args'];
     // data.annots = this.val.args[0]['annots'];
-    return this.createToken(val.args[0], this.idx);
+    var t = MichelsonV1Expression.j(val.args[0]);
+    return this.createToken(t, this.idx);
   }
 
   @override
@@ -95,4 +96,16 @@ class OptionToken extends ComparableToken {
       args: [schema.Encode(args)]
     };
   }
+
+
+
+
+  @override
+  Map toBigMapKey(val) {
+    return {
+      'key': encodeObject(val),
+      'type': typeWithoutAnnotations(val),
+    };
+  }
+
 }

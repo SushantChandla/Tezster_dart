@@ -40,7 +40,7 @@ collapse(var val, {String prim = 'pair'}) {
 }
 
 class PairToken extends ComparableToken {
-  static String prim = 'pair';
+  static const String prim = 'pair';
 
   PairToken(MichelsonV1Expression val, int idx, var fac)
       : super(val is List ? {'prim': PairToken.prim, 'args': val} : val, idx,
@@ -148,6 +148,14 @@ class PairToken extends ComparableToken {
     return {
       prim: 'Pair',
       args: _tokens().map((t) => t.encode(args)),
+    };
+  }
+
+  @override
+  Map toBigMapKey(val) {
+    return {
+      'key': this.encodeObject(val),
+      'type': this.typeWithoutAnnotations(val),
     };
   }
 }

@@ -25,7 +25,7 @@ class MichelsonMap<K, T> {
   }
 
   static isMichelsonMap(dynamic obj) {
-    return obj && obj.michelsonMapTypeSymbol == true;
+    return obj != null && obj.michelsonMapTypeSymbol == true;
   }
 
   _typecheckKey(K key) {
@@ -82,14 +82,14 @@ class MichelsonMap<K, T> {
   }
 
   Iterable<K> keys() sync* {
-    for (var data in this.entries()) {
-      yield data[0];
+    for (var key in _keyMap.values) {
+      yield key;
     }
   }
 
   Iterable<T> values() sync* {
-    for (var data in this.entries()) {
-      yield data[1];
+    for (var data in _valueMap.values) {
+      yield data;
     }
   }
 
@@ -99,9 +99,9 @@ class MichelsonMap<K, T> {
     }
   }
 
-  get(K key) {
+  get(K key, [String encodedKey]) {
     this._assertTypecheckKey(key);
-
+    if (encodedKey != null) return _valueMap[encodedKey];
     var strKey = this.serializeDeterministically(key);
     return this._valueMap[strKey];
   }

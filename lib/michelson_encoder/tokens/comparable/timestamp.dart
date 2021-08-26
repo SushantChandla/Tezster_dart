@@ -33,7 +33,15 @@ class TimestampToken extends ComparableToken {
 
   @override
   encode(List args) {
-    // TODO: implement encode
-    throw UnimplementedError();
+    var val = args.removeLast();
+    return { 'string': val };
+  }
+
+  @override
+  Map toBigMapKey(val) {
+    return {
+      'key': { 'string': val },
+      'type': { 'prim': TimestampToken.prim },
+    };
   }
 }

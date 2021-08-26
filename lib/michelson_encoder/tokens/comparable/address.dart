@@ -1,3 +1,4 @@
+import 'package:tezster_dart/contracts/utils/utils.dart';
 import 'package:tezster_dart/michelson_encoder/helpers/utils.dart';
 import 'package:tezster_dart/michelson_encoder/helpers/validators.dart';
 import 'package:tezster_dart/michelson_encoder/tokens/token.dart';
@@ -58,5 +59,14 @@ class AddressToken extends ComparableToken {
       throw err;
     }
     return {'string': val};
+  }
+
+  @override
+  Map toBigMapKey(val) {
+    var t = b58decode(val);
+    return {
+      'key': {'bytes': t},
+      'type': {'prim': 'bytes'},
+    };
   }
 }

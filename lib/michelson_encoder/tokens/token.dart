@@ -1,3 +1,4 @@
+import 'package:flutter/material.dart';
 import 'package:tezster_dart/michelson_encoder/michelson_expression.dart';
 
 class TokenValidationError implements Exception {
@@ -22,6 +23,19 @@ abstract class Token {
     this.idx = idx;
     this.fac = fac;
     this.createToken = this.fac;
+  }
+  typeWithoutAnnotations(val) {
+    if (val.args != null) {
+      return {
+        'prim': val.prim,
+        'args': val.args
+            .map((x) => typeWithoutAnnotations(MichelsonV1Expression.j(x))),
+      };
+    } else {
+      return {
+        'prim': val.prim,
+      };
+    }
   }
 
   extractSignature() {
@@ -64,9 +78,9 @@ abstract class ComparableToken extends Token {
     if (o1 == o2) {
       return 0;
     }
-
     return o1 < o2 ? -1 : 1;
   }
 
+  Map toBigMapKey(dynamic val);
   dynamic toKey(dynamic val);
 }

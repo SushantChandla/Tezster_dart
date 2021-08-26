@@ -20,7 +20,7 @@ class BytesToken extends ComparableToken {
   }
 
   _convertUint8ArrayToHexString(val) {
-    return val.constructor == Uint8List ? hex.encode(val) : val;
+    return val is  Uint8List ? hex.encode(val) : val;
   }
 
   @override
@@ -54,9 +54,25 @@ class BytesToken extends ComparableToken {
     return val;
   }
 
+ 
   @override
   encode(List args) {
-    // TODO: implement encode
-    throw UnimplementedError();
+    var val = args.removeLast();
+
+    var t = _convertUint8ArrayToHexString(val);
+    var err = _isValid(t);
+    if (err!=null) {
+      throw err;
+    }
+
+    return { 'bytes': t.toString() };
+  }
+
+  @override
+  Map toBigMapKey(val) {
+      return {
+      'key': { 'bytes': val },
+      'type': { 'prim': BytesToken.prim },
+    };
   }
 }

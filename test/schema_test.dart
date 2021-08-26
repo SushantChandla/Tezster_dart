@@ -14,7 +14,11 @@ void main() {
         if (val == null || !val.containsKey('int') || val['int'] == null) {
           return {};
         } else {
-          return BigMapAbstraction(BigInt.from(double.parse(val['int'])));
+          return BigMapAbstraction(
+              BigInt.from(double.parse(val['int'])),
+              code is MichelsonV1Expression
+                  ? Schema(code)
+                  : Schema(MichelsonV1Expression.j(code)));
         }
       },
       'sapling_state': (val) {

@@ -7,17 +7,17 @@ import 'package:tezster_dart/contracts/tzip16/handlers/tesoz-storage-handler.dar
 import 'package:tezster_dart/contracts/tzip16/metadata-provider.dart';
 import 'package:tezster_dart/contracts/tzip16/viewKind/viewFactory.dart';
 import 'package:tezster_dart/contracts/utils/utils.dart';
-import 'package:tezster_dart/michelson_encoder/michelson_expression.dart';
+import 'package:tezster_dart/michelson_encoder/schema/storage.dart';
 
-var metadataBigMapType = MichelsonV1Expression()
-  ..prim = 'big_map'
-  ..annots = ['%metadata']
-  ..args = [
+var _metadataBigMapType = {
+  'prim': 'big_map',
+  'annots': ['%metadata'],
+  'args': [
     {'prim': 'string'},
     {'prim': 'bytes'}
-  ];
-
-var defaultHandler = {
+  ]
+};
+var _defaultHandler = {
   'http': HttpHandler(),
   'https': HttpHandler(),
   'tezos-storage': TezosStorageHandler(),
@@ -25,74 +25,76 @@ var defaultHandler = {
 };
 
 class Tzip16Contract extends Contract {
-  MetadataProvider _metadataProvider;
-  MetadataEnvelope _metadataEnvelope;
+  MetadataProvider metadataProvider;
+  Map _metadataEnvelope;
   ViewFactory _viewFactory = new ViewFactory();
   dynamic _metadataViewsObject = {};
   Tzip16Contract(
-      {String rpc, String contract, MetadataProvider metadataProviderInterface})
-      : _metadataProvider =
-            metadataProviderInterface ?? MetadataProvider(defaultHandler),
-        super(address: contract, rpcServer: rpc);
+      {String rpcServer,
+      String address,
+      MetadataProvider metadataProviderInterface})
+      : metadataProvider =
+            metadataProviderInterface ?? MetadataProvider(_defaultHandler),
+        super(address: address, rpcServer: rpcServer);
 
-  BigMapAbstraction findMetadataBigMap() {
+  BigMapAbstraction _findMetadataBigMap() {
     var metadataBigMapId = contractSchema.findFirstInTopLevelPair(
-        contractStorage, metadataBigMapType);
+        contractStorage, _metadataBigMapType);
 
-    if (!metadataBigMapId) {
+    if (metadataBigMapId == null) {
       throw new BigMapMetadataNotFound();
     }
 
-    return new BigMapAbstraction(
-      BigInt.tryParse(metadataBigMapId['int']),
-    );
+    return BigMapAbstraction(
+        BigInt.tryParse(metadataBigMapId['int']), Schema(typeOfValueToFind));
   }
 
   getMetadata() async {
-    if (this._metadataProvider == null) {
+    await verifySchemaAndStorage();
+    if (this.metadataProvider == null) {
       throw new UnconfiguredMetadataProviderError();
     }
     if (this._metadataEnvelope == null) {
-      var uri = await this.getUriOrFail();
+      var uri = await this._getUriOrFail();
       this._metadataEnvelope =
-          await this._metadataProvider.provideMetadata(bytes2Char(uri), this);
+          await this.metadataProvider.provideMetadata(bytes2Char(uri), this);
     }
     return this._metadataEnvelope;
   }
 
   metadataViews() async {
-    if (this._metadataViewsObject.keys().length == 0) {
-      await initializeMetadataViewsList();
+    if (this._metadataViewsObject.keys.length == 0) {
+      await _initializeMetadataViewsList();
     }
     return this._metadataViewsObject;
   }
 
-  initializeMetadataViewsList() async {
-    MetadataEnvelope t = await this.getMetadata();
-    var metadata = t.metadata;
+  _initializeMetadataViewsList() async {
+    Map t = await this.getMetadata();
+    var metadata = t['metadata'];
     var metadataViews = {};
-    metadata.views.fold(
-        t, (t, view) => this.createViewImplementations(view, metadataViews));
+    if (metadata['views'] != null) {
+      metadata['views'].forEach(
+          (view) => this._createViewImplementations(view, metadataViews));
+    }
     this._metadataViewsObject = metadataViews;
   }
 
-  generateIndexedViewName(viewName, metadataViews) {
+  _generateIndexedViewName(viewName, Map metadataViews) {
     var i = 1;
-
-    // TODO;
-    // if (viewName in metadataViews) {
-    //     while (viewName in metadataViews) {
-    //         i++;
-    //     }
-    //     viewName = '${viewName}${i}';
-    // }
+    if (metadataViews.containsKey(viewName)) {
+      while (metadataViews.containsKey('$viewName$i')) {
+        i++;
+      }
+      viewName = '$viewName$i';
+    }
     return viewName;
   }
 
-  MetadataEnvelope createViewImplementations(view, metadataViews) {
+  Map _createViewImplementations(view, metadataViews) {
     for (var viewImplementation in view?.implementations ?? []) {
       if (view.name) {
-        var viewName = this.generateIndexedViewName(view.name, metadataViews);
+        var viewName = this._generateIndexedViewName(view.name, metadataViews);
         var metadataView =
             this._viewFactory.getView(viewName, viewImplementation);
         if (metadataView) {
@@ -105,9 +107,9 @@ class Tzip16Contract extends Contract {
     }
   }
 
-  getUriOrFail() async {
-    BigMapAbstraction metadataBigMap = this.findMetadataBigMap();
-    var uri = await metadataBigMap.get('', contractSchema);
+  _getUriOrFail() async {
+    BigMapAbstraction metadataBigMap = _findMetadataBigMap();
+    var uri = await metadataBigMap.get(rpcServer, '');
     if (uri == null) {
       throw new UriNotFound();
     }

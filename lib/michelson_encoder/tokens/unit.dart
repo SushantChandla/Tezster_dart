@@ -29,4 +29,12 @@ class UnitToken extends ComparableToken {
   encode(args) {
     return {prim: 'Unit'};
   }
+
+  @override
+  Map toBigMapKey(val) {
+    return {
+      'key': {'prim': 'Unit'},
+      'type': {'prim': UnitToken.prim},
+    };
+  }
 }

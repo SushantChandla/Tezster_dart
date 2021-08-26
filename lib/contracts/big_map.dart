@@ -1,10 +1,18 @@
+import 'dart:convert';
+
+import 'package:tezster_dart/contracts/sapling_state_abstraction.dart';
+import 'package:tezster_dart/contracts/utils/utils.dart';
+import 'package:tezster_dart/helper/http_helper.dart';
+import 'package:tezster_dart/michelson_encoder/michelson_expression.dart';
 import 'package:tezster_dart/michelson_encoder/schema/storage.dart';
 
 class BigMapAbstraction {
   BigInt id;
-  BigMapAbstraction(BigInt id) {
+  BigMapAbstraction(BigInt id, Schema schema) {
     this.id = id;
+    this._bigMapSchema = schema;
   }
+  Schema _bigMapSchema;
 
   toJSON() {
     return this.id.toString();
@@ -14,29 +22,73 @@ class BigMapAbstraction {
     return this.id.toString();
   }
 
-  get<T>(keyToEncode, Schema schema, {block}) async {
+  get<T>(rpc, keyToEncode, {block}) async {
     try {
-      var id = await getBigMapKeyByID(this.id.toString(), keyToEncode, schema,
-          block: block);
+      var id = await getBigMapKeyByID(rpc, keyToEncode, block: block);
       return id;
     } catch (e) {
-      if (e.status == 404) {
+      if (e is Map && e['status'] == 404) {
         return null;
       } else {
-        throw e;
+        throw Exception('Error $e');
       }
     }
   }
 
-  static getBigMapKeyByID(id, keyToEncode, schema, {block}) async {
-    var _key = schema.EncodeBigMapKey(keyToEncode).key;
-    var _type = schema.EncodeBigMapKey(keyToEncode).type;
-    // var packed  = await this.context. .packData({ data: key, type });
+  getBigMapKeyByID(String rpc, keyToEncode, {block}) async {
+    var _key = _bigMapSchema.encodeBigMapKey(keyToEncode)['key'];
+    var _type = _bigMapSchema.encodeBigMapKey(keyToEncode)['type'];
+    var res = await _packData(rpc, {'data': _key, 'type': _type});
+    var encodedExpr = encodeExpr(res['packed']);
 
-    // const encodedExpr = encodeExpr(packed);
+    var bigMapValue = await _getBigMapExpr(rpc, encodedExpr);
 
-    // const bigMapValue = block? await this.context.rpc.getBigMapExpr(id.toString(), encodedExpr, { block: String(block) }) : await this.context.rpc.getBigMapExpr(id.toString(), encodedExpr);
-
-    // return schema.ExecuteOnBigMapValue(bigMapValue, smartContractAbstractionSemantic(this)) as T;
+    return _bigMapSchema.executeOnBigMapValue(
+        bigMapValue, _smartContractAbstractionSemantic()['big_map']);
   }
+
+  _packData(rpc, data, {block = 'head', chain = 'main'}) async {
+    dynamic r = await HttpHelper.performPostRequest(
+        rpc, '/chains/$chain/blocks/$block/helpers/scripts/pack_data', data,
+        headers: {});
+    r = jsonDecode(r);
+    dynamic formattedGas = r['gas'];
+    var tryBigInt = BigInt.tryParse(formattedGas);
+    if (tryBigInt != null) {
+      formattedGas = tryBigInt;
+    }
+    r['gas'] = formattedGas;
+    return r;
+  }
+
+  _getBigMapExpr(rpc, expr, {block = 'head', chain = 'main'}) async {
+    return HttpHelper.performGetRequest(
+        rpc, '/chains/$chain/blocks/$block/context/big_maps/$id/$expr');
+  }
+}
+
+dynamic _smartContractAbstractionSemantic() {
+  return {
+    'big_map': (val, code) {
+      if (val is MichelsonV1Expression) return {};
+      if (val == null || !val.containsKey('int') || val['int'] == null) {
+        return {};
+      } else {
+        return BigMapAbstraction(
+            BigInt.from(
+              double.parse(val['int']),
+            ),
+            code is MichelsonV1Expression
+                ? Schema(code)
+                : Schema(MichelsonV1Expression.j(code)));
+      }
+    },
+    'sapling_state': (val) {
+      if (val == null || !val.containsKey('int') || val['int'] == null) {
+        return {};
+      } else {
+        return SaplingStateAbstraction(val['int']);
+      }
+    }
+  };
 }

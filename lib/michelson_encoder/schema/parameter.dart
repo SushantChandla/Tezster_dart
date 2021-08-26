@@ -2,6 +2,7 @@ import 'package:tezster_dart/michelson_encoder/michelson_expression.dart';
 import 'package:tezster_dart/michelson_encoder/tokens/createToken.dart';
 import 'package:tezster_dart/michelson_encoder/tokens/option.dart';
 import 'package:tezster_dart/michelson_encoder/tokens/or.dart';
+import 'package:tezster_dart/michelson_encoder/tokens/pair.dart';
 import 'package:tezster_dart/michelson_encoder/tokens/token.dart';
 
 class ParameterSchema {

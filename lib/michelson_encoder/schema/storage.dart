@@ -5,8 +5,6 @@ import 'package:tezster_dart/michelson_encoder/tokens/or.dart';
 import 'package:tezster_dart/michelson_encoder/tokens/pair.dart';
 import 'package:tezster_dart/michelson_encoder/tokens/token.dart';
 
-var schemaTypeSymbol = Symbol('schema-type-symbol');
-
 class Schema {
   Token _root;
   BigMapToken _bigMap;
@@ -19,7 +17,7 @@ class Schema {
 
   Schema(MichelsonV1Expression val) {
     _root = createToken(val, 0);
-    if (_root.runtimeType == BigMapToken) {
+    if (_root is BigMapToken) {
       _bigMap = _root as BigMapToken;
     } else if (_isExpressionExtended(val) && val.prim == 'pair') {
       var exp = val.args[0];
@@ -65,88 +63,74 @@ class Schema {
   }
 
   findFirstInTopLevelPair<T extends MichelsonV1Expression>(storage, valueType) {
-    return _findValue(_root.val, storage, valueType);
+    return _findValuei(_root.val.jsonCopy, storage, valueType);
   }
 
-  _findValue(schema, storage, valueToFind) {
-    if (_deepEqual(valueToFind, schema)) {
+  _findValuei(schema, storage, valuetoFind) {
+    if (_deepEqualc(schema, valuetoFind)) {
       return storage;
     }
-
-    if (schema is List ||
-        (schema is MichelsonV1Expression && schema.prim == 'pair') ||
-        schema is Map && schema['prim'] == 'pair') {
-      var sch = collapse(schema);
-      var str = collapse(storage, prim: 'Pair');
-      // if (sch['args'] == null || str['args'] == null) {
-      //   throw new Exception('Tokens have no arguments'); // unlikely
-      // }
-      return _findValue(sch[0], str[0], valueToFind) ||
-          _findValue(sch[1], str[1], valueToFind);
-    }
-  }
-
-  _deepEqual(a, b) {
-    var ac1 = collapse(a);
-    var bc1 = collapse(b);
-    if (ac1 is List && bc1 is List) {
-      for (int i = 0; i < ac1.length; i++) {
-        var ac = ac1[i];
-        var bc = bc1[i];
-        if (!(ac['prim'] == bc['prim'] &&
-            (ac['args'] == null && bc['args'] == null ||
-                ac['args'] != null &&
-                    bc['args'] != null &&
-                    ac['args'].length == ac['args'].length &&
-                    allListEqual(ac['args'], bc['args']) &&
-                    (ac['annots'] == null && bc['annots'] == null ||
-                        ac['annots'] != null &&
-                            bc['annots'] != null &&
-                            ac['annots'].length == bc['annots'].length &&
-                            allListEqual(ac['annots'], bc['annots']))))) {
-          return false;
-        }
+    if (schema is List || schema['prim'] == 'pair') {
+      if (schema['args'] == null && storage['args'] == null) {
+        throw new Exception('Tokens have no arguments');
       }
-      return true;
+      var sch = collapsec(schema);
+      var str = collapsec(storage, prim: 'Pair');
+      var s = _findValuei(sch['args'][0], str['args'][0], valuetoFind);
+      if (s != null) return s;
+      if (sch['args'].length >= 2 && str['args'].length >= 2) {
+        var j = _findValuei(sch['args'][1], str['args'][1], valuetoFind);
+        if (j != null) return j;
+      }
+      return null;
     }
-    return false;
-    // else if (ac.runtimeType == bc.runtimeType) {
-    //   if (ac is List) {
-    //     if (ac.length != bc.length) return false;
-    //     for (int i = 0; i < ac.length; i++) {
-    //       if (ac[i] != bc[i]) {
-    //         return false;
-    //       }
-    //     }
-    //     return true;
-    //   }
-    // }
-    // return false;
   }
+
+  // _findValue(schema, storage, valueToFind) {
+  //   if (_deepEqual(valueToFind, schema)) {
+  //     return storage;
+  //   }
+
+  //   if (schema is List ||
+  //       (schema is MichelsonV1Expression && schema.prim == 'pair') ||
+  //       schema is Map && schema['prim'] == 'pair') {
+  //     MichelsonV1Expression sch = collapse(schema);
+  //     MichelsonV1Expression str = collapse(storage, prim: 'Pair');
+  //     if (sch.args == null || str.args == null) {
+  //       throw new Exception('Tokens have no arguments'); // unlikely
+  //     }
+  //     var s = _findValue(sch.args[0], str.args[0], valueToFind);
+  //     if (s != null) return s;
+  //     if (sch.args.length >= 2 && str.args.length >= 2) {
+  //       var j = _findValue(sch.args[1], str.args[1], valueToFind);
+  //       if (j != null) return j;
+  //     }
+  //     return null;
+  //   }
+  // }
+
+  // _deepEqual(a, b) {
+  //   var ac = collapse(a);
+  //   var bc = collapse(b);
+  //   return ac.prim == bc.prim &&
+  //       (ac.args == null && bc.args == null ||
+  //           ac.args != null &&
+  //               bc.args != null &&
+  //               ac.args.length == bc.args.length &&
+  //               allListEqual(ac.args, bc.args) &&
+  //               (ac.annots == null && bc.annots == null ||
+  //                   ac.annots != null &&
+  //                       bc.annots != null &&
+  //                       ac.annots.length == bc.annots.length &&
+  //                       allListEqual(ac.annots, bc.annots)));
+  // }
 
   bool allListEqual(List a, List b) {
     for (int i = 0; i < a.length; i++) {
-      if (a[i] != b[i]) return false;
+      if (a[i].toString() != b[i].toString()) return false;
     }
     return true;
   }
-
-  // static fromRPCResponse(ScriptResponse script) {
-  //   var storage;
-  //   if (script != null) {
-  //     storage =
-  //         script.code.firstWhere((element) => element['prim'] == 'storage');
-  //   }
-  //   if (storage == null) {
-  //     throw new Exception("Invalid rpc response passed as arguments");
-  //   }
-
-  //   MichelsonV1Expression data = MichelsonV1Expression();
-  //   data.prim = storage['args'][0]['prim'];
-  //   data.args = storage['args'][0]['args'];
-
-  //   return Schema(data);
-  // }
 
   static fromFromScript(Map<String, dynamic> script) {
     if (!script.containsKey('code')) {
@@ -168,6 +152,72 @@ class Schema {
       throw Exception("No big map schema");
     }
 
-    return this._bigMap.valueSchema.execute(key, semantics);
+    return this._bigMap.valueSchema.execute(key, semantics: semantics);
+  }
+
+  // collapse(val, {prim = PairToken.prim}) {
+  //   if (val is List) {
+  //     return collapse({'prim': prim, 'args': val}, prim: prim);
+  //   }
+  //   if (val is Map) {
+  //     if (val['args'] != null) return MichelsonV1Expression.j(val);
+
+  //     return collapse(MichelsonV1Expression(
+  //       prim: prim,
+  //       args: val.values.toList(),
+  //     ));
+  //   }
+
+  //   if (val.prim == prim && val.args.length > 2) {
+  //     return val
+  //       ..args = [
+  //         val.args[0],
+  //         {'prim': prim, 'args': (val.args as List).sublist(1)}
+  //       ];
+  //   }
+  //   return val;
+  // }
+
+  _deepEqualc(a, b) {
+    return a['prim'] == b['prim'] &&
+        (a['args'] == null && b['args'] == null ||
+            a['args'] != null &&
+                b['args'] != null &&
+                a['args'].length == b['args'].length &&
+                allListEqual(a['args'], b['args']) &&
+                (a['annots'] == null && b['annots'] == null ||
+                    a['annots'] != null &&
+                        b['annots'] != null &&
+                        a['annots'].length == b['annots'].length &&
+                        allListEqual(a['annots'], b['annots'])));
+  }
+
+  collapsec(val, {prim = PairToken.prim}) {
+    if (val is List) {
+      return collapse(
+        {'prim': prim, 'args': val},
+      );
+    }
+    if (val['prim'] == prim && val['args'].length > 2) {
+      var t = val;
+      t['args'] = [
+        val['args'][0],
+        {'prim': prim, 'args': (val['args'] as List).sublist(1)}
+      ];
+      return t;
+    }
+    return val;
+  }
+
+  encodeBigMapKey(key) {
+    if (_bigMap == null) {
+      throw new Exception('No big map schema');
+    }
+
+    try {
+      return _bigMap.keySchema.toBigMapKey(key);
+    } catch (ex) {
+      throw new Exception('Unable to encode big map key: ' + ex);
+    }
   }
 }

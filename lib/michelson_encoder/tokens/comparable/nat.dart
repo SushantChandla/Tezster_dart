@@ -62,4 +62,12 @@ class NatToken extends ComparableToken {
 
     return {int: BigInt.from(val)};
   }
+
+  @override
+  Map toBigMapKey(val) {
+    return {
+      'key': {'int': val.toString()},
+      'type': {'prim': NatToken.prim},
+    };
+  }
 }

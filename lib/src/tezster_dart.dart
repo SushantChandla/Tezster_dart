@@ -15,6 +15,9 @@ import 'package:tezster_dart/chain/tezos/tezos_message_utils.dart';
 import 'package:tezster_dart/chain/tezos/tezos_node_reader.dart';
 import 'package:tezster_dart/chain/tezos/tezos_node_writer.dart';
 import 'package:tezster_dart/contracts/contract.dart';
+import 'package:tezster_dart/contracts/contractType.dart';
+import 'package:tezster_dart/contracts/tzip12/tzip12_contract.dart';
+import 'package:tezster_dart/contracts/tzip16/tzip16-contract.dart';
 import 'package:tezster_dart/helper/constants.dart';
 import 'package:tezster_dart/helper/http_helper.dart';
 import 'package:tezster_dart/reporting/tezos/tezos_conseil_client.dart';
@@ -24,7 +27,6 @@ import 'package:tezster_dart/types/tezos/tezos_chain_types.dart';
 import 'package:tezster_dart/utils/sodium_utils.dart';
 import "package:unorm_dart/unorm_dart.dart" as unorm;
 import 'package:flutter_sodium/flutter_sodium.dart';
-
 import 'package:tezster_dart/helper/generateKeys.dart';
 
 class TezsterDart {
@@ -365,9 +367,15 @@ class TezsterDart {
         block: 'head', chainid: 'main');
   }
 
-  static Contract getContract(String rpcServer, String address) {
+  static Contract getContract(String rpcServer, String address,
+      {ContractType contractType = ContractType.DEFAULT}) {
     assert(rpcServer != null);
     assert(address != null);
+    assert(contractType != null);
+    if (contractType == ContractType.Tzip12)
+      return Tzip12Contract(rpcServer: rpcServer, address: address);
+    if (contractType == ContractType.Tzip16)
+      return Tzip16Contract(rpcServer: rpcServer, address: address);
     return Contract(rpcServer: rpcServer, address: address);
   }
 }

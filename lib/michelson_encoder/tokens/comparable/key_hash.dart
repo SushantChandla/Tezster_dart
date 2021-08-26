@@ -1,5 +1,3 @@
-
-
 import 'package:tezster_dart/michelson_encoder/helpers/utils.dart';
 import 'package:tezster_dart/michelson_encoder/helpers/validators.dart';
 import 'package:tezster_dart/michelson_encoder/tokens/token.dart';
@@ -50,15 +48,22 @@ class KeyHashToken extends ComparableToken {
   }
 
   @override
-   encode(List args) {
+  encode(List args) {
     var val = args.removeLast();
 
     var err = this._isValid(val);
-    if (err!=null) {
+    if (err != null) {
       throw err;
     }
 
-    return { String: val };
+    return {String: val};
   }
 
+  @override
+  Map toBigMapKey(val) {
+    return {
+      'key': {'string': val},
+      'type': {'prim': KeyHashToken.prim},
+    };
+  }
 }

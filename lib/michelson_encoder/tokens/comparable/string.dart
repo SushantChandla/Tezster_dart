@@ -31,4 +31,12 @@ class StringToken extends ComparableToken {
     var val = args.removeLast();
     return {String: val};
   }
+
+  @override
+  Map toBigMapKey(val) {
+    return {
+      'key': {'string': val},
+      'type': {'prim': StringToken.prim},
+    };
+  }
 }

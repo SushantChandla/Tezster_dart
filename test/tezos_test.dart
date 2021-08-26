@@ -1,4 +1,6 @@
 import 'package:flutter_test/flutter_test.dart';
+import 'package:tezster_dart/contracts/contractType.dart';
+import 'package:tezster_dart/contracts/tzip12/tzip12_contract.dart';
 import 'package:tezster_dart/contracts/tzip16/tzip16-contract.dart';
 import 'package:tezster_dart/tezster_dart.dart';
 
@@ -114,11 +116,26 @@ void main() {
     print(x);
   });
 
-  test('Tzip 16 metadata test', () async {
-    var tzip16Contract = Tzip16Contract(
-        contract: 'KT1RJ6PbjHpwc3M5rw5s2Nbmefwbuwbdxton',
-        rpc: 'https://mainnet.tezster.tech/');
-    await tzip16Contract.getStorage();
-    var meteData = await tzip16Contract.getMetadata();
+  test('Tzip 12 metadata test', () async {
+    Tzip12Contract tzip12Contract = TezsterDart.getContract(
+        'https://mainnet.api.tez.ie', 'KT1RJ6PbjHpwc3M5rw5s2Nbmefwbuwbdxton',
+        contractType: ContractType.Tzip12);
+    var metaData = await tzip12Contract.getMetadata();
+    print(metaData);
+  });
+
+  test('Tzip 16 metadata View test', () async {
+    Tzip16Contract tzip16Contract = TezsterDart.getContract(
+        'https://mainnet.api.tez.ie', 'KT1StkBRUfJD9AuHAE4oQVi49qLQhsgeDcU1',
+        contractType: ContractType.Tzip16);
+    var metaView = await tzip16Contract.metadataViews();
+    print(metaView);
+  });
+
+  test('Tzip 12 Token Id test', () async {
+    var tzip12Contract = Tzip12Contract(
+        address: 'KT1RJ6PbjHpwc3M5rw5s2Nbmefwbuwbdxton',
+        rpcServer: 'https://mainnet.api.tez.ie');
+    print(await tzip12Contract.getTokenMetadata(1392));
   });
 }
