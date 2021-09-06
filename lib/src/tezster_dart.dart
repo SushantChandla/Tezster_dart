@@ -24,12 +24,16 @@ import 'package:tezster_dart/reporting/tezos/tezos_conseil_client.dart';
 import 'package:tezster_dart/src/soft-signer/soft_signer.dart';
 import 'package:tezster_dart/tezster_dart.dart';
 import 'package:tezster_dart/types/tezos/tezos_chain_types.dart';
-import 'package:tezster_dart/utils/sodium_utils.dart';
 import "package:unorm_dart/unorm_dart.dart" as unorm;
-import 'package:flutter_sodium/flutter_sodium.dart';
 import 'package:tezster_dart/helper/generateKeys.dart';
+import 'package:tezster_dart/utils/sodium_utils.dart';
+
+import 'package:tezster_dart/utils/sodium_stub.dart'
+    if (dart.library.io) 'package:tezster_dart/utils/sodium_utils_io.dart'
+    if (dart.library.html) 'package:tezster_dart/utils/sodium_utils_web.dart';
 
 class TezsterDart {
+  static final _sodium = getSodium();
   static String generateMnemonic({int strength = 256}) {
     return bip39.generateMnemonic(strength: strength);
   }
@@ -40,7 +44,7 @@ class TezsterDart {
     assert(mnemonic != null);
     Uint8List seed = bip39.mnemonicToSeed(mnemonic);
     Uint8List seedLength32 = seed.sublist(0, 32);
-    KeyPair keyPair = Sodium.cryptoSignSeedKeypair(seedLength32);
+    KeyPair keyPair = _sodium.cryptoSignSeedKeypair(seedLength32);
     String skKey = GenerateKeys.readKeysWithHint(keyPair.sk, '2bf64e07');
     String pkKey = GenerateKeys.readKeysWithHint(keyPair.pk, '0d0f25d9');
     String pkKeyHash = GenerateKeys.computeKeyHash(keyPair.pk);
@@ -77,7 +81,7 @@ class TezsterDart {
     if (derivationPath != null && derivationPath.length > 0) {
       KeyData keysource = ED25519_HD_KEY.derivePath(derivationPath, seed);
       var combinedKey = Uint8List.fromList(keysource.key + keysource.chainCode);
-      keys = SodiumUtils.publicKey(combinedKey);
+      keys = _sodium.publicKey(combinedKey);
     } else {
       return await _unlockKeys(mnemonic: mnemonic, passphrase: password);
     }
@@ -95,7 +99,7 @@ class TezsterDart {
 
   static List<String> getKeysFromSecretKey(String skKey) {
     Uint8List secretKeyBytes = GenerateKeys.writeKeyWithHint(skKey, 'edsk');
-    KeyPair keys = SodiumUtils.publicKey(secretKeyBytes);
+    KeyPair keys = _sodium.publicKey(secretKeyBytes);
     String pkKey = TezosMessageUtils.readKeyWithHint(keys.pk, 'edpk');
     String pkKeyHash = GenerateKeys.computeKeyHash(keys.pk);
     return [skKey, pkKey, pkKeyHash];
@@ -130,7 +134,7 @@ class TezsterDart {
     List<int> pkB = List.from(privateKeyBytes);
     pkB.removeRange(0, 4);
     Uint8List finalPKb = Uint8List.fromList(pkB);
-    Uint8List value = Sodium.cryptoSignDetached(
+    Uint8List value = _sodium.cryptoSignDetached(
       hashedWatermarkedOpBytes,
       finalPKb,
     );
@@ -162,7 +166,7 @@ class TezsterDart {
     String normString = String.fromCharCodes(normalizedPassphrase);
     String p = "mnemonic" + normString;
     Uint8List seed = PBKDF2(hashAlgorithm: sha512).generateKey(m, p, 2048, 32);
-    KeyPair keyPair = Sodium.cryptoSignSeedKeypair(seed);
+    KeyPair keyPair = _sodium.cryptoSignSeedKeypair(seed);
     String skKey = GenerateKeys.readKeysWithHint(keyPair.sk, '2bf64e07');
     String pkKey = GenerateKeys.readKeysWithHint(keyPair.pk, '0d0f25d9');
     String pkKeyHash = GenerateKeys.computeKeyHash(keyPair.pk);
