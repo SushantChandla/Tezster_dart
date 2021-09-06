@@ -32,6 +32,17 @@ Tezos is a decentralized blockchain that governs itself by establishing a true d
 
 Check out the [example](https://github.com/Tezsure/tezster_dart/tree/master/example) directory for a sample app for using Tezster_dart.
 
+### Web setup
+
+Download the sodium.js file from [https://raw.githubusercontent.com/jedisct1/libsodium.js/master/dist/browsers-sumo/sodium.js](https://raw.githubusercontent.com/jedisct1/libsodium.js/master/dist/browsers-sumo/sodium.js)
+
+and add it to you flutter web directory. Then in your web/index.html add  
+```html
+<script src="sodium.js"></script>
+```
+
+No additional steps required for Android and iOs.
+
 ### Import using
 
 ``` dart
