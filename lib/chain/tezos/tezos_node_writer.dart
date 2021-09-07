@@ -29,7 +29,7 @@ class TezosNodeWriter {
       destination: to,
       amount: amount.toString(),
       counter: counter,
-      fee: estimate.suggestedFeeMutez.toString(), 
+      fee: estimate.suggestedFeeMutez.toString(),
       source: keyStore.publicKeyHash,
       gasLimit: estimate.gasLimit,
       storageLimit: estimate.storageLimit,
@@ -97,34 +97,43 @@ class TezosNodeWriter {
   }
 
   static sendContractInvocationOperation(
-      String server,
-      SoftSigner signer,
-      KeyStoreModel keyStore,
-      String contract,
-      int amount,
-      int fee,
-      int storageLimit,
-      int gasLimit,
-      entrypoint,
-      String parameters,
-      {TezosParameterFormat parameterFormat = TezosParameterFormat.Micheline,
-      offset = 54}) async {
+    String server,
+    SoftSigner signer,
+    KeyStoreModel keyStore,
+    List<String> contract,
+    List<int> amount,
+    int fee,
+    int storageLimit,
+    int gasLimit,
+    List<String> entrypoint,
+    List<String> parameters, {
+    var parameterFormat = TezosParameterFormat.Michelson,
+    offset = 54,
+  }) async {
     var counter = await TezosNodeReader.getCounterForAccount(
             server, keyStore.publicKeyHash) +
         1;
-    var transaction = constructContractInvocationOperation(
-        keyStore.publicKeyHash,
-        counter,
-        contract,
-        amount,
-        fee,
-        storageLimit,
-        gasLimit,
-        entrypoint,
-        parameters,
-        parameterFormat);
+
+    var transactions = [];
+
+    for (var i = 0; i < entrypoint.length; i++) {
+      transactions.add(
+        constructContractInvocationOperation(
+          keyStore.publicKeyHash,
+          counter + i,
+          contract[i],
+          amount[i],
+          fee,
+          storageLimit,
+          gasLimit,
+          entrypoint[i],
+          parameters[i],
+          parameterFormat is List ? parameterFormat[i] : parameterFormat,
+        ),
+      );
+    }
     var operations = await appendRevealOperation(server, keyStore.publicKey,
-        keyStore.publicKeyHash, counter - 1, [transaction]);
+        keyStore.publicKeyHash, counter - 1, [...transactions]);
     return sendOperation(server, operations, signer, offset);
   }
 
@@ -170,7 +179,7 @@ class TezosNodeWriter {
       entrypoint,
       String parameters,
       TezosParameterFormat parameterFormat) {
-    var estimate = Estimate(gasLimit * 1000, storageLimit, 162, 250, fee);
+    var estimate = Estimate(gasLimit * 1500, storageLimit, 162, 250, fee);
 
     OperationModel transaction = new OperationModel(
       destination: contract,
@@ -203,7 +212,6 @@ class TezosNodeWriter {
           'value': jsonDecode(michelineLambda)
         };
       }
-      
     } else if (entrypoint != null) {
       transaction.parameters = {'entrypoint': entrypoint, 'value': []};
     }

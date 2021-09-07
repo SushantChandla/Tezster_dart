@@ -163,13 +163,13 @@ class _MyAppState extends State<MyApp> {
         server,
         contractInvocationSigner,
         keyStore,
-        contractAddress,
-        10000,
+        [contractAddress],
+        [10000],
         100000,
         1000,
         100000,
-        '',
-        '"Cryptonomicon"',
+        [''],
+        ['"Cryptonomicon"'],
         codeFormat: TezosParameterFormat.Michelson);
 
     print("Operation groupID ===> ${resultInvoke['operationGroupID']}");

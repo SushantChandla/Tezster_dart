@@ -2,6 +2,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:tezster_dart/contracts/contractType.dart';
 import 'package:tezster_dart/contracts/tzip12/tzip12_contract.dart';
 import 'package:tezster_dart/contracts/tzip16/tzip16-contract.dart';
+import 'package:tezster_dart/chain/tezos/tezos_language_util.dart';
 import 'package:tezster_dart/tezster_dart.dart';
 
 void main() {
@@ -137,5 +138,12 @@ void main() {
         address: 'KT1RJ6PbjHpwc3M5rw5s2Nbmefwbuwbdxton',
         rpcServer: 'https://mainnet.api.tez.ie');
     print(await tzip12Contract.getTokenMetadata(1392));
+  });
+
+  test('Michelson parser test', () {
+    var data =
+        """{"prim":"Right","args":[{"prim":"Left","args":[{"prim":"Left","args":[{"prim":"Pair","args":[{"prim":"Pair","args":[{"int":"331"},{"int":"99"}]},{"string":"tz1QQpKV6gd6VvGeSVddpXv85Y7mSJ4MVLdc"}]}]}]}]}""";
+    var d = TezosLanguageUtil.translateMichelineToHex(data);
+    print(d);
   });
 }

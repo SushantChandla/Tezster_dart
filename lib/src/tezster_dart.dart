@@ -11,6 +11,7 @@ import 'package:ed25519_hd_key/ed25519_hd_key.dart';
 import 'package:password_hash/password_hash.dart';
 import 'package:bip39/bip39.dart' as bip39;
 import 'package:bs58check/bs58check.dart' as bs58check;
+import 'package:tezster_dart/chain/tezos/tezos_language_util.dart';
 import 'package:tezster_dart/chain/tezos/tezos_message_utils.dart';
 import 'package:tezster_dart/chain/tezos/tezos_node_reader.dart';
 import 'package:tezster_dart/chain/tezos/tezos_node_writer.dart';
@@ -20,6 +21,7 @@ import 'package:tezster_dart/contracts/tzip12/tzip12_contract.dart';
 import 'package:tezster_dart/contracts/tzip16/tzip16-contract.dart';
 import 'package:tezster_dart/helper/constants.dart';
 import 'package:tezster_dart/helper/http_helper.dart';
+import 'package:tezster_dart/michelson_parser/michelson_parser.dart';
 import 'package:tezster_dart/reporting/tezos/tezos_conseil_client.dart';
 import 'package:tezster_dart/src/soft-signer/soft_signer.dart';
 import 'package:tezster_dart/tezster_dart.dart';
@@ -192,6 +194,11 @@ class TezsterDart {
     return TezosMessageUtils.writeAddress(address);
   }
 
+  static String normalizePrimitiveRecordOrder(String data) {
+    return jsonEncode(
+        TezosLanguageUtil.normalizePrimitiveRecordOrder(jsonDecode(data)));
+  }
+
   static createSigner(Uint8List secretKey, {int validity = 60}) {
     assert(secretKey != null);
     return SoftSigner.createSigner(secretKey, validity);
@@ -286,18 +293,19 @@ class TezsterDart {
   }
 
   static sendContractInvocationOperation(
-      String server,
-      SoftSigner signer,
-      KeyStoreModel keyStore,
-      String contract,
-      int amount,
-      int fee,
-      int storageLimit,
-      int gasLimit,
-      entrypoint,
-      String parameters,
-      {TezosParameterFormat codeFormat = TezosParameterFormat.Micheline,
-      offset = 54}) async {
+    String server,
+    SoftSigner signer,
+    KeyStoreModel keyStore,
+    List<String> contract,
+    List<int> amount,
+    int fee,
+    int storageLimit,
+    int gasLimit,
+    List<String> entrypoint,
+    List<String> parameters, {
+    var codeFormat = TezosParameterFormat.Micheline,
+    offset = 54,
+  }) async {
     assert(server != null);
     assert(signer != null);
     assert(keyStore != null);
@@ -322,7 +330,7 @@ class TezsterDart {
         gasLimit,
         entrypoint,
         parameters,
-        parameterFormat: codeFormat ?? TezosParameterFormat.Micheline,
+        parameterFormat: codeFormat ?? TezosParameterFormat.Michelson,
         offset: offset ?? 54);
   }
 
