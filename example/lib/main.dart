@@ -74,11 +74,12 @@ class _MyAppState extends State<MyApp> {
     //Accessing: private key ===> identityFundraiser[0] | public key ===> identityFundraiser[1] | public Key Hash ===> identityFundraiser[2] all of type string.
 
     // Get Balance
-    String balance =
-        await TezsterDart.getBalance('tz1c....ozGGs', 'your rpc server');
+    String balance = await TezsterDart.getBalance(
+        'tz1fzigtWPgCvyP5coc8aE9F97PQ2NBJmZPh',
+        'https://granadanet.api.tez.ie');
     print("Accoutn Balance ===> $balance");
 
-    var server = '';
+    var server = 'https://granadanet.api.tez.ie';
 
     var keyStore = KeyStoreModel(
       publicKey: 'edpkvQtuhdZQmjdjVfaY9Kf4hHfrRJYugaJErkCGvV3ER1S7XWsrrj',
@@ -95,7 +96,7 @@ class _MyAppState extends State<MyApp> {
       transactionSigner,
       keyStore,
       'tz1RVcUP9nUurgEJMDou8eW3bVDs6qmP5Lnc',
-      500000,
+      11,
       1500,
     );
     print("Applied operation ===> ${transactionResult['appliedOp']}");
