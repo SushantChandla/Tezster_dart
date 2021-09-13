@@ -46,13 +46,13 @@ class SodiumUtilsWeb extends SodiumUtils {
   KeyPair publicKey(Uint8List sk) {
     var seed = s.Sodium.cryptoSignEd25519SkToSeed(sk);
     var temp = s.Sodium.cryptoSignSeedKeypair(seed);
-    return KeyPair(sk: temp.sk, pk: temp.pk);
+    return KeyPair(sk: temp.pk, pk: temp.sk);
   }
 
   @override
   KeyPair cryptoSignSeedKeypair(Uint8List seed) {
     var temp = s.Sodium.cryptoSignSeedKeypair(seed);
-    return KeyPair(sk: temp.sk, pk: temp.pk);
+    return KeyPair(sk: temp.pk, pk: temp.sk);
   }
 
   @override
