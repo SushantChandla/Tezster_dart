@@ -4,11 +4,11 @@ import 'dart:async';
 import 'dart:convert';
 import 'dart:typed_data';
 import 'dart:core';
+import 'package:conduit_password_hash/conduit_password_hash.dart';
 import 'package:convert/convert.dart';
 import 'package:blake2b/blake2b_hash.dart';
 import 'package:crypto/crypto.dart';
 import 'package:ed25519_hd_key/ed25519_hd_key.dart';
-import 'package:password_hash/password_hash.dart';
 import 'package:bip39/bip39.dart' as bip39;
 import 'package:bs58check/bs58check.dart' as bs58check;
 import 'package:tezster_dart/chain/tezos/tezos_language_util.dart';
@@ -81,7 +81,7 @@ class TezsterDart {
     Uint8List seed = bip39.mnemonicToSeed(mnemonic);
 
     if (derivationPath != null && derivationPath.length > 0) {
-      KeyData keysource = ED25519_HD_KEY.derivePath(derivationPath, seed);
+      KeyData keysource = await ED25519_HD_KEY.derivePath(derivationPath, seed);
       var combinedKey = Uint8List.fromList(keysource.key + keysource.chainCode);
       keys = _sodium.publicKey(combinedKey);
     } else {
