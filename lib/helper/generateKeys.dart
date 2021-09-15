@@ -7,7 +7,9 @@ class GenerateKeys {
   static String computeKeyHash(
     Uint8List publicKey,
   ) {
+    print("input : $publicKey");
     Uint8List blake2bHash = Blake2bHash.hashWithDigestSize(160, publicKey);
+    print("output : $blake2bHash");
     String uintToString = String.fromCharCodes(blake2bHash);
     String stringToHexString = hex.encode(uintToString.codeUnits);
     String finalStringToDecode = "06a19f" + stringToHexString;
