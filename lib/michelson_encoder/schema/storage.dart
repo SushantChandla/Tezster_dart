@@ -26,6 +26,20 @@ class Schema {
       }
     }
   }
+   static fromFromScript(Map<String, dynamic> script) {
+    if (!script.containsKey('code')) {
+      throw Exception('InvalidScript');
+    }
+    var storage =
+        script['code'].firstWhere((element) => element['prim'] == 'storage');
+    if (storage == null) {
+      throw new Exception("Invalid rpc response passed as arguments");
+    }
+    MichelsonV1Expression data = MichelsonV1Expression.j(storage['args'][0]);
+    var schema = Schema(data);
+    return schema;
+  }
+
 
   typecheck(val) {
     if (this._root.runtimeType == BigMapToken && val.runtimeType == int) {
@@ -132,21 +146,7 @@ class Schema {
     return true;
   }
 
-  static fromFromScript(Map<String, dynamic> script) {
-    if (!script.containsKey('code')) {
-      throw Exception('InvalidScript');
-    }
-    var storage =
-        script['code'].firstWhere((element) => element['prim'] == 'storage');
-    if (storage == null) {
-      throw new Exception("Invalid rpc response passed as arguments");
-    }
-
-    MichelsonV1Expression data = MichelsonV1Expression.j(storage['args'][0]);
-
-    return Schema(data);
-  }
-
+ 
   executeOnBigMapValue(key, semantics) {
     if (this._bigMap == null) {
       throw Exception("No big map schema");

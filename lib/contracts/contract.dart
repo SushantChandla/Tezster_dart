@@ -32,6 +32,7 @@ class Contract {
       script = await HttpHelper.performGetRequest(rpcServer,
           "chains/$chain/blocks/$block/context/contracts/$address/script");
       contractSchema = Schema.fromFromScript(script);
+      print(contractSchema);
     }
     contractStorage = await HttpHelper.performGetRequest(rpcServer,
         "chains/$chain/blocks/$block/context/contracts/$address/storage");

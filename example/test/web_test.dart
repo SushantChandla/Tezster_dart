@@ -23,10 +23,6 @@ void main() {
   test('Get Keys From Mnemonics and PassPhrase', () async {
     List<String> keys =
         await TezsterDart.getKeysFromMnemonic(mnemonic: testMnemonics);
-    print(keys[0]);
-    print(keys[1]);
-    print(keys[2]);
-
     expect(keys[0],
         "edskRdVS5H9YCRAG8yqZkX2nUTbGcaDqjYgopkJwRuPUnYzCn3t9ZGksncTLYe33bFjq29pRhpvjQizCCzmugMGhJiXezixvdC");
     expect(keys[1], "edpkuLog552hecagkykJ3fTvop6grTMhfZY4TWbvchDWdYyxCHcrQL");

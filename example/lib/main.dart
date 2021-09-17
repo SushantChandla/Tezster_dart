@@ -264,10 +264,18 @@ class _MyAppState extends State<MyApp> {
     print('${keyRevealResult['operationGroupID']}');
   }
 
+  void getContractStorage() async {
+    var contract = TezsterDart.getContract(
+        "https://mainnet.api.tez.ie", "KT1DLif2x9BtK6pUq9ZfFVVyW5wN2kau9rkW");
+    Map x = await contract.getStorage();
+    print(x);
+  }
+
   @override
   void initState() {
     super.initState();
-    tezosWalletUtil();
+    // tezosWalletUtil();
+    getContractStorage();
   }
 
   @override
