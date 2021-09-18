@@ -20,13 +20,13 @@ class Schema {
     if (_root is BigMapToken) {
       _bigMap = _root as BigMapToken;
     } else if (_isExpressionExtended(val) && val.prim == 'pair') {
-      var exp = val.args[0];
+      var exp = MichelsonV1Expression.j(val.args[0]);
       if (_isExpressionExtended(exp) && exp.prim == 'big_map') {
         _bigMap = new BigMapToken(exp, 0, createToken(exp, 0));
       }
     }
   }
-   static fromFromScript(Map<String, dynamic> script) {
+  factory Schema.fromscript(Map<String, dynamic> script) {
     if (!script.containsKey('code')) {
       throw Exception('InvalidScript');
     }
@@ -35,11 +35,14 @@ class Schema {
     if (storage == null) {
       throw new Exception("Invalid rpc response passed as arguments");
     }
-    MichelsonV1Expression data = MichelsonV1Expression.j(storage['args'][0]);
-    var schema = Schema(data);
-    return schema;
-  }
 
+    MichelsonV1Expression michelsonV1Expression =
+        MichelsonV1Expression.j(storage['args'][0]);
+    if (michelsonV1Expression is MichelsonV1Expression) {
+      return Schema(michelsonV1Expression);
+    }
+    return null;
+  }
 
   typecheck(val) {
     if (this._root.runtimeType == BigMapToken && val.runtimeType == int) {
@@ -146,7 +149,6 @@ class Schema {
     return true;
   }
 
- 
   executeOnBigMapValue(key, semantics) {
     if (this._bigMap == null) {
       throw Exception("No big map schema");

@@ -2,7 +2,6 @@ import 'package:tezster_dart/michelson_encoder/michelson_expression.dart';
 import 'package:tezster_dart/michelson_encoder/tokens/createToken.dart';
 import 'package:tezster_dart/michelson_encoder/tokens/option.dart';
 import 'package:tezster_dart/michelson_encoder/tokens/or.dart';
-import 'package:tezster_dart/michelson_encoder/tokens/pair.dart';
 import 'package:tezster_dart/michelson_encoder/tokens/token.dart';
 
 class ParameterSchema {
@@ -11,22 +10,6 @@ class ParameterSchema {
   ParameterSchema(MichelsonV1Expression val) {
     _root = createToken(val, 0);
   }
-
-  // static fromRPCResponse(ScriptResponse script) {
-  //   Map<String, dynamic> parameter;
-  //   if (script != null) {
-  //     parameter =
-  //         script.code.firstWhere((element) => element['prim'] == 'parameter');
-  //   }
-  //   if (parameter == null && parameter['args'].runtimeType == List) {
-  //     throw new Exception("'Invalid rpc response passed as arguments");
-  //   }
-  //   MichelsonV1Expression data = MichelsonV1Expression();
-  //   data.prim = parameter['args'][0]['prim'];
-  //   data.args = parameter['args'][0]['args'];
-
-  //   return ParameterSchema(data);
-  // }
 
   get isMultipleEntryPoint {
     return (_root.runtimeType == OrToken ||
