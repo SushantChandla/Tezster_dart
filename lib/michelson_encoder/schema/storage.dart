@@ -15,6 +15,10 @@ class Schema {
     return obj != null && obj.schemaTypeSymbol == true;
   }
 
+  dynamic encodeObject(dynamic val) {
+    return _root.encodeObject(val);
+  }
+  
   Schema(MichelsonV1Expression val) {
     _root = createToken(val, 0);
     if (_root is BigMapToken) {

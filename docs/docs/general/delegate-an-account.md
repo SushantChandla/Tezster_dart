@@ -1,9 +1,9 @@
 ---
-sidebar_position: 4
+sidebar_position: 3
 ---
 
 # Delegate an Account
-One of the most exciting features of Tezos is delegation. This is a means for non-"baker" (non-validator) accounts to participate in the on-chain governance process and receive staking rewards. It is possible to delegate both implicit and originated accounts. For implicit addresses, those starting with tz1, tz2 and tz3, simply call sendDelegationOperation. Originated accounts, that is smart contracts, must explicitly support delegate assignment, but can also be deployed with a delegate already set.
+One of the most exciting features of Tezos is delegation. This is a means for non-"baker" (non-validator) accounts to participate in the on-chain governance process and receive staking rewards. It is possible to delegate both implicit and originated accounts. For implicit addresses, those starting with tz1, tz2 and tz3, simply call `sendDelegationOperation`. Originated accounts, that is smart contracts, must explicitly support delegate assignment, but can also be deployed with a delegate already set.
 
 ```dart
 // Choosing the rpc-sever to use

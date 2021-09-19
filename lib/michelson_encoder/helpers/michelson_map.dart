@@ -57,7 +57,7 @@ class MichelsonMap<K, T> {
   }
 
   serializeDeterministically(K key) {
-    return jsonEncode(key);
+    return jsonEncode(_keySchema.encodeObject(key));
   }
 
   set(K key, T value) {
