@@ -4,10 +4,10 @@ import 'package:tezster_dart/michelson_encoder/tokens/token.dart';
 class SetToken extends Token {
   static String prim = 'set';
 
-  SetToken(MichelsonV1Expression val, int idx, fac) : super(val, idx, fac);
+  SetToken(MichelsonV1Expression? val, int idx, fac) : super(val, idx, fac);
 
-  ComparableToken get keySchema {
-    return createToken(MichelsonV1Expression.j(val.args[0]), 0);
+  ComparableToken? get keySchema {
+    return createToken(MichelsonV1Expression.j(val!.args![0]), 0);
   }
 
   _isValid(value) {
@@ -44,7 +44,7 @@ class SetToken extends Token {
       else {
         tempList = prev;
       }
-      return [...tempList, keySchema.execute(current, semantics: semantics)];
+      return [...tempList, keySchema!.execute(current, semantics: semantics)];
     });
   }
 
@@ -61,6 +61,6 @@ class SetToken extends Token {
       throw err;
     }
     return val.reduce(
-        (prev, current) => [...prev, this.keySchema.encodeObject(current)]);
+        (prev, current) => [...prev, this.keySchema!.encodeObject(current)]);
   }
 }

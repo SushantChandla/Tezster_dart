@@ -1,3 +1,4 @@
+import 'package:collection/collection.dart' show IterableExtension;
 import 'package:tezster_dart/michelson_encoder/michelson_expression.dart';
 import 'package:tezster_dart/michelson_encoder/tokens/bigmap.dart';
 import 'package:tezster_dart/michelson_encoder/tokens/bls12_381_fr.dart';
@@ -22,82 +23,81 @@ import 'package:tezster_dart/michelson_encoder/tokens/set.dart';
 import 'package:tezster_dart/michelson_encoder/tokens/tokens.dart';
 import 'package:tezster_dart/michelson_encoder/tokens/unit.dart';
 
-createToken(MichelsonV1Expression val, int idx) {
-  String objectType;
+createToken(MichelsonV1Expression? val, int idx) {
+  String? objectType;
   if (val is List) {
     return new PairToken(val, idx, createToken(val, idx));
   }
 
-  var t = tokens.firstWhere(
+  var t = tokens.firstWhereOrNull(
     (element) {
       if (element == PairToken) {
         objectType = "PairToken";
-        return PairToken.prim == val.prim;
+        return PairToken.prim == val!.prim;
       } else if (element == OrToken) {
         objectType = "OrToken";
-        return OrToken.prim == val.prim;
+        return OrToken.prim == val!.prim;
       } else if (element == OptionToken) {
         objectType = "OptionToken";
-        return OptionToken.prim == val.prim;
+        return OptionToken.prim == val!.prim;
       } else if (element == BigMapToken) {
         objectType = "BigMapToken";
-        return BigMapToken.prim == val.prim;
+        return BigMapToken.prim == val!.prim;
       } else if (element == AddressToken) {
         objectType = "AddressToken";
-        return AddressToken.prim == val.prim;
+        return AddressToken.prim == val!.prim;
       } else if (element == KeyHashToken) {
         objectType = "KeyHashToken";
-        return KeyHashToken.prim == val.prim;
+        return KeyHashToken.prim == val!.prim;
       } else if (element == NatToken) {
         objectType = "NatToken";
-        return NatToken.prim == val.prim;
+        return NatToken.prim == val!.prim;
       } else if (element == UnitToken) {
         objectType = "UnitToken";
-        return UnitToken.prim == val.prim.toLowerCase();
+        return UnitToken.prim == val!.prim!.toLowerCase();
       } else if (element == ContractToken) {
         objectType = "ContractToken";
-        return ContractToken.prim == val.prim;
+        return ContractToken.prim == val!.prim;
       } else if (element == LambdaToken) {
         objectType = "LambdaToken";
-        return LambdaToken.prim == val.prim;
+        return LambdaToken.prim == val!.prim;
       } else if (element == ListToken) {
         objectType = "ListToken";
-        return ListToken.prim == val.prim;
+        return ListToken.prim == val!.prim;
       } else if (element == TimestampToken) {
         objectType = "TimestampToken";
-        return TimestampToken.prim == val.prim;
+        return TimestampToken.prim == val!.prim;
       } else if (element == MapToken) {
         objectType = "MapToken";
-        return MapToken.prim == val.prim;
+        return MapToken.prim == val!.prim;
       } else if (element == StringToken) {
         objectType = "StringToken";
-        return StringToken.prim == val.prim;
+        return StringToken.prim == val!.prim;
       } else if (element == BytesToken) {
         objectType = "BytesToken";
-        return BytesToken.prim == val.prim;
+        return BytesToken.prim == val!.prim;
       } else if (element == SetToken) {
         objectType = "SetToken";
-        return SetToken.prim == val.prim;
+        return SetToken.prim == val!.prim;
       } else if (element == Bls12381frToken) {
         objectType = "Bls12381frToken";
-        return Bls12381frToken.prim == val.prim;
+        return Bls12381frToken.prim == val!.prim;
       } else if (element == IntToken) {
         objectType = "IntToken";
-        return IntToken.prim == val.prim;
+        return IntToken.prim == val!.prim;
       } else if (element == BoolToken) {
         objectType = "BoolToken";
-        return BoolToken.prim == val.prim;
+        return BoolToken.prim == val!.prim;
       } else if (element == MutezToken) {
         objectType = "MutezToken";
-        return MutezToken.prim == val.prim;
+        return MutezToken.prim == val!.prim;
       } else if (element == KeyToken) {
         objectType = "KeyToken";
-        return KeyToken.prim == val.prim;
+        return KeyToken.prim == val!.prim;
       }
 
       return false;
     },
-    orElse: () => null,
   );
 
   if (t == null) {

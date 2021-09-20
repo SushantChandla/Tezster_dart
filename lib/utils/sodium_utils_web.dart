@@ -12,14 +12,14 @@ class SodiumUtilsWeb extends SodiumUtils {
     return Uint8List.fromList(rand(s.Sodium.cryptoPwhashSaltbytes).toList());
   }
 
-  Uint8List pwhash(String passphrase, Uint8List salt) {
+  Uint8List pwhash(String? passphrase, Uint8List? salt) {
     return s.Sodium.cryptoPwhash(
         s.Sodium.cryptoBoxSeedbytes,
-        Uint8List.fromList(passphrase.codeUnits),
-        salt,
+        Uint8List.fromList(passphrase!.codeUnits),
+        salt!,
         4,
         33554432,
-        s.Sodium.cryptoPwhashAlgArgon2i13);
+        s.Sodium.cryptoPwhashAlgArgon2i13 as int);
   }
 
   Uint8List nonce() {
@@ -30,11 +30,11 @@ class SodiumUtilsWeb extends SodiumUtils {
     return s.Sodium.cryptoSecretboxEasy(message, nonce, keyBytes);
   }
 
-  Uint8List open(Uint8List nonceAndCiphertext, Uint8List key) {
+  Uint8List open(Uint8List? nonceAndCiphertext, Uint8List key) {
     var nonce =
-        nonceAndCiphertext.sublist(0, s.Sodium.cryptoSecretboxNoncebytes);
+        nonceAndCiphertext!.sublist(0, s.Sodium.cryptoSecretboxNoncebytes as int?);
     var ciphertext =
-        nonceAndCiphertext.sublist(s.Sodium.cryptoSecretboxNoncebytes);
+        nonceAndCiphertext.sublist(s.Sodium.cryptoSecretboxNoncebytes as int);
 
     return s.Sodium.cryptoSecretboxOpenEasy(ciphertext, nonce, key);
   }

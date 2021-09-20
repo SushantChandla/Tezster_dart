@@ -4,7 +4,7 @@ import 'package:tezster_dart/michelson_encoder/tokens/token.dart';
 class LambdaToken extends Token {
   static String prim = 'lambda';
 
-  LambdaToken(MichelsonV1Expression val, int idx, var fac)
+  LambdaToken(MichelsonV1Expression? val, int idx, var fac)
       : super(val, idx, fac);
 
   @override
@@ -19,10 +19,10 @@ class LambdaToken extends Token {
   @override
   extractSchema() {
     MichelsonV1Expression michelsonV1Expression =
-        MichelsonV1Expression.j(val.args[0]);
+        MichelsonV1Expression.j(val!.args![0]);
     var leftToken = this.createToken(michelsonV1Expression, this.idx);
-    michelsonV1Expression = MichelsonV1Expression.j(val.args[1]);
-    var rightToken = this.createToken(michelsonV1Expression, this.idx + 1);
+    michelsonV1Expression = MichelsonV1Expression.j(val!.args![1]);
+    var rightToken = this.createToken(michelsonV1Expression, this.idx! + 1);
     return {
       [LambdaToken.prim]: {
         'parameters': leftToken.extractSchema(),

@@ -78,24 +78,24 @@ class TezosMessageUtils {
     }
   }
 
-  static String readPublicKey(String hex, Uint8List b) {
+  static String readPublicKey(String hex, Uint8List? b) {
     if (hex.length != 66 && hex.length != 68) {
       throw new Exception("Incorrect hex length, ${hex.length} to parse a key");
     }
     var hint = hex.substring(0, 2);
     if (hint == "00") {
-      return GenerateKeys.readKeysWithHint(b, '0d0f25d9');
+      return GenerateKeys.readKeysWithHint(b!, '0d0f25d9');
     } else if (hint == "01" && hex.length == 68) {
-      return GenerateKeys.readKeysWithHint(b, '03fee256');
+      return GenerateKeys.readKeysWithHint(b!, '03fee256');
     } else if (hint == "02" && hex.length == 68) {
-      return GenerateKeys.readKeysWithHint(b, '03b28b7f');
+      return GenerateKeys.readKeysWithHint(b!, '03b28b7f');
     } else {
       throw new Exception('Unrecognized key type');
     }
   }
 
-  static dynamic readKeyWithHint(Uint8List b, String hint) {
-    Uint8List key = !(b.runtimeType == Uint8List) ? Uint8List.fromList(b) : b;
+  static dynamic readKeyWithHint(Uint8List? b, String hint) {
+    Uint8List key = !(b.runtimeType == Uint8List) ? Uint8List.fromList(b!) : b!;
     String keyHex = hex.encode(key);
     if (hint == 'edsk') {
       return GenerateKeys.readKeysWithHint(b, '2bf64e07');
@@ -196,7 +196,7 @@ class TezosMessageUtils {
     //     .join('');
   }
 
-  static String writeString(value) {
+  static String? writeString(value) {
     var len = dataLength(value.length);
     var text = value
         .split('')
@@ -255,7 +255,7 @@ class TezosMessageUtils {
       case 'nat':
         return '0500' + writeInt(int.parse(value));
       case 'string':
-        return '0501' + writeString(value);
+        return '0501' + writeString(value)!;
       case 'key_hash':
         var address = writeAddress(value).substring(2);
         return '050a${dataLength(address.length / 2)}$address';
@@ -271,7 +271,7 @@ class TezosMessageUtils {
             return '05${TezosLanguageUtil.translateMichelineToHex(value)}';
           } else if (format == TezosParameterFormat.Michelson) {
             var micheline =
-                TezosLanguageUtil.translateMichelsonToMicheline(value);
+                TezosLanguageUtil.translateMichelsonToMicheline(value)!;
             return '05${TezosLanguageUtil.translateMichelineToHex(micheline)}';
           } else {
             throw new Exception('Unsupported format $format provided');

@@ -8,13 +8,13 @@ class OrToken extends ComparableToken {
     return prim;
   }
 
-  OrToken(MichelsonV1Expression val, int idx, var fac) : super(val, idx, fac);
+  OrToken(MichelsonV1Expression? val, int idx, var fac) : super(val, idx, fac);
 
   _traversal(
-      Function getLeftValue(Token token), Function getRightValue(Token token)) {
-    MichelsonV1Expression data = MichelsonV1Expression.j(val.args[0]);
+      Function? getLeftValue(Token token), Function? getRightValue(Token token)) {
+    MichelsonV1Expression data = MichelsonV1Expression.j(val!.args![0]);
     var leftToken = this.createToken(data, this.idx);
-    var keyCount = 1;
+    int? keyCount = 1;
     var leftValue;
     if (leftToken.runtimeType == OrToken && !leftToken.hasAnnotations()) {
       leftValue = leftToken.extractSchema();
@@ -22,8 +22,8 @@ class OrToken extends ComparableToken {
     } else {
       leftValue = {leftToken.annot(): leftToken.extractSchema()};
     }
-    data = MichelsonV1Expression.j(val.args[1]);
-    var rightToken = this.createToken(data, this.idx + keyCount);
+    data = MichelsonV1Expression.j(val!.args![1]);
+    var rightToken = this.createToken(data, this.idx! + keyCount!);
     var rightValue;
     if (rightValue.runtimeType == OrToken && !rightToken.hasAnnotations()) {
       rightValue = rightToken.extractSchema();
@@ -47,22 +47,22 @@ class OrToken extends ComparableToken {
 
   @override
   execute(val, {semantics}) {
-    MichelsonV1Expression data = MichelsonV1Expression.j(this.val.args[0]);
+    MichelsonV1Expression data = MichelsonV1Expression.j(this.val!.args![0]);
     var leftToken = this.createToken(data, this.idx);
-    var keyCount = 1;
+    int? keyCount = 1;
     if (leftToken.runtimeType == OrToken) {
       keyCount = leftToken.extractSchema().keys.length;
     }
-    data = MichelsonV1Expression.j(this.val.args[1]);
-    var rightToken = this.createToken(data, this.idx + keyCount);
-    MichelsonV1Expression x;
+    data = MichelsonV1Expression.j(this.val!.args![1]);
+    var rightToken = this.createToken(data, this.idx! + keyCount!);
+    MichelsonV1Expression? x;
     if (val is Map) {
       x = MichelsonV1Expression.j(val);
     } else {
       x = val;
     }
 
-    MichelsonV1Expression t = MichelsonV1Expression.j(x.args[0]);
+    MichelsonV1Expression t = MichelsonV1Expression.j(x!.args![0]);
     if (x.prim == 'Right') {
       if (rightToken.runtimeType == OrToken) {
         return rightToken.execute(t, semantics: semantics);
@@ -87,13 +87,13 @@ class OrToken extends ComparableToken {
   encodeObject(args) {
     var lable = args.keys.toList()[0];
 
-    Token leftToken = this.createToken(this.val.args[0], this.idx);
-    var keyCount = 1;
+    Token leftToken = this.createToken(this.val!.args![0], this.idx);
+    int? keyCount = 1;
     if (leftToken.runtimeType == OrToken) {
       keyCount = leftToken.extractSchema().keys.length;
     }
 
-    Token rightToken = this.createToken(this.val.args[1], this.idx + keyCount);
+    Token? rightToken = this.createToken(this.val!.args![1], this.idx! + keyCount!);
 
     if (leftToken.annot().toString() == lable.toString() &&
         leftToken.runtimeType != OrToken) {
@@ -101,7 +101,7 @@ class OrToken extends ComparableToken {
         'prim': 'Left',
         'args': [leftToken.encodeObject(args[lable])]
       };
-    } else if (rightToken.annot().toString() == lable.toString() &&
+    } else if (rightToken!.annot().toString() == lable.toString() &&
         rightToken.runtimeType != OrToken) {
       return {
         'prim': 'Right',
@@ -139,13 +139,13 @@ class OrToken extends ComparableToken {
   encode(args) {
     var label = args[args.length - 1];
 
-    var leftToken = createToken(this.val.args[0], this.idx);
-    var keyCount = 1;
+    var leftToken = createToken(this.val!.args![0], this.idx);
+    int? keyCount = 1;
     if (leftToken is OrToken) {
       keyCount = leftToken.extractSchema().length;
     }
 
-    var rightToken = this.createToken(this.val.args[1], this.idx + keyCount);
+    var rightToken = this.createToken(this.val!.args![1], this.idx! + keyCount!);
 
     if (leftToken.annot().toString() == label.toString() &&
         !(leftToken is OrToken)) {

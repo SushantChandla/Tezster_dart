@@ -24,17 +24,17 @@ Uint8List hex2buf(String hex) {
   final regExp = RegExp(r'..');
   final matches = regExp.allMatches(hex);
   List<int> list =
-      matches.map((match) => int.tryParse(match.group(0), radix: 16)).toList();
+      matches.map((match) => int.parse(match.group(0)!, radix: 16)).toList();
   return Uint8List.fromList(list);
 }
 
-dynamic b58cencode(dynamic value, Uint8List prefix) {
+dynamic b58cencode(dynamic value, Uint8List? prefix) {
   prefix ??= Uint8List(0);
   var payloadAr = value.runtimeType == String
       ? Uint8List.fromList(hex.decode(value))
       : value;
 
-  var n = Uint8List(prefix.length + payloadAr.length);
+  var n = Uint8List(prefix.length + payloadAr.length as int);
   n.setAll(0, prefix);
   n.setAll(prefix.length, payloadAr);
   return encode(n);

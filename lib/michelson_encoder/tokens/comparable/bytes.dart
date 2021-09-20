@@ -6,7 +6,7 @@ import 'package:tezster_dart/michelson_encoder/tokens/token.dart';
 
 class BytesToken extends ComparableToken {
   static String prim = "bytes";
-  BytesToken(MichelsonV1Expression val, int idx, fac) : super(val, idx, fac);
+  BytesToken(MichelsonV1Expression? val, int idx, fac) : super(val, idx, fac);
 
   _isValid(val) {
     RegExp regExp = RegExp("^[0-9a-fA-F]*\$");

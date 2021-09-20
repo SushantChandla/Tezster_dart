@@ -4,7 +4,7 @@ import 'package:tezster_dart/michelson_encoder/tokens/token.dart';
 class StringToken extends ComparableToken {
   static String prim = 'string';
 
-  StringToken(MichelsonV1Expression val, int idx, fac) : super(val, idx, fac);
+  StringToken(MichelsonV1Expression? val, int idx, fac) : super(val, idx, fac);
 
   @override
   encodeObject(val) {

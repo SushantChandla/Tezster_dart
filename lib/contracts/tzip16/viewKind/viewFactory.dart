@@ -6,7 +6,7 @@ const Map ViewImplementationType = {
 };
 
 class ViewFactory {
-  getView(String viewName, viewImplementation) {
+  getView(String? viewName, viewImplementation) {
     if (_isMichelsonStorageView(viewImplementation)) {
       var viewValues =
           viewImplementation[ViewImplementationType['MICHELSON_STORAGE']];

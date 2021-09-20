@@ -12,9 +12,9 @@ class ListValidationError extends TokenValidationError {
 class ListToken extends Token {
   static String prim = 'list';
 
-  ListToken(MichelsonV1Expression val, int idx, var fac) : super(val, idx, fac);
+  ListToken(MichelsonV1Expression? val, int idx, var fac) : super(val, idx, fac);
 
-  List _isValid(dynamic value) {
+  List? _isValid(dynamic value) {
     if (value is List) {
       return value;
     }
@@ -26,10 +26,10 @@ class ListToken extends Token {
   @override
   execute(val, {semantics}) {
     MichelsonV1Expression michelsonV1Expression =
-        MichelsonV1Expression.j(this.val.args[0]);
+        MichelsonV1Expression.j(this.val!.args![0]);
     var schema = this.createToken(michelsonV1Expression, 0);
 
-    List v = this._isValid(val);
+    List v = this._isValid(val)!;
 
     return v.reduce((prev, current) {
       var temlist;
@@ -49,7 +49,7 @@ class ListToken extends Token {
 
   @override
   encodeObject(args) {
-    Token schema = this.createToken(this.val.args[0], 0);
+    Token? schema = this.createToken(this.val!.args![0], 0);
 
     var err = this._isValid(args);
     if (err != null) {
@@ -57,7 +57,7 @@ class ListToken extends Token {
     }
 
     return args['reduce'](
-        (prev, current) => [...prev, schema.encodeObject(current)], []);
+        (prev, current) => [...prev, schema!.encodeObject(current)], []);
   }
 
   @override
@@ -69,7 +69,7 @@ class ListToken extends Token {
       throw err;
     }
 
-    var schema = this.createToken(this.val.args[0], 0);
+    var schema = this.createToken(this.val!.args![0], 0);
     return val.reduce((prev, current) {
       return [...prev, schema.EncodeObject(current)];
     }, []);

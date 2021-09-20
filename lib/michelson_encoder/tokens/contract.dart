@@ -6,11 +6,11 @@ import 'package:tezster_dart/michelson_encoder/helpers/validators.dart';
 class ContractToken extends Token {
   static String prim = 'contract';
 
-  ContractToken(MichelsonV1Expression val, int idx, var fac)
+  ContractToken(MichelsonV1Expression? val, int idx, var fac)
       : super(
-            val.runtimeType == List
+            (val.runtimeType == List
                 ? {'prim': ContractToken.prim, 'args': val}
-                : val,
+                : val) as MichelsonV1Expression?,
             idx,
             fac);
 

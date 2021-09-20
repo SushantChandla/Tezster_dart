@@ -33,7 +33,7 @@ var _tokenMetaBigMap = {
 };
 
 class Tzip12Contract extends Tzip16Contract {
-  Tzip12Contract({String rpcServer, String address})
+  Tzip12Contract({required String rpcServer, required String address})
       : super(rpcServer: rpcServer, address: address);
 
   getTokenMetadata(int tokenId) async {
@@ -73,7 +73,7 @@ class Tzip12Contract extends Tzip16Contract {
     var metadataFromUri =
         await this._fetchTokenMetadataFromUri(tokenMap as MichelsonMap);
     return this._formatMetadataToken(
-        tokenId, (tokenMap as MichelsonMap), metadataFromUri);
+        tokenId, tokenMap, metadataFromUri);
   }
 
   _retrieveTokenMetadataFromBigMap(tokenId) async {
@@ -94,7 +94,7 @@ class Tzip12Contract extends Tzip16Contract {
     var metadataFromUri =
         await this._fetchTokenMetadataFromUri(michelsonMap as MichelsonMap);
     return this._formatMetadataToken(
-        tokenId, michelsonMap as MichelsonMap, metadataFromUri);
+        tokenId, michelsonMap, metadataFromUri);
   }
 
   _fetchTokenMetadataFromUri(MichelsonMap tokenMetadata) async {
@@ -135,7 +135,7 @@ class Tzip12Contract extends Tzip16Contract {
   }
 
   BigInt _findTokenMetadataBigMap() {
-    var tokenMetadataBigMapId = contractSchema.findFirstInTopLevelPair(
+    var tokenMetadataBigMapId = contractSchema!.findFirstInTopLevelPair(
         contractStorage, _tokenMetaBigMap);
     if (tokenMetadataBigMapId == null) {
       throw new TokenMetadataNotFound(address);

@@ -1,8 +1,8 @@
 class MichelsonV1Expression {
-  String prim;
-  List<dynamic> args;
-  List<dynamic> annots;
-  Map jsonCopy;
+  String? prim;
+  List<dynamic>? args;
+  List<dynamic>? annots;
+  late Map jsonCopy;
   MichelsonV1Expression({this.prim, this.args, this.annots});
   MichelsonV1Expression.j(var j)
       : annots = j['annots'],

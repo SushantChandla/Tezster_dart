@@ -2,7 +2,7 @@ import 'package:tezster_dart/chain/tezos/tezos_message_utils.dart';
 import 'package:tezster_dart/michelson_parser/grammar/michelin_grammar_tokenizer.dart';
 
 class MichelineGrammar {
-  MichelinGrammarTokenizer lexer;
+  MichelinGrammarTokenizer? lexer;
   var lbrace, _, colon, quotedValue, rbrace, comma, lbracket, rbracket;
   final List defaultMichelsonKeywords = [
     '"parameter"',
@@ -124,7 +124,7 @@ class MichelineGrammar {
     '"chain_id"',
     '"CHAIN_ID"'
   ];
-  List languageKeywords;
+  late List languageKeywords;
 
   MichelineGrammar() {
     languageKeywords = defaultMichelsonKeywords;
@@ -148,11 +148,11 @@ class MichelineGrammar {
     languageKeywords = list;
   }
 
-  int getCodeForKeyword(String word) {
+  int getCodeForKeyword(String? word) {
     return languageKeywords.indexOf(word);
   }
 
-  String getKeywordForWord(int index) {
+  String? getKeywordForWord(int index) {
     return languageKeywords[index];
   }
 
@@ -253,15 +253,15 @@ class MichelineGrammar {
       }
     }
     final String prim = encodePrimitive(getMapValue(d[6]));
-    String args = d[15].map((e) => e[0]).join('');
-    String newArgs = '';
+    String? args = d[15].map((e) => e[0]).join('');
+    String? newArgs = '';
     if (prefix == '09') {
       newArgs = '0000000' +
-          int.parse((args.length ~/ 2).toString()).toRadixString(16).toString();
+          int.parse((args!.length ~/ 2).toString()).toRadixString(16).toString();
       newArgs = newArgs.substring(newArgs.length - 8);
       newArgs = newArgs + args + '00000000';
     }
-    newArgs = newArgs == '' ? args : newArgs;
+    newArgs = newArgs == '' ? args! : newArgs;
     return prefix + prim + newArgs;
   }
 
@@ -280,7 +280,7 @@ class MichelineGrammar {
       prefix = '09';
     }
     String prim = encodePrimitive(getMapValue(d[6]));
-    String args = d[15].map((v) => v[0]).join('');
+    String? args = d[15].map((v) => v[0]).join('');
     String ann = d[26].map((v) {
       String t = getMapValue(v[0]);
       t = t.substring(1, t.length - 1);
@@ -291,18 +291,18 @@ class MichelineGrammar {
       return d;
     }).join('');
     ann = encodeLength(int.parse((ann.length ~/ 2).toString())) + ann;
-    String newArgs = '';
+    String? newArgs = '';
     if (prefix == '09') {
       newArgs = '0000000' +
-          int.parse((args.length ~/ 2).toString()).toRadixString(16).toString();
+          int.parse((args!.length ~/ 2).toString()).toRadixString(16).toString();
       newArgs = newArgs.substring(newArgs.length - 8);
       newArgs = newArgs + args;
     }
-    newArgs = newArgs == '' ? args : newArgs;
+    newArgs = newArgs == '' ? args! : newArgs;
     return prefix + prim + newArgs + ann;
   }
 
-  String encodePrimitive(String p) {
+  String encodePrimitive(String? p) {
     String result = '00' + getCodeForKeyword(p).toRadixString(16).toString();
     result = result.substring(result.length - 2);
     return result;
@@ -398,24 +398,24 @@ class MichelineGrammar {
             "name": r"staticInt$ebnf$1",
             "symbols": [
               r"staticInt$ebnf$1",
-              (lexer.has("_") ? {'type': "_"} : _)
+              (lexer!.has("_") ? {'type': "_"} : _)
             ],
             "postprocess": (d) => d[0]..addAll([d[1]])
           },
           {
             "name": "staticInt",
             "symbols": [
-              (lexer.has("lbrace") ? {'type': "lbrace"} : lbrace),
-              (lexer.has("_") ? {'type': "_"} : _),
+              (lexer!.has("lbrace") ? {'type': "lbrace"} : lbrace),
+              (lexer!.has("_") ? {'type': "_"} : _),
               {"literal": "\"int\""},
               r"staticInt$ebnf$1",
-              (lexer.has("colon") ? {'type': "colon"} : colon),
-              (lexer.has("_") ? {'type': "_"} : _),
-              (lexer.has("quotedValue")
+              (lexer!.has("colon") ? {'type': "colon"} : colon),
+              (lexer!.has("_") ? {'type': "_"} : _),
+              (lexer!.has("quotedValue")
                   ? {'type': "quotedValue"}
                   : quotedValue),
-              (lexer.has("_") ? {'type': "_"} : _),
-              (lexer.has("rbrace") ? {'type': "rbrace"} : rbrace)
+              (lexer!.has("_") ? {'type': "_"} : _),
+              (lexer!.has("rbrace") ? {'type': "rbrace"} : rbrace)
             ],
             "postprocess": staticIntToHex
           },
@@ -424,24 +424,24 @@ class MichelineGrammar {
             "name": r"staticString$ebnf$1",
             "symbols": [
               r"staticString$ebnf$1",
-              (lexer.has("_") ? {'type': "_"} : _)
+              (lexer!.has("_") ? {'type': "_"} : _)
             ],
             "postprocess": (d) => d[0]..addAll([d[1]])
           },
           {
             "name": "staticString",
             "symbols": [
-              (lexer.has("lbrace") ? {'type': "lbrace"} : lbrace),
-              (lexer.has("_") ? {'type': "_"} : _),
+              (lexer!.has("lbrace") ? {'type': "lbrace"} : lbrace),
+              (lexer!.has("_") ? {'type': "_"} : _),
               {"literal": "\"string\""},
               r"staticString$ebnf$1",
-              (lexer.has("colon") ? {'type': "colon"} : colon),
-              (lexer.has("_") ? {'type': "_"} : _),
-              (lexer.has("quotedValue")
+              (lexer!.has("colon") ? {'type': "colon"} : colon),
+              (lexer!.has("_") ? {'type': "_"} : _),
+              (lexer!.has("quotedValue")
                   ? {'type': "quotedValue"}
                   : quotedValue),
-              (lexer.has("_") ? {'type': "_"} : _),
-              (lexer.has("rbrace") ? {'type': "rbrace"} : rbrace)
+              (lexer!.has("_") ? {'type': "_"} : _),
+              (lexer!.has("rbrace") ? {'type': "rbrace"} : rbrace)
             ],
             "postprocess": staticStringToHex
           },
@@ -450,24 +450,24 @@ class MichelineGrammar {
             "name": r"staticBytes$ebnf$1",
             "symbols": [
               r"staticBytes$ebnf$1",
-              (lexer.has("_") ? {'type': "_"} : _)
+              (lexer!.has("_") ? {'type': "_"} : _)
             ],
             "postprocess": (d) => d[0]..addAll([d[1]])
           },
           {
             "name": "staticBytes",
             "symbols": [
-              (lexer.has("lbrace") ? {'type': "lbrace"} : lbrace),
-              (lexer.has("_") ? {'type': "_"} : _),
+              (lexer!.has("lbrace") ? {'type': "lbrace"} : lbrace),
+              (lexer!.has("_") ? {'type': "_"} : _),
               {"literal": "\"bytes\""},
               r"staticBytes$ebnf$1",
-              (lexer.has("colon") ? {'type': "colon"} : colon),
-              (lexer.has("_") ? {'type': "_"} : _),
-              (lexer.has("quotedValue")
+              (lexer!.has("colon") ? {'type': "colon"} : colon),
+              (lexer!.has("_") ? {'type': "_"} : _),
+              (lexer!.has("quotedValue")
                   ? {'type': "quotedValue"}
                   : quotedValue),
-              (lexer.has("_") ? {'type': "_"} : _),
-              (lexer.has("rbrace") ? {'type': "rbrace"} : rbrace)
+              (lexer!.has("_") ? {'type': "_"} : _),
+              (lexer!.has("rbrace") ? {'type': "rbrace"} : rbrace)
             ],
             "postprocess": staticBytesToHex
           },
@@ -491,31 +491,31 @@ class MichelineGrammar {
             "name": r"primBare$ebnf$1",
             "symbols": [
               r"primBare$ebnf$1",
-              (lexer.has("_") ? {'type': "_"} : _)
+              (lexer!.has("_") ? {'type': "_"} : _)
             ],
             "postprocess": (d) => d[0]..addAll([d[1]])
           },
           {
             "name": "primBare",
             "symbols": [
-              (lexer.has("lbrace") ? {'type': "lbrace"} : lbrace),
-              (lexer.has("_") ? {'type': "_"} : _),
+              (lexer!.has("lbrace") ? {'type': "lbrace"} : lbrace),
+              (lexer!.has("_") ? {'type': "_"} : _),
               {"literal": "\"prim\""},
               r"primBare$ebnf$1",
-              (lexer.has("colon") ? {'type': "colon"} : colon),
-              (lexer.has("_") ? {'type': "_"} : _),
-              (lexer.has("quotedValue")
+              (lexer!.has("colon") ? {'type': "colon"} : colon),
+              (lexer!.has("_") ? {'type': "_"} : _),
+              (lexer!.has("quotedValue")
                   ? {'type': "quotedValue"}
                   : quotedValue),
-              (lexer.has("_") ? {'type': "_"} : _),
-              (lexer.has("rbrace") ? {'type': "rbrace"} : rbrace)
+              (lexer!.has("_") ? {'type': "_"} : _),
+              (lexer!.has("rbrace") ? {'type': "rbrace"} : rbrace)
             ],
             "postprocess": primBareToHex
           },
           {
             "name": r"primArg$ebnf$1",
             "symbols": [
-              (lexer.has("_") ? {'type': "_"} : _)
+              (lexer!.has("_") ? {'type': "_"} : _)
             ],
             "postprocess": id
           },
@@ -527,7 +527,7 @@ class MichelineGrammar {
           {
             "name": r"primArg$ebnf$2",
             "symbols": [
-              (lexer.has("_") ? {'type': "_"} : _)
+              (lexer!.has("_") ? {'type': "_"} : _)
             ],
             "postprocess": id
           },
@@ -539,7 +539,7 @@ class MichelineGrammar {
           {
             "name": r"primArg$ebnf$3$subexpression$1$ebnf$1",
             "symbols": [
-              (lexer.has("comma") ? {'type': "comma"} : comma)
+              (lexer!.has("comma") ? {'type': "comma"} : comma)
             ],
             "postprocess": id
           },
@@ -551,7 +551,7 @@ class MichelineGrammar {
           {
             "name": r"primArg$ebnf$3$subexpression$1$ebnf$2",
             "symbols": [
-              (lexer.has("_") ? {'type': "_"} : _)
+              (lexer!.has("_") ? {'type': "_"} : _)
             ],
             "postprocess": id
           },
@@ -575,7 +575,7 @@ class MichelineGrammar {
           {
             "name": r"primArg$ebnf$3$subexpression$2$ebnf$1",
             "symbols": [
-              (lexer.has("comma") ? {'type': "comma"} : comma)
+              (lexer!.has("comma") ? {'type': "comma"} : comma)
             ],
             "postprocess": id
           },
@@ -587,7 +587,7 @@ class MichelineGrammar {
           {
             "name": r"primArg$ebnf$3$subexpression$2$ebnf$2",
             "symbols": [
-              (lexer.has("_") ? {'type': "_"} : _)
+              (lexer!.has("_") ? {'type': "_"} : _)
             ],
             "postprocess": id
           },
@@ -612,35 +612,35 @@ class MichelineGrammar {
           {
             "name": "primArg",
             "symbols": [
-              (lexer.has("lbrace") ? {'type': "lbrace"} : lbrace),
-              (lexer.has("_") ? {'type': "_"} : _),
+              (lexer!.has("lbrace") ? {'type': "lbrace"} : lbrace),
+              (lexer!.has("_") ? {'type': "_"} : _),
               {"literal": "\"prim\""},
               r"primArg$ebnf$1",
-              (lexer.has("colon") ? {'type': "colon"} : colon),
-              (lexer.has("_") ? {'type': "_"} : _),
-              (lexer.has("quotedValue")
+              (lexer!.has("colon") ? {'type': "colon"} : colon),
+              (lexer!.has("_") ? {'type': "_"} : _),
+              (lexer!.has("quotedValue")
                   ? {'type': "quotedValue"}
                   : quotedValue),
-              (lexer.has("comma") ? {'type': "comma"} : comma),
-              (lexer.has("_") ? {'type': "_"} : _),
+              (lexer!.has("comma") ? {'type': "comma"} : comma),
+              (lexer!.has("_") ? {'type': "_"} : _),
               {"literal": "\"args\""},
               r"primArg$ebnf$2",
-              (lexer.has("colon") ? {'type': "colon"} : colon),
-              (lexer.has("_") ? {'type': "_"} : _),
-              (lexer.has("lbracket") ? {'type': "lbracket"} : lbracket),
-              (lexer.has("_") ? {'type': "_"} : _),
+              (lexer!.has("colon") ? {'type': "colon"} : colon),
+              (lexer!.has("_") ? {'type': "_"} : _),
+              (lexer!.has("lbracket") ? {'type': "lbracket"} : lbracket),
+              (lexer!.has("_") ? {'type': "_"} : _),
               r"primArg$ebnf$3",
-              (lexer.has("_") ? {'type': "_"} : _),
-              (lexer.has("rbracket") ? {'type': "rbracket"} : rbracket),
-              (lexer.has("_") ? {'type': "_"} : _),
-              (lexer.has("rbrace") ? {'type': "rbrace"} : rbrace)
+              (lexer!.has("_") ? {'type': "_"} : _),
+              (lexer!.has("rbracket") ? {'type': "rbracket"} : rbracket),
+              (lexer!.has("_") ? {'type': "_"} : _),
+              (lexer!.has("rbrace") ? {'type': "rbrace"} : rbrace)
             ],
             "postprocess": primArgToHex
           },
           {
             "name": r"primAnn$ebnf$1",
             "symbols": [
-              (lexer.has("_") ? {'type': "_"} : _)
+              (lexer!.has("_") ? {'type': "_"} : _)
             ],
             "postprocess": id
           },
@@ -652,7 +652,7 @@ class MichelineGrammar {
           {
             "name": r"primAnn$ebnf$2",
             "symbols": [
-              (lexer.has("_") ? {'type': "_"} : _)
+              (lexer!.has("_") ? {'type': "_"} : _)
             ],
             "postprocess": id
           },
@@ -664,7 +664,7 @@ class MichelineGrammar {
           {
             "name": r"primAnn$ebnf$3$subexpression$1$ebnf$1",
             "symbols": [
-              (lexer.has("comma") ? {'type': "comma"} : comma)
+              (lexer!.has("comma") ? {'type': "comma"} : comma)
             ],
             "postprocess": id
           },
@@ -676,7 +676,7 @@ class MichelineGrammar {
           {
             "name": r"primAnn$ebnf$3$subexpression$1$ebnf$2",
             "symbols": [
-              (lexer.has("_") ? {'type': "_"} : _)
+              (lexer!.has("_") ? {'type': "_"} : _)
             ],
             "postprocess": id
           },
@@ -688,7 +688,7 @@ class MichelineGrammar {
           {
             "name": r"primAnn$ebnf$3$subexpression$1",
             "symbols": [
-              (lexer.has("quotedValue")
+              (lexer!.has("quotedValue")
                   ? {'type': "quotedValue"}
                   : quotedValue),
               r"primAnn$ebnf$3$subexpression$1$ebnf$1",
@@ -702,7 +702,7 @@ class MichelineGrammar {
           {
             "name": r"primAnn$ebnf$3$subexpression$2$ebnf$1",
             "symbols": [
-              (lexer.has("comma") ? {'type': "comma"} : comma)
+              (lexer!.has("comma") ? {'type': "comma"} : comma)
             ],
             "postprocess": id
           },
@@ -714,7 +714,7 @@ class MichelineGrammar {
           {
             "name": r"primAnn$ebnf$3$subexpression$2$ebnf$2",
             "symbols": [
-              (lexer.has("_") ? {'type': "_"} : _)
+              (lexer!.has("_") ? {'type': "_"} : _)
             ],
             "postprocess": id
           },
@@ -726,7 +726,7 @@ class MichelineGrammar {
           {
             "name": r"primAnn$ebnf$3$subexpression$2",
             "symbols": [
-              (lexer.has("quotedValue")
+              (lexer!.has("quotedValue")
                   ? {'type': "quotedValue"}
                   : quotedValue),
               r"primAnn$ebnf$3$subexpression$2$ebnf$1",
@@ -741,35 +741,35 @@ class MichelineGrammar {
           {
             "name": "primAnn",
             "symbols": [
-              (lexer.has("lbrace") ? {'type': "lbrace"} : lbrace),
-              (lexer.has("_") ? {'type': "_"} : _),
+              (lexer!.has("lbrace") ? {'type': "lbrace"} : lbrace),
+              (lexer!.has("_") ? {'type': "_"} : _),
               {"literal": "\"prim\""},
               r"primAnn$ebnf$1",
-              (lexer.has("colon") ? {'type': "colon"} : colon),
-              (lexer.has("_") ? {'type': "_"} : _),
-              (lexer.has("quotedValue")
+              (lexer!.has("colon") ? {'type': "colon"} : colon),
+              (lexer!.has("_") ? {'type': "_"} : _),
+              (lexer!.has("quotedValue")
                   ? {'type': "quotedValue"}
                   : quotedValue),
-              (lexer.has("comma") ? {'type': "comma"} : comma),
-              (lexer.has("_") ? {'type': "_"} : _),
+              (lexer!.has("comma") ? {'type': "comma"} : comma),
+              (lexer!.has("_") ? {'type': "_"} : _),
               {"literal": "\"annots\""},
               r"primAnn$ebnf$2",
-              (lexer.has("colon") ? {'type': "colon"} : colon),
-              (lexer.has("_") ? {'type': "_"} : _),
-              (lexer.has("lbracket") ? {'type': "lbracket"} : lbracket),
-              (lexer.has("_") ? {'type': "_"} : _),
+              (lexer!.has("colon") ? {'type': "colon"} : colon),
+              (lexer!.has("_") ? {'type': "_"} : _),
+              (lexer!.has("lbracket") ? {'type': "lbracket"} : lbracket),
+              (lexer!.has("_") ? {'type': "_"} : _),
               r"primAnn$ebnf$3",
-              (lexer.has("_") ? {'type': "_"} : _),
-              (lexer.has("rbracket") ? {'type': "rbracket"} : rbracket),
-              (lexer.has("_") ? {'type': "_"} : _),
-              (lexer.has("rbrace") ? {'type': "rbrace"} : rbrace)
+              (lexer!.has("_") ? {'type': "_"} : _),
+              (lexer!.has("rbracket") ? {'type': "rbracket"} : rbracket),
+              (lexer!.has("_") ? {'type': "_"} : _),
+              (lexer!.has("rbrace") ? {'type': "rbrace"} : rbrace)
             ],
             "postprocess": primAnnToHex
           },
           {
             "name": r"primArgAnn$ebnf$1",
             "symbols": [
-              (lexer.has("_") ? {'type': "_"} : _)
+              (lexer!.has("_") ? {'type': "_"} : _)
             ],
             "postprocess": id
           },
@@ -781,7 +781,7 @@ class MichelineGrammar {
           {
             "name": r"primArgAnn$ebnf$2",
             "symbols": [
-              (lexer.has("_") ? {'type': "_"} : _)
+              (lexer!.has("_") ? {'type': "_"} : _)
             ],
             "postprocess": id
           },
@@ -793,7 +793,7 @@ class MichelineGrammar {
           {
             "name": r"primArgAnn$ebnf$3$subexpression$1$ebnf$1",
             "symbols": [
-              (lexer.has("comma") ? {'type': "comma"} : comma)
+              (lexer!.has("comma") ? {'type': "comma"} : comma)
             ],
             "postprocess": id
           },
@@ -805,7 +805,7 @@ class MichelineGrammar {
           {
             "name": r"primArgAnn$ebnf$3$subexpression$1$ebnf$2",
             "symbols": [
-              (lexer.has("_") ? {'type': "_"} : _)
+              (lexer!.has("_") ? {'type': "_"} : _)
             ],
             "postprocess": id
           },
@@ -829,7 +829,7 @@ class MichelineGrammar {
           {
             "name": r"primArgAnn$ebnf$3$subexpression$2$ebnf$1",
             "symbols": [
-              (lexer.has("comma") ? {'type': "comma"} : comma)
+              (lexer!.has("comma") ? {'type': "comma"} : comma)
             ],
             "postprocess": id
           },
@@ -841,7 +841,7 @@ class MichelineGrammar {
           {
             "name": r"primArgAnn$ebnf$3$subexpression$2$ebnf$2",
             "symbols": [
-              (lexer.has("_") ? {'type': "_"} : _)
+              (lexer!.has("_") ? {'type': "_"} : _)
             ],
             "postprocess": id
           },
@@ -869,7 +869,7 @@ class MichelineGrammar {
           {
             "name": r"primArgAnn$ebnf$4",
             "symbols": [
-              (lexer.has("_") ? {'type': "_"} : _)
+              (lexer!.has("_") ? {'type': "_"} : _)
             ],
             "postprocess": id
           },
@@ -881,7 +881,7 @@ class MichelineGrammar {
           {
             "name": r"primArgAnn$ebnf$5$subexpression$1$ebnf$1",
             "symbols": [
-              (lexer.has("comma") ? {'type': "comma"} : comma)
+              (lexer!.has("comma") ? {'type': "comma"} : comma)
             ],
             "postprocess": id
           },
@@ -893,7 +893,7 @@ class MichelineGrammar {
           {
             "name": r"primArgAnn$ebnf$5$subexpression$1$ebnf$2",
             "symbols": [
-              (lexer.has("_") ? {'type': "_"} : _)
+              (lexer!.has("_") ? {'type': "_"} : _)
             ],
             "postprocess": id
           },
@@ -905,7 +905,7 @@ class MichelineGrammar {
           {
             "name": r"primArgAnn$ebnf$5$subexpression$1",
             "symbols": [
-              (lexer.has("quotedValue")
+              (lexer!.has("quotedValue")
                   ? {'type': "quotedValue"}
                   : quotedValue),
               r"primArgAnn$ebnf$5$subexpression$1$ebnf$1",
@@ -919,7 +919,7 @@ class MichelineGrammar {
           {
             "name": r"primArgAnn$ebnf$5$subexpression$2$ebnf$1",
             "symbols": [
-              (lexer.has("comma") ? {'type': "comma"} : comma)
+              (lexer!.has("comma") ? {'type': "comma"} : comma)
             ],
             "postprocess": id
           },
@@ -931,7 +931,7 @@ class MichelineGrammar {
           {
             "name": r"primArgAnn$ebnf$5$subexpression$2$ebnf$2",
             "symbols": [
-              (lexer.has("_") ? {'type': "_"} : _)
+              (lexer!.has("_") ? {'type': "_"} : _)
             ],
             "postprocess": id
           },
@@ -943,7 +943,7 @@ class MichelineGrammar {
           {
             "name": r"primArgAnn$ebnf$5$subexpression$2",
             "symbols": [
-              (lexer.has("quotedValue")
+              (lexer!.has("quotedValue")
                   ? {'type': "quotedValue"}
                   : quotedValue),
               r"primArgAnn$ebnf$5$subexpression$2$ebnf$1",
@@ -961,39 +961,39 @@ class MichelineGrammar {
           {
             "name": "primArgAnn",
             "symbols": [
-              (lexer.has("lbrace") ? {'type': "lbrace"} : lbrace),
-              (lexer.has("_") ? {'type': "_"} : _),
+              (lexer!.has("lbrace") ? {'type': "lbrace"} : lbrace),
+              (lexer!.has("_") ? {'type': "_"} : _),
               {"literal": "\"prim\""},
               r"primArgAnn$ebnf$1",
-              (lexer.has("colon") ? {'type': "colon"} : colon),
-              (lexer.has("_") ? {'type': "_"} : _),
-              (lexer.has("quotedValue")
+              (lexer!.has("colon") ? {'type': "colon"} : colon),
+              (lexer!.has("_") ? {'type': "_"} : _),
+              (lexer!.has("quotedValue")
                   ? {'type': "quotedValue"}
                   : quotedValue),
-              (lexer.has("comma") ? {'type': "comma"} : comma),
-              (lexer.has("_") ? {'type': "_"} : _),
+              (lexer!.has("comma") ? {'type': "comma"} : comma),
+              (lexer!.has("_") ? {'type': "_"} : _),
               {"literal": "\"args\""},
               r"primArgAnn$ebnf$2",
-              (lexer.has("colon") ? {'type': "colon"} : colon),
-              (lexer.has("_") ? {'type': "_"} : _),
-              (lexer.has("lbracket") ? {'type': "lbracket"} : lbracket),
-              (lexer.has("_") ? {'type': "_"} : _),
+              (lexer!.has("colon") ? {'type': "colon"} : colon),
+              (lexer!.has("_") ? {'type': "_"} : _),
+              (lexer!.has("lbracket") ? {'type': "lbracket"} : lbracket),
+              (lexer!.has("_") ? {'type': "_"} : _),
               r"primArgAnn$ebnf$3",
-              (lexer.has("_") ? {'type': "_"} : _),
-              (lexer.has("rbracket") ? {'type': "rbracket"} : rbracket),
-              (lexer.has("comma") ? {'type': "comma"} : comma),
-              (lexer.has("_") ? {'type': "_"} : _),
+              (lexer!.has("_") ? {'type': "_"} : _),
+              (lexer!.has("rbracket") ? {'type': "rbracket"} : rbracket),
+              (lexer!.has("comma") ? {'type': "comma"} : comma),
+              (lexer!.has("_") ? {'type': "_"} : _),
               {"literal": "\"annots\""},
               r"primArgAnn$ebnf$4",
-              (lexer.has("colon") ? {'type': "colon"} : colon),
-              (lexer.has("_") ? {'type': "_"} : _),
-              (lexer.has("lbracket") ? {'type': "lbracket"} : lbracket),
-              (lexer.has("_") ? {'type': "_"} : _),
+              (lexer!.has("colon") ? {'type': "colon"} : colon),
+              (lexer!.has("_") ? {'type': "_"} : _),
+              (lexer!.has("lbracket") ? {'type': "lbracket"} : lbracket),
+              (lexer!.has("_") ? {'type': "_"} : _),
               r"primArgAnn$ebnf$5",
-              (lexer.has("_") ? {'type': "_"} : _),
-              (lexer.has("rbracket") ? {'type': "rbracket"} : rbracket),
-              (lexer.has("_") ? {'type': "_"} : _),
-              (lexer.has("rbrace") ? {'type': "rbrace"} : rbrace)
+              (lexer!.has("_") ? {'type': "_"} : _),
+              (lexer!.has("rbracket") ? {'type': "rbracket"} : rbracket),
+              (lexer!.has("_") ? {'type': "_"} : _),
+              (lexer!.has("rbrace") ? {'type': "rbrace"} : rbrace)
             ],
             "postprocess": primArgAnnToHex
           },
@@ -1035,15 +1035,15 @@ class MichelineGrammar {
           {
             "name": "anyArray",
             "symbols": [
-              (lexer.has("lbracket") ? {'type': "lbracket"} : lbracket),
-              (lexer.has("rbracket") ? {'type': "rbracket"} : rbracket)
+              (lexer!.has("lbracket") ? {'type': "lbracket"} : lbracket),
+              (lexer!.has("rbracket") ? {'type': "rbracket"} : rbracket)
             ],
             "postprocess": (d) => '0200000000'
           },
           {
             "name": r"anyArray$ebnf$1$subexpression$1$ebnf$1",
             "symbols": [
-              (lexer.has("comma") ? {'type': "comma"} : comma)
+              (lexer!.has("comma") ? {'type': "comma"} : comma)
             ],
             "postprocess": id
           },
@@ -1055,7 +1055,7 @@ class MichelineGrammar {
           {
             "name": r"anyArray$ebnf$1$subexpression$1$ebnf$2",
             "symbols": [
-              (lexer.has("_") ? {'type': "_"} : _)
+              (lexer!.has("_") ? {'type': "_"} : _)
             ],
             "postprocess": id
           },
@@ -1079,7 +1079,7 @@ class MichelineGrammar {
           {
             "name": r"anyArray$ebnf$1$subexpression$2$ebnf$1",
             "symbols": [
-              (lexer.has("comma") ? {'type': "comma"} : comma)
+              (lexer!.has("comma") ? {'type': "comma"} : comma)
             ],
             "postprocess": id
           },
@@ -1091,7 +1091,7 @@ class MichelineGrammar {
           {
             "name": r"anyArray$ebnf$1$subexpression$2$ebnf$2",
             "symbols": [
-              (lexer.has("_") ? {'type': "_"} : _)
+              (lexer!.has("_") ? {'type': "_"} : _)
             ],
             "postprocess": id
           },
@@ -1116,11 +1116,11 @@ class MichelineGrammar {
           {
             "name": "anyArray",
             "symbols": [
-              (lexer.has("lbracket") ? {'type': "lbracket"} : lbracket),
-              (lexer.has("_") ? {'type': "_"} : _),
+              (lexer!.has("lbracket") ? {'type': "lbracket"} : lbracket),
+              (lexer!.has("_") ? {'type': "_"} : _),
               r"anyArray$ebnf$1",
-              (lexer.has("_") ? {'type': "_"} : _),
-              (lexer.has("rbracket") ? {'type': "rbracket"} : rbracket)
+              (lexer!.has("_") ? {'type': "_"} : _),
+              (lexer!.has("rbracket") ? {'type': "rbracket"} : rbracket)
             ],
             "postprocess": staticArrayToHex
           }

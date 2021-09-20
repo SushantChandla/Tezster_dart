@@ -11,19 +11,19 @@ class BigMapToken extends Token {
     return prim;
   }
 
-  BigMapToken(MichelsonV1Expression val, int idx, var fac)
+  BigMapToken(MichelsonV1Expression? val, int idx, var fac)
       : super(val, idx, fac);
 
   get valueSchema {
     MichelsonV1Expression michelsonV1Expression =
-        MichelsonV1Expression.j(val.args[1]);
+        MichelsonV1Expression.j(val!.args![1]);
     return this.createToken(michelsonV1Expression, 0);
   }
 
-  ComparableToken get keySchema {
+  ComparableToken? get keySchema {
     MichelsonV1Expression michelsonV1Expression =
-        MichelsonV1Expression.j(val.args[0]);
-    return (this.createToken(michelsonV1Expression, 0)) as ComparableToken;
+        MichelsonV1Expression.j(val!.args![0]);
+    return (this.createToken(michelsonV1Expression, 0)) as ComparableToken?;
   }
 
   _isValid(value) {
@@ -48,7 +48,7 @@ class BigMapToken extends Token {
 
     if (val.runtimeType == List) {
       var map = MichelsonMap(this.val);
-      val.forEach((current) => map.set(this.keySchema.toKey(current.args[0]),
+      val.forEach((current) => map.set(this.keySchema!.toKey(current.args[0]),
           this.valueSchema.execute(current.args[1])));
       return map;
     } else if (val.containsKey('int')) {
@@ -75,7 +75,7 @@ class BigMapToken extends Token {
     return list.map((key) => {
           'prim': 'Elt',
           'args': [
-            this.keySchema.encodeObject(key),
+            this.keySchema!.encodeObject(key),
             this.valueSchema.encodeObject(val.get(key))
           ]
         });
@@ -90,10 +90,10 @@ class BigMapToken extends Token {
       throw err;
     }
 
-    return val.keys.sort((a, b) => this.keySchema.compare(a, b)).map((key) => {
+    return val.keys.sort((a, b) => this.keySchema!.compare(a, b)).map((key) => {
           prim: 'Elt',
           args: [
-            this.keySchema.encodeObject(key),
+            this.keySchema!.encodeObject(key),
             this.valueSchema.encodeObject(val.get(key))
           ],
         });

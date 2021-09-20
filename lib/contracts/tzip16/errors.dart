@@ -34,7 +34,7 @@ class InvalidMetadata {
 
 class ProtocolNotSupported {
   String cause;
-  ProtocolNotSupported(String protocol)
+  ProtocolNotSupported(String? protocol)
       : cause = 'The protocol found in the URI is not supported: $protocol.';
 }
 
@@ -61,14 +61,14 @@ class ForbiddenInstructionInViewCode {
 
 class NoParameterExpectedError {
   String cause;
-  NoParameterExpectedError(String viewName, List args)
+  NoParameterExpectedError(String? viewName, List args)
       : cause =
             "$viewName Received ${args.length} arguments while expecting no parameter or 'Unit'";
 }
 
 class InvalidViewParameterError {
   String cause;
-  InvalidViewParameterError(String viewName, List args, List sigs)
+  InvalidViewParameterError(String? viewName, List args, List sigs)
       : cause =
             "$viewName Received ${args.length} arguments while expecting one of the following signatures $sigs})";
 }

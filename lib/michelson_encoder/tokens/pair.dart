@@ -42,28 +42,28 @@ collapse(var val, {String prim = 'pair'}) {
 class PairToken extends ComparableToken {
   static const String prim = 'pair';
 
-  PairToken(MichelsonV1Expression val, int idx, var fac)
-      : super(val is List ? {'prim': PairToken.prim, 'args': val} : val, idx,
+  PairToken(MichelsonV1Expression? val, int idx, var fac)
+      : super((val is List ? {'prim': PairToken.prim, 'args': val} : val) as MichelsonV1Expression?, idx,
             fac);
 
   List _args() {
     return collapse(this.val);
   }
 
-  _traversal(getLeftValue(Token token), getRightValue(Token token)) {
+  _traversal(getLeftValue(Token? token), getRightValue(Token? token)) {
     List args = _args();
     MichelsonV1Expression data = MichelsonV1Expression.j(args[0]);
-    Token leftToken = this.createToken(data, this.idx);
-    var keyCount = 1;
+    Token? leftToken = this.createToken(data, this.idx);
+    int? keyCount = 1;
     var leftValue;
-    if (leftToken.runtimeType == PairToken && !leftToken.hasAnnotations()) {
+    if (leftToken.runtimeType == PairToken && !leftToken!.hasAnnotations()) {
       leftValue = getLeftValue(leftToken);
       keyCount = leftToken.extractSchema().length;
     } else {
-      leftValue = {leftToken.annot(): getLeftValue(leftToken)};
+      leftValue = {leftToken!.annot(): getLeftValue(leftToken)};
     }
     data = MichelsonV1Expression.j(args[1]);
-    var rightToken = this.createToken(data, this.idx + keyCount);
+    var rightToken = this.createToken(data, this.idx! + keyCount!);
     var rightValue;
     if (rightToken.runtimeType == PairToken && !rightToken.hasAnnotations()) {
       rightValue = getRightValue(rightToken);
@@ -81,27 +81,27 @@ class PairToken extends ComparableToken {
   execute(dynamic val, {semantics}) {
     var args = collapse(val, prim: 'Pair');
     var data = _traversal(
-        (leftToken) => leftToken.execute(args[0], semantics: semantics),
-        (rightToken) => rightToken.execute(args[1], semantics: semantics));
+        (leftToken) => leftToken!.execute(args[0], semantics: semantics),
+        (rightToken) => rightToken!.execute(args[1], semantics: semantics));
     return data;
   }
 
   @override
   extractSchema() {
     return _traversal(
-      (leftToken) => leftToken.extractSchema(),
-      (rightToken) => rightToken.extractSchema(),
+      (leftToken) => leftToken!.extractSchema(),
+      (rightToken) => rightToken!.extractSchema(),
     );
   }
 
-  List<Token> _tokens() {
-    var cnt = 0;
-    List<Token> data = [];
+  List<Token?> _tokens() {
+    int cnt = 0;
+    List<Token?> data = [];
     this._args().forEach((a) {
       var m = MichelsonV1Expression.j(a);
-      Token tok = this.createToken(m, this.idx + cnt);
+      Token? tok = this.createToken(m, this.idx! + cnt);
       if (tok.runtimeType == PairToken) {
-        cnt += tok.extractSchema().keys.length;
+        cnt +=  tok!.extractSchema().keys.length as int;
       } else {
         cnt++;
       }
@@ -112,8 +112,8 @@ class PairToken extends ComparableToken {
 
   @override
   encodeObject(args) {
-    var leftToken = this._tokens()[0];
-    var rightToken = this._tokens()[1];
+    var leftToken = this._tokens()[0]!;
+    var rightToken = this._tokens()[1]!;
 
     var leftValue;
     if (leftToken.runtimeType == PairToken && !leftToken.hasAnnotations()) {
@@ -147,7 +147,7 @@ class PairToken extends ComparableToken {
   encode(List args) {
     return {
       prim: 'Pair',
-      args: _tokens().map((t) => t.encode(args)),
+      args: _tokens().map((t) => t!.encode(args)),
     };
   }
 

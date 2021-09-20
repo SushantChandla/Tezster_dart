@@ -46,7 +46,7 @@ class MetadataProvider {
   extractProtocolInfo(String _uri) {
     final regExp =
         RegExp(r'(?:sha256\:\/\/0x(.*)\/)?(https?|ipfs|tezos-storage)\:(.*)');
-    final match = regExp.firstMatch(_uri);
+    final match = regExp.firstMatch(_uri)!;
 
     final group1 = match.group(1);
     final group2 = match.group(2);

@@ -3,12 +3,12 @@ import 'package:tezster_dart/michelson_parser/michelson_parser.dart';
 class TezosLanguageUtil {
   static var primitiveRecordOrder = ["prim", "args", "annots"];
 
-  static String translateMichelsonToMicheline(String code) {
+  static String? translateMichelsonToMicheline(String code) {
     var result = MichelsonParser.parseMichelson(code);
     return result;
   }
 
-  static String translateMichelineToHex(p) {
+  static String? translateMichelineToHex(p) {
     return MichelsonParser.translateMichelineToHex(p);
   }
 
@@ -16,7 +16,7 @@ class TezosLanguageUtil {
     if (data is List) return data.map(normalizePrimitiveRecordOrder).toList();
 
     if (data is Map) {
-      var keys = data.keys.toList();
+      dynamic keys = data.keys.toList();
       keys.sort((k1, k2) =>
           TezosLanguageUtil.primitiveRecordOrder.indexOf(k1) -
           TezosLanguageUtil.primitiveRecordOrder.indexOf(k2));

@@ -26,19 +26,19 @@ var _defaultHandler = {
 
 class Tzip16Contract extends Contract {
   MetadataProvider metadataProvider;
-  Map _metadataEnvelope;
+  Map? _metadataEnvelope;
   ViewFactory _viewFactory = new ViewFactory();
   dynamic _metadataViewsObject = {};
   Tzip16Contract(
-      {String rpcServer,
-      String address,
-      MetadataProvider metadataProviderInterface})
+      {required String rpcServer,
+      required String address,
+      MetadataProvider? metadataProviderInterface})
       : metadataProvider =
             metadataProviderInterface ?? MetadataProvider(_defaultHandler),
         super(address: address, rpcServer: rpcServer);
 
   BigMapAbstraction _findMetadataBigMap() {
-    var metadataBigMapId = contractSchema.findFirstInTopLevelPair(
+    var metadataBigMapId = contractSchema!.findFirstInTopLevelPair(
         contractStorage, _metadataBigMapType);
 
     if (metadataBigMapId == null) {
@@ -91,7 +91,7 @@ class Tzip16Contract extends Contract {
     return viewName;
   }
 
-  Map _createViewImplementations(view, metadataViews) {
+  dynamic _createViewImplementations(view, metadataViews) {
     for (var viewImplementation in view?.implementations ?? []) {
       if (view.name) {
         var viewName = this._generateIndexedViewName(view.name, metadataViews);

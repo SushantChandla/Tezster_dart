@@ -10,12 +10,12 @@ enum ValidationResult {
   VALID,
 }
 
-List<String> implicitPrefix = [
+List<String?> implicitPrefix = [
   prefixLowercase['TZ1'],
   prefixLowercase['TZ2'],
   prefixLowercase['TZ3']
 ];
-List<String> contractPrefix = [prefixLowercase['KT1']];
+List<String?> contractPrefix = [prefixLowercase['KT1']];
 
 isValidPrefix(value) {
   if (value is String) {
@@ -31,7 +31,7 @@ validatePrefixedValue(value, List prefixes) {
     return ValidationResult.NO_PREFIX_MATCHED;
   }
 
-  var prefixKey = match.first.group(0).toUpperCase();
+  var prefixKey = match.first.group(0)!.toUpperCase();
 
   if (!isValidPrefix(prefixKey)) {
     return ValidationResult.NO_PREFIX_MATCHED;
@@ -49,7 +49,7 @@ validatePrefixedValue(value, List prefixes) {
     return ValidationResult.INVALID_CHECKSUM;
   }
 
-  decoded = decoded.sublist(prefix[prefixKey].length);
+  decoded = decoded.sublist(prefix[prefixKey]!.length);
   if (decoded.length != prefixLength[prefixKey]) {
     return ValidationResult.INVALID_LENGTH;
   }

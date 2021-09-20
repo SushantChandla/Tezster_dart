@@ -14,7 +14,7 @@ class Bls12381frValidationError extends TokenValidationError {
 class Bls12381frToken extends Token {
   static String prim = 'bls12_381_fr';
 
-  Bls12381frToken(MichelsonV1Expression val, int idx, fac)
+  Bls12381frToken(MichelsonV1Expression? val, int idx, fac)
       : super(val, idx, fac);
 
   isValid(dynamic value) =>

@@ -30,7 +30,7 @@ void main() {
   });
 
   test('Restore account from secret key', () {
-    List<String> keys =
+    List<String?> keys =
         TezsterDart.getKeysFromSecretKey(_keyStoreModel.secretKey);
     expect(keys[0], _keyStoreModel.secretKey);
     expect(keys[1], _keyStoreModel.publicKey);
@@ -113,14 +113,14 @@ void main() {
   test("Get Contract Storage", () async {
     var contract = TezsterDart.getContract(
         "https://mainnet.api.tez.ie", "KT1DLif2x9BtK6pUq9ZfFVVyW5wN2kau9rkW");
-    Map x = await contract.getStorage();
+    Map? x = await contract.getStorage();
     print(x);
   });
 
   test('Tzip 12 metadata test', () async {
     Tzip12Contract tzip12Contract = TezsterDart.getContract(
         'https://mainnet.api.tez.ie', 'KT1RJ6PbjHpwc3M5rw5s2Nbmefwbuwbdxton',
-        contractType: ContractType.Tzip12);
+        contractType: ContractType.Tzip12) as Tzip12Contract;
     var metaData = await tzip12Contract.getMetadata();
     print(metaData);
   });
@@ -128,7 +128,7 @@ void main() {
   test('Tzip 16 metadata View test', () async {
     Tzip16Contract tzip16Contract = TezsterDart.getContract(
         'https://mainnet.api.tez.ie', 'KT1StkBRUfJD9AuHAE4oQVi49qLQhsgeDcU1',
-        contractType: ContractType.Tzip16);
+        contractType: ContractType.Tzip16) as Tzip16Contract;
     var metaView = await tzip16Contract.metadataViews();
     print(metaView);
   });

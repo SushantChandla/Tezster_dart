@@ -4,7 +4,7 @@ import 'package:tezster_dart/michelson_encoder/tokens/token.dart';
 
 class BoolToken extends ComparableToken {
   static String prim = "bool";
-  BoolToken(MichelsonV1Expression val, int idx, fac) : super(val, idx, fac);
+  BoolToken(MichelsonV1Expression? val, int idx, fac) : super(val, idx, fac);
 
   @override
   execute(val, {semantics}) {

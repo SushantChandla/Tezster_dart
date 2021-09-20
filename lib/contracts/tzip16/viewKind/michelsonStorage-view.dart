@@ -9,11 +9,11 @@ abstract class View {
 }
 
 class MichelsonStorageView implements View {
-  String viewName;
-  MichelsonV1Expression returnType;
-  List<MichelsonV1Expression> code;
-  MichelsonV1Expression viewParameterType;
-  Contract contract;
+  String? viewName;
+  MichelsonV1Expression? returnType;
+  List<MichelsonV1Expression?>? code;
+  MichelsonV1Expression? viewParameterType;
+  Contract? contract;
   MichelsonStorageView(
       {this.code,
       this.contract,
@@ -43,18 +43,18 @@ class MichelsonStorageView implements View {
     }
   }
 
-  _illegalUseOfSelfInstruction(List<MichelsonV1Expression> code) {
+  _illegalUseOfSelfInstruction(List<MichelsonV1Expression?> code) {
     for (var instruction in code) {
-      if (instruction.prim == 'SELF') {
+      if (instruction!.prim == 'SELF') {
         var index = code.indexOf(instruction);
         var nextInstruction =
-            code[index + 1] != null ? code[index + 1].prim : null;
+            code[index + 1] != null ? code[index + 1]!.prim : null;
         if (nextInstruction != 'ADDRESS') {
           throw new ForbiddenInstructionInViewCode(
               'the instruction SELF should only be used before ADDRESS');
         }
       }
-      if (instruction.args != null && instruction.args.length != 0) {
+      if (instruction.args != null && instruction.args!.length != 0) {
         _illegalUseOfSelfInstruction(
             instruction.args as List<MichelsonV1Expression>);
       }
@@ -69,7 +69,7 @@ class MichelsonStorageView implements View {
           ..prim = 'PUSH'
           ..args = [
             MichelsonV1Expression()..prim = 'address',
-            MichelsonV1Expression()..prim = contract.address
+            MichelsonV1Expression()..prim = contract!.address
           ],
         MichelsonV1Expression()
           ..prim = 'Contract'
@@ -121,7 +121,7 @@ class MichelsonStorageView implements View {
     return code;
   }
 
-  _validateArgs(args, ParameterSchema schema, String viewNameg) {
+  _validateArgs(args, ParameterSchema schema, String? viewNameg) {
     var sigs = schema.extractSignatures();
 
     if (!sigs.find((x) => x.length == args.length)) {
@@ -160,25 +160,25 @@ class MichelsonStorageView implements View {
   Future executeView(args) async {
     // validate view code against tzip-16 specifications
     findForbiddenInstructionInViewCode(this.code);
-    _illegalUseOfSelfInstruction(this.code);
+    _illegalUseOfSelfInstruction(this.code!);
 
     var formatArgsAndPara = formatArgsAndParameter(args);
     var arg = formatArgsAndPara['arg'];
     var viewParameterType = formatArgsAndPara['viewParameterType'];
     var storageType =
-        contract.script['code'].firstWhere((x) => x.prim == 'storage');
+        contract!.script!['code'].firstWhere((x) => x.prim == 'storage');
     var storageArgs = storageType.args[0];
-    var storageValue = contract.script['storage'];
+    var storageValue = contract!.script!['storage'];
 
     // currentContext
     var chainId = await getChainId();
-    var contractBalance = (await getBalance(contract.address)).toString();
+    var contractBalance = (await getBalance(contract!.address)).toString();
     var block = await getBlock();
     var blockTimestamp = block.header.timestamp.toString();
     var protocolHash = block.protocol;
 
     var code = _adaptViewCodeToContext(
-        this.code, contractBalance, blockTimestamp, chainId);
+        this.code!, contractBalance, blockTimestamp, chainId);
 
     if (viewParameterType == null) {
       code.unshift(MichelsonV1Expression()..prim = 'CDR');
@@ -239,12 +239,12 @@ class MichelsonStorageView implements View {
 
   getChainId({String chain = 'main'}) {
     return HttpHelper.performGetRequest(
-        contract.rpcServer, '/chains/$chain/chain_id');
+        contract!.rpcServer, '/chains/$chain/chain_id');
   }
 
   Future<BigInt> getBalance(address,
       {block = 'head', String chain = 'main'}) async {
-    var balance = await HttpHelper.performGetRequest(contract.rpcServer,
+    var balance = await HttpHelper.performGetRequest(contract!.rpcServer,
         '/chains/$chain/blocks/$block/context/contracts/$address/balance',
         responseJson: false);
     return BigInt.parse(balance);
@@ -252,12 +252,12 @@ class MichelsonStorageView implements View {
 
   getBlock({block = 'head', String chain = 'main'}) async {
     var response = await HttpHelper.performGetRequest(
-        contract.rpcServer, '/chains/$chain/blocks/$block');
+        contract!.rpcServer, '/chains/$chain/blocks/$block');
     return response;
   }
 
   runCode(code, {block = 'head', chain = 'main'}) {
-    var response = HttpHelper.performPostRequest(contract.rpcServer,
+    var response = HttpHelper.performPostRequest(contract!.rpcServer,
         '/chains/$chain/blocks/$block/helpers/scripts/run_code', code);
     return response;
   }

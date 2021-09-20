@@ -7,21 +7,21 @@ import 'package:tezster_dart/michelson_encoder/schema/storage.dart';
 class Contract {
   String address;
   String rpcServer;
-  Schema contractSchema;
-  Map script;
-  Map contractStorage;
-  Contract({this.rpcServer, this.address})
+  Schema? contractSchema;
+  Map? script;
+  Map? contractStorage;
+  Contract({required this.rpcServer, required this.address})
       : assert(rpcServer != null),
         assert(address != null);
 
-  Future<Map> getStorage({
+  Future<Map?> getStorage({
     String block = 'head',
     String chain = 'main',
   }) async {
     await verifySchemaAndStorage(block: block, chain: chain);
     var storageResponse = MichelsonV1Expression.j(contractStorage);
-    return contractSchema.execute(
-        storageResponse, _smartContractAbstractionSemantic());
+    return contractSchema!
+        .execute(storageResponse, _smartContractAbstractionSemantic());
   }
 
   Future<bool> verifySchemaAndStorage({
@@ -31,7 +31,7 @@ class Contract {
     if (contractSchema == null) {
       script = await HttpHelper.performGetRequest(rpcServer,
           "chains/$chain/blocks/$block/context/contracts/$address/script");
-      contractSchema = Schema.fromscript(script);
+      contractSchema = Schema.fromscript(script as Map<String, dynamic>);
     }
     contractStorage = await HttpHelper.performGetRequest(rpcServer,
         "chains/$chain/blocks/$block/context/contracts/$address/storage");

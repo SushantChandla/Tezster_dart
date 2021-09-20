@@ -6,8 +6,8 @@ import 'package:tezster_dart/michelson_encoder/tokens/pair.dart';
 import 'package:tezster_dart/michelson_encoder/tokens/token.dart';
 
 class Schema {
-  Token _root;
-  BigMapToken _bigMap;
+  Token? _root;
+  BigMapToken? _bigMap;
 
   bool schemaTypeSymbol = true;
 
@@ -18,9 +18,9 @@ class Schema {
   Schema(MichelsonV1Expression val) {
     _root = createToken(val, 0);
     if (_root is BigMapToken) {
-      _bigMap = _root as BigMapToken;
+      _bigMap = _root as BigMapToken?;
     } else if (_isExpressionExtended(val) && val.prim == 'pair') {
-      var exp = MichelsonV1Expression.j(val.args[0]);
+      var exp = MichelsonV1Expression.j(val.args![0]);
       if (_isExpressionExtended(exp) && exp.prim == 'big_map') {
         _bigMap = new BigMapToken(exp, 0, createToken(exp, 0));
       }
@@ -38,10 +38,7 @@ class Schema {
 
     MichelsonV1Expression michelsonV1Expression =
         MichelsonV1Expression.j(storage['args'][0]);
-    if (michelsonV1Expression is MichelsonV1Expression) {
       return Schema(michelsonV1Expression);
-    }
-    return null;
   }
 
   typecheck(val) {
@@ -49,7 +46,7 @@ class Schema {
       return true;
     }
     try {
-      var x = this._root.encodeObject(val);
+      var x = this._root!.encodeObject(val);
       if (x != null) return true;
     } catch (ex) {
       return false;
@@ -66,7 +63,7 @@ class Schema {
 
   _removeTopLevelAnnotation(dynamic obj) {
     if (_root.runtimeType == PairToken || _root.runtimeType == OrToken) {
-      if (_root.hasAnnotations() && obj is Map && obj.keys.length == 1) {
+      if (_root!.hasAnnotations() && obj is Map && obj.keys.length == 1) {
         return obj[obj.keys.first];
       }
     }
@@ -74,13 +71,13 @@ class Schema {
   }
 
   execute(dynamic val, var semantics) {
-    var storage = _root.execute(val, semantics: semantics);
+    var storage = _root!.execute(val, semantics: semantics);
     var data = _removeTopLevelAnnotation(storage);
     return data;
   }
 
   findFirstInTopLevelPair<T extends MichelsonV1Expression>(storage, valueType) {
-    return _findValuei(_root.val.jsonCopy, storage, valueType);
+    return _findValuei(_root!.val!.jsonCopy, storage, valueType);
   }
 
   _findValuei(schema, storage, valuetoFind) {
@@ -142,9 +139,9 @@ class Schema {
   //                       allListEqual(ac.annots, bc.annots)));
   // }
 
-  bool allListEqual(List a, List b) {
+  bool allListEqual(List a, List? b) {
     for (int i = 0; i < a.length; i++) {
-      if (a[i].toString() != b[i].toString()) return false;
+      if (a[i].toString() != b![i].toString()) return false;
     }
     return true;
   }
@@ -154,7 +151,7 @@ class Schema {
       throw Exception("No big map schema");
     }
 
-    return this._bigMap.valueSchema.execute(key, semantics: semantics);
+    return this._bigMap!.valueSchema.execute(key, semantics: semantics);
   }
 
   // collapse(val, {prim = PairToken.prim}) {
@@ -217,9 +214,9 @@ class Schema {
     }
 
     try {
-      return _bigMap.keySchema.toBigMapKey(key);
+      return _bigMap!.keySchema!.toBigMapKey(key);
     } catch (ex) {
-      throw new Exception('Unable to encode big map key: ' + ex);
+      throw new Exception('Unable to encode big map key: $ex');
     }
   }
 }

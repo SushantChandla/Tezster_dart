@@ -8,15 +8,15 @@ class MapToken extends Token {
   MapToken(dynamic val, int idx, var fac) : super(val, idx, fac);
 
   get valueSchema {
-    MichelsonV1Expression data = MichelsonV1Expression.j(val.args[1]);
+    MichelsonV1Expression data = MichelsonV1Expression.j(val!.args![1]);
     // data.prim = this.val.args[1]['prim'];
     // data.args = this.val.args[1]['args'];
     // data.annots = this.val.args[1]['annots'];
     return this.createToken(data, 0);
   }
 
-  ComparableToken get keySchema {
-    MichelsonV1Expression data = MichelsonV1Expression.j(val.args[0]);
+  ComparableToken? get keySchema {
+    MichelsonV1Expression data = MichelsonV1Expression.j(val!.args![0]);
     // data.prim = this.val.args[0]['prim'];
     // data.args = this.val.args[0]['args'];
     // data.annots = this.val.args[0]['annots'];
@@ -36,7 +36,7 @@ class MapToken extends Token {
     var map = new MichelsonMap(this.val);
 
     val.forEach((current) {
-      map.set(this.keySchema.toKey(current['args'][0]),
+      map.set(this.keySchema!.toKey(current['args'][0]),
           this.valueSchema.execute(current['args'][1],semantics: semantics));
     });
     return map;
@@ -46,7 +46,7 @@ class MapToken extends Token {
   extractSchema() {
     return {
       'map': {
-        'key': this.keySchema.extractSchema(),
+        'key': this.keySchema!.extractSchema(),
         'value': this.valueSchema.extractSchema(),
       },
     };
@@ -67,7 +67,7 @@ class MapToken extends Token {
       data.add({
         'prim': "Elt",
         'args': [
-          this.keySchema.encodeObject(key),
+          this.keySchema!.encodeObject(key),
           this.valueSchema.encodeObject(val.get(key))
         ]
       });
@@ -87,11 +87,11 @@ class MapToken extends Token {
     }
 
     return val.keys
-      .sort((a, b) => this.keySchema.compare(a, b))
+      .sort((a, b) => this.keySchema!.compare(a, b))
       .map((key) {
         return {
           prim: 'Elt',
-          args: [this.keySchema.encodeObject(key), this.valueSchema.encodeObject(val.get(key))],
+          args: [this.keySchema!.encodeObject(key), this.valueSchema.encodeObject(val.get(key))],
         };
       });
   }

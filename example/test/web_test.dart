@@ -30,7 +30,7 @@ void main() {
   });
 
   test('Restore account from secret key', () {
-    List<String> keys =
+    List<String?> keys =
         TezsterDart.getKeysFromSecretKey(_keyStoreModel.secretKey);
     expect(keys[0], _keyStoreModel.secretKey);
     expect(keys[1], _keyStoreModel.publicKey);
@@ -113,7 +113,7 @@ void main() {
   test("Get Contract Storage", () async {
     var contract = TezsterDart.getContract(
         "https://mainnet.api.tez.ie", "KT1DLif2x9BtK6pUq9ZfFVVyW5wN2kau9rkW");
-    Map x = await contract.getStorage();
+    Map? x = await contract.getStorage();
     print(x);
   });
 

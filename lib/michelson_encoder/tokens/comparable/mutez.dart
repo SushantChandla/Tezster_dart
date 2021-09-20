@@ -3,7 +3,7 @@ import 'package:tezster_dart/michelson_encoder/tokens/token.dart';
 
 class MutezToken extends ComparableToken {
   static String prim = 'mutez';
-  MutezToken(MichelsonV1Expression val, int idx, fac) : super(val, idx, fac);
+  MutezToken(MichelsonV1Expression? val, int idx, fac) : super(val, idx, fac);
 
   @override
   execute(val, {semantics}) {
@@ -43,13 +43,13 @@ class MutezToken extends ComparableToken {
   }
 
   compare(mutez1, mutez2) {
-    int o1 = mutez1.runtimeType == int ? mutez1 : int.tryParse(mutez1);
-    int o2 = mutez2.runtimeType == int ? mutez2 : int.tryParse(mutez2);
+    int? o1 = mutez1.runtimeType == int ? mutez1 : int.tryParse(mutez1);
+    int? o2 = mutez2.runtimeType == int ? mutez2 : int.tryParse(mutez2);
     if (o1 == o2) {
       return 0;
     }
 
-    return o1 < o2 ? -1 : 1;
+    return o1! < o2! ? -1 : 1;
   }
 
   @override

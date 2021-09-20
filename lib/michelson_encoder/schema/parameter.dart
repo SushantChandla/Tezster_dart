@@ -5,9 +5,9 @@ import 'package:tezster_dart/michelson_encoder/tokens/or.dart';
 import 'package:tezster_dart/michelson_encoder/tokens/token.dart';
 
 class ParameterSchema {
-  Token _root;
+  late Token _root;
 
-  ParameterSchema(MichelsonV1Expression val) {
+  ParameterSchema(MichelsonV1Expression? val) {
     _root = createToken(val, 0);
   }
 
@@ -18,13 +18,13 @@ class ParameterSchema {
 
   get hasAnnotation {
     if (this.isMultipleEntryPoint) {
-      return this.extractSchema.keys.first != '0';
+      return this.extractSchema!.keys.first != '0';
     } else {
       return true;
     }
   }
 
-  Map get extractSchema {
+  Map? get extractSchema {
     return _root.extractSchema();
   }
 

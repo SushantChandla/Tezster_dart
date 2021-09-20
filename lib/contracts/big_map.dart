@@ -7,12 +7,12 @@ import 'package:tezster_dart/michelson_encoder/michelson_expression.dart';
 import 'package:tezster_dart/michelson_encoder/schema/storage.dart';
 
 class BigMapAbstraction {
-  BigInt id;
-  BigMapAbstraction(BigInt id, Schema schema) {
+  BigInt? id;
+  BigMapAbstraction(BigInt? id, Schema schema) {
     this.id = id;
     this._bigMapSchema = schema;
   }
-  Schema _bigMapSchema;
+  late Schema _bigMapSchema;
 
   toJSON() {
     return this.id.toString();
@@ -49,8 +49,7 @@ class BigMapAbstraction {
 
   _packData(rpc, data, {block = 'head', chain = 'main'}) async {
     dynamic r = await HttpHelper.performPostRequest(
-        rpc, '/chains/$chain/blocks/$block/helpers/scripts/pack_data', data,
-        headers: {});
+        rpc, '/chains/$chain/blocks/$block/helpers/scripts/pack_data', data,);
     r = jsonDecode(r);
     dynamic formattedGas = r['gas'];
     var tryBigInt = BigInt.tryParse(formattedGas);

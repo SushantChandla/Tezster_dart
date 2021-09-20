@@ -8,17 +8,17 @@ var michelsonMapTypeSymbol = Symbol('michelson-map-type-symbol');
 bool isMapType(
   MichelsonV1Expression value,
 ) =>
-    value.args != null && value.args is List && value.args.length == 2;
+    value.args != null && value.args is List && value.args!.length == 2;
 
 class MichelsonMap<K, T> {
   var _valueMap = new Map<String, T>();
   var _keyMap = new Map<String, K>();
-  Schema _keySchema;
-  Schema _valueSchema;
+  Schema? _keySchema;
+  Schema? _valueSchema;
 
   var michelsonMapTypeSymbol = true;
 
-  MichelsonMap(MichelsonV1Expression mapType) {
+  MichelsonMap(MichelsonV1Expression? mapType) {
     if (mapType != null) {
       this.setType(mapType);
     }
@@ -30,7 +30,7 @@ class MichelsonMap<K, T> {
 
   _typecheckKey(K key) {
     if (_keySchema != null) {
-      return _keySchema.typecheck(key);
+      return _keySchema!.typecheck(key);
     }
 
     return true;
@@ -44,7 +44,7 @@ class MichelsonMap<K, T> {
 
   _typecheckValue(T value) {
     if (this._valueSchema != null) {
-      return this._valueSchema.typecheck(value);
+      return this._valueSchema!.typecheck(value);
     }
 
     return true;
@@ -73,11 +73,11 @@ class MichelsonMap<K, T> {
     if (!isMapType(mapType)) {
       throw new Exception('mapType is not a valid michelson map type');
     }
-    MichelsonV1Expression t = MichelsonV1Expression.j(mapType.args[0]);
+    MichelsonV1Expression t = MichelsonV1Expression.j(mapType.args![0]);
 
     _keySchema = new Schema(t);
 
-    t = MichelsonV1Expression.j(mapType.args[1]);
+    t = MichelsonV1Expression.j(mapType.args![1]);
     _valueSchema = new Schema(t);
   }
 
@@ -99,7 +99,7 @@ class MichelsonMap<K, T> {
     }
   }
 
-  get(K key, [String encodedKey]) {
+  get(K key, [String? encodedKey]) {
     this._assertTypecheckKey(key);
     if (encodedKey != null) return _valueMap[encodedKey];
     var strKey = this.serializeDeterministically(key);

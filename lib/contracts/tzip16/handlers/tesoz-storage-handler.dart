@@ -19,7 +19,7 @@ class TezosStorageHandler {
     if (!parsedTezosStorageUri) {
       throw new InvalidUri(location.toString());
     }
-    var bigMapId = contract.contractSchema
+    var bigMapId = contract.contractSchema!
         .findFirstInTopLevelPair(contract.contractStorage, typeOfValueToFind);
     if (bigMapId == null) {
       throw new BigMapMetadataNotFound();

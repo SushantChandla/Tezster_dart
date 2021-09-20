@@ -5,7 +5,7 @@ import 'package:tezster_dart/michelson_encoder/helpers/constants.dart';
 
 dynamic encodePubKey(String value) {
   if (value.substring(0, 2) == '00') {
-    Map<String, Uint8List> pref = {
+    Map<String, Uint8List?> pref = {
       '0000': prefix['TZ1'],
       '0001': prefix['TZ2'],
       '0002': prefix['TZ3'],
@@ -17,13 +17,13 @@ dynamic encodePubKey(String value) {
   return b58cencode(value.substring(2, 42), prefix['KT']);
 }
 
-dynamic b58cencode(dynamic value, Uint8List prefix) {
+dynamic b58cencode(dynamic value, Uint8List? prefix) {
   prefix ??= Uint8List(0);
   var payloadAr = value.runtimeType == String
       ? Uint8List.fromList(hex.decode(value))
       : value;
 
-  var n = Uint8List(prefix.length + payloadAr.length);
+  var n = Uint8List(prefix.length + payloadAr.length as int);
   n.setAll(0, prefix);
   n.setAll(prefix.length, payloadAr);
 
