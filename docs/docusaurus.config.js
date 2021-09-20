@@ -6,7 +6,7 @@ const darkCodeTheme = require('prism-react-renderer/themes/dracula');
 (module.exports = {
   title: 'Tezster Dart',
   tagline: 'A flutter package which provides the functionalities to play around with tezos dApps',
-  url: 'https://tezsterdart.netlify.app/',
+  url: 'https://tezsterdart.netlify.app',
   baseUrl: '/',
   onBrokenLinks: 'throw',
   onBrokenMarkdownLinks: 'warn',
