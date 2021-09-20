@@ -2,7 +2,7 @@
 sidebar_position: 4
 ---
 
-# Tzip 12
+# Tzip 12 Contract
 You can get the instance of Tzip12Contract by passing tzip12 contract type in the `getContract` method.
 You can get Token metaData by calling `getTokenMetadata` on the Tzip12Contract Instance.
 ```dart

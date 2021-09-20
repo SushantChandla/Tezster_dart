@@ -6,6 +6,7 @@ sidebar_position: 1
 
 Dart kit for Tezos to build applications using flutter framework. 
 A library for building decentralized applications in Flutter, currently focused on the Tezos platform. Tezster_dart package contains all the function that is required to build tezos application.
+![Tezster_image](/img/tezster_dart.png)
 
 # Why Tezos
 

@@ -2,7 +2,7 @@
 sidebar_position: 3
 ---
 
-# Tzip 16 
+# Tzip 16 Contract
 A standard for accessing contract metadata in JSON format in on-chain storage or off-chain using IPFS or HTTP(S).
 
 You can get the instance of Tzip16Contract by passing tzip16 in the `getContract` method.

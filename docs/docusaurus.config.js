@@ -43,8 +43,8 @@ const darkCodeTheme = require('prism-react-renderer/themes/dracula');
       navbar: {
         title: 'Tezster dart',
         logo: {
-          alt: 'My Site Logo',
-          src: 'img/logo.svg',
+          alt: 'Tezster',
+          src: 'img/tezsure.jpg',
         },
         items: [
           {
