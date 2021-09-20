@@ -8,7 +8,7 @@ Tezster_dart exposes following functions:
 
 ### Get Balance.
 
-You can use `getBalance` function to get balance of the account/contract with any [Rpc server](/docs/intro#list-of-community-run-nodes).
+You can use `getBalance` function to get balance of the account/contract with any [Rpc server](/docs/intro).
 
 ```dart
 String balance = await TezsterDart.getBalance('tz1c....ozGGs', 'your rpc server');
