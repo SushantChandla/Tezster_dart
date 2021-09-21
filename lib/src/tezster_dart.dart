@@ -21,7 +21,6 @@ import 'package:tezster_dart/contracts/tzip12/tzip12_contract.dart';
 import 'package:tezster_dart/contracts/tzip16/tzip16-contract.dart';
 import 'package:tezster_dart/helper/constants.dart';
 import 'package:tezster_dart/helper/http_helper.dart';
-import 'package:tezster_dart/michelson_parser/michelson_parser.dart';
 import 'package:tezster_dart/reporting/tezos/tezos_conseil_client.dart';
 import 'package:tezster_dart/src/soft-signer/soft_signer.dart';
 import 'package:tezster_dart/tezster_dart.dart';
@@ -153,8 +152,6 @@ class TezsterDart {
     String passphrase = "",
     String email = "",
   }) async {
-    assert(mnemonic != null);
-    assert(passphrase != null);
 
     List<int> stringNormalize(String stringToNormalize) {
       String normalizedString = unorm.nfkd(stringToNormalize);
@@ -379,6 +376,10 @@ class TezsterDart {
         block: 'head', chainid: 'main');
   }
 
+
+  /// Provides the instance for the Contract 
+  /// You can set [contractType] variable to get the this instance of 
+  /// Tzip16 or Tzip12 Contract
   static Contract getContract(String rpcServer, String address,
       {ContractType contractType = ContractType.DEFAULT}) {
     assert(rpcServer != null);

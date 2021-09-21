@@ -15,7 +15,7 @@ class SoftSigner {
   var _key;
 
   SoftSigner(
-      {Uint8List? secretKey,
+      {required Uint8List secretKey,
       int validity = -1,
       String passphrase = '',
       Uint8List? salt}) {
