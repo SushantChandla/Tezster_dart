@@ -302,7 +302,7 @@ class TezsterDart {
     int storageLimit,
     int gasLimit,
     List<String> entrypoint,
-    List<String> parameters, {
+    List<String?> parameters, {
     var codeFormat = TezosParameterFormat.Micheline,
     offset = 54,
   }) async {

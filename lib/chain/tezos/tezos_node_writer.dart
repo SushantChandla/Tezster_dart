@@ -106,7 +106,7 @@ class TezosNodeWriter {
     int storageLimit,
     int gasLimit,
     List<String> entrypoint,
-    List<String> parameters, {
+    List<String?> parameters, {
     var parameterFormat = TezosParameterFormat.Michelson,
     offset = 54,
   }) async {
@@ -177,10 +177,9 @@ class TezosNodeWriter {
       int storageLimit,
       int gasLimit,
       entrypoint,
-      String parameters,
+      String? parameters,
       TezosParameterFormat parameterFormat) {
     var estimate = Estimate(gasLimit * 1500, storageLimit, 162, 250, fee);
-
     OperationModel transaction = new OperationModel(
       destination: contract,
       amount: amount.toString(),
