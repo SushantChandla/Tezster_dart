@@ -114,7 +114,7 @@ class TezosNodeWriter {
             server, keyStore.publicKeyHash) +
         1;
 
-    var transactions = [];
+    List<OperationModel> transactions = [];
 
     for (var i = 0; i < entrypoint.length; i++) {
       transactions.add(
@@ -132,12 +132,8 @@ class TezosNodeWriter {
         ),
       );
     }
-    var operations = await appendRevealOperation(
-        server,
-        keyStore.publicKey,
-        keyStore.publicKeyHash,
-        counter - 1,
-        [...transactions as Iterable<OperationModel>]);
+    var operations = await appendRevealOperation(server, keyStore.publicKey,
+        keyStore.publicKeyHash, counter - 1, [...transactions]);
     return sendOperation(server, operations, signer, offset);
   }
 
@@ -172,7 +168,7 @@ class TezosNodeWriter {
     return sendOperation(server, operations, signer, offset);
   }
 
-  static constructContractInvocationOperation(
+  static OperationModel constructContractInvocationOperation(
       String publicKeyHash,
       int counter,
       String contract,
@@ -232,7 +228,7 @@ class TezosNodeWriter {
         server, publicKeyHash);
     var counter = accountOperationIndex + 1;
     if (!isKeyRevealed) {
-      var revealOp = OperationModel(
+      OperationModel revealOp = OperationModel(
         counter: counter,
         fee: '0', // Reveal Fee will be covered by the appended operation
         source: publicKeyHash,
