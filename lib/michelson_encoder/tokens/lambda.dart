@@ -9,8 +9,8 @@ class LambdaToken extends Token {
 
   @override
   execute(val, {semantics}) {
-    if (val.string != null) {
-      return val.string;
+    if (val is Map && val['string'] != null) {
+      return val['string'];
     } else {
       return val;
     }

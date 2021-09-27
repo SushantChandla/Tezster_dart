@@ -72,8 +72,7 @@ class Tzip12Contract extends Tzip16Contract {
     }
     var metadataFromUri =
         await this._fetchTokenMetadataFromUri(tokenMap as MichelsonMap);
-    return this._formatMetadataToken(
-        tokenId, tokenMap, metadataFromUri);
+    return this._formatMetadataToken(tokenId, tokenMap, metadataFromUri);
   }
 
   _retrieveTokenMetadataFromBigMap(tokenId) async {
@@ -93,8 +92,7 @@ class Tzip12Contract extends Tzip16Contract {
     }
     var metadataFromUri =
         await this._fetchTokenMetadataFromUri(michelsonMap as MichelsonMap);
-    return this._formatMetadataToken(
-        tokenId, michelsonMap, metadataFromUri);
+    return this._formatMetadataToken(tokenId, michelsonMap, metadataFromUri);
   }
 
   _fetchTokenMetadataFromUri(MichelsonMap tokenMetadata) async {
@@ -135,8 +133,8 @@ class Tzip12Contract extends Tzip16Contract {
   }
 
   BigInt _findTokenMetadataBigMap() {
-    var tokenMetadataBigMapId = contractSchema!.findFirstInTopLevelPair(
-        contractStorage, _tokenMetaBigMap);
+    var tokenMetadataBigMapId = contractSchema!
+        .findFirstInTopLevelPair(contractStorage, _tokenMetaBigMap);
     if (tokenMetadataBigMapId == null) {
       throw new TokenMetadataNotFound(address);
     }

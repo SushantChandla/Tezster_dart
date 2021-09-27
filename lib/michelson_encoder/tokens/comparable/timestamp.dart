@@ -1,4 +1,4 @@
-
+import 'package:tezster_dart/michelson_encoder/michelson_expression.dart';
 import 'package:tezster_dart/michelson_encoder/tokens/token.dart';
 
 class TimestampToken extends ComparableToken {
@@ -8,10 +8,11 @@ class TimestampToken extends ComparableToken {
 
   @override
   execute(val, {semantics}) {
+    if (val is MichelsonV1Expression) val = val.jsonCopy;
     if (val['string'] != null) {
       return DateTime.parse(val['string'].toString()).toIso8601String();
     } else if (val['int'] != null) {
-      int x=int.parse(val['int']);
+      int x = int.parse(val['int']);
       return DateTime.fromMillisecondsSinceEpoch(x);
     }
   }
@@ -34,14 +35,14 @@ class TimestampToken extends ComparableToken {
   @override
   encode(List args) {
     var val = args.removeLast();
-    return { 'string': val };
+    return {'string': val};
   }
 
   @override
   Map toBigMapKey(val) {
     return {
-      'key': { 'string': val },
-      'type': { 'prim': TimestampToken.prim },
+      'key': {'string': val},
+      'type': {'prim': TimestampToken.prim},
     };
   }
 }

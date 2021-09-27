@@ -13,6 +13,7 @@ class StringToken extends ComparableToken {
 
   @override
   execute(val, {semantics}) {
+    if (val is MichelsonV1Expression) val = val.jsonCopy;
     return val[val.keys.first];
   }
 
@@ -29,7 +30,7 @@ class StringToken extends ComparableToken {
   @override
   encode(List args) {
     var val = args.removeLast();
-    return {String: val};
+    return {'string': val};
   }
 
   @override

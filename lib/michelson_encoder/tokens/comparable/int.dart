@@ -15,16 +15,23 @@ class IntToken extends ComparableToken {
 
   @override
   encodeObject(val) {
+    if (val is Map) {
+      val = val['int'];
+    }
     _isValid(val);
-    return {int: BigInt.parse(val)};
+    if (val is String) return {'int': BigInt.parse(val).toString()};
+    return {'int': val};
   }
 
   _isValid(val) {
-    var bigNumber = BigInt.tryParse(val);
-    if (bigNumber == null) {
-      throw Exception('$val is not a number');
+    if (val is String) {
+      var x = BigInt.tryParse(val);
+      if (x != null) return true;
+    }
+    if (val.runtimeType != int) {
+      return Exception("Value is not a number: $val");
     } else {
-      return null;
+      return true;
     }
   }
 
@@ -46,8 +53,10 @@ class IntToken extends ComparableToken {
   }
 
   compare(int1, int2) {
-    int? o1 = int1.runtimeType == int ? int1 : int.tryParse(int1);
-    int? o2 = int1.runtimeType == int ? int1 : int.tryParse(int1);
+    num? o1 =
+        int1.runtimeType == int || int1 is BigInt ? int1 : int.tryParse(int1);
+    num? o2 =
+        int1.runtimeType == int || int1 is BigInt ? int1 : int.tryParse(int1);
     if (o1 == o2) {
       return 0;
     }

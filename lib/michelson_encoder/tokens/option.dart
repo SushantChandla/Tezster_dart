@@ -19,10 +19,6 @@ class OptionToken extends ComparableToken {
   }
 
   Token? subToken() {
-    // MichelsonV1Expression data = MichelsonV1Expression();
-    // data.prim = this.val.args[0]['prim'];
-    // data.args = this.val.args[0]['args'];
-    // data.annots = this.val.args[0]['annots'];
     var t = MichelsonV1Expression.j(val!.args![0]);
     return this.createToken(t, this.idx);
   }

@@ -1,4 +1,3 @@
-
 import 'package:tezster_dart/michelson_encoder/michelson_expression.dart';
 import 'package:tezster_dart/michelson_encoder/tokens/token.dart';
 
@@ -8,7 +7,13 @@ class BoolToken extends ComparableToken {
 
   @override
   execute(val, {semantics}) {
-    return val['prim'].toLowerCase() == 'true' ? true : false;
+    String s = 'false';
+    if (val is Map) {
+      s = val['prim'].toLowerCase();
+    } else if (val is MichelsonV1Expression) {
+      s = val.prim!.toLowerCase();
+    }
+    return s == 'true' ? true : false;
   }
 
   encode(List<dynamic> args) {

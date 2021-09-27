@@ -1,7 +1,7 @@
-import 'package:collection/collection.dart' show IterableExtension;
 import 'package:tezster_dart/michelson_encoder/michelson_expression.dart';
 import 'package:tezster_dart/michelson_encoder/tokens/bigmap.dart';
 import 'package:tezster_dart/michelson_encoder/tokens/bls12_381_fr.dart';
+import 'package:tezster_dart/michelson_encoder/tokens/chain-id.dart';
 import 'package:tezster_dart/michelson_encoder/tokens/comparable/address.dart';
 import 'package:tezster_dart/michelson_encoder/tokens/comparable/bool.dart';
 import 'package:tezster_dart/michelson_encoder/tokens/comparable/bytes.dart';
@@ -20,132 +20,63 @@ import 'package:tezster_dart/michelson_encoder/tokens/option.dart';
 import 'package:tezster_dart/michelson_encoder/tokens/or.dart';
 import 'package:tezster_dart/michelson_encoder/tokens/pair.dart';
 import 'package:tezster_dart/michelson_encoder/tokens/set.dart';
-import 'package:tezster_dart/michelson_encoder/tokens/tokens.dart';
+import 'package:tezster_dart/michelson_encoder/tokens/signature.dart';
+import 'package:tezster_dart/michelson_encoder/tokens/ticket.dart';
 import 'package:tezster_dart/michelson_encoder/tokens/unit.dart';
 
-createToken(MichelsonV1Expression? val, int idx) {
-  String? objectType;
-  if (val is List) {
-    return new PairToken(val, idx, createToken(val, idx));
+createToken(dynamic val, int idx) {
+  if (!(val is MichelsonV1Expression)) {
+    val = MichelsonV1Expression.j(val);
   }
-
-  var t = tokens.firstWhereOrNull(
-    (element) {
-      if (element == PairToken) {
-        objectType = "PairToken";
-        return PairToken.prim == val!.prim;
-      } else if (element == OrToken) {
-        objectType = "OrToken";
-        return OrToken.prim == val!.prim;
-      } else if (element == OptionToken) {
-        objectType = "OptionToken";
-        return OptionToken.prim == val!.prim;
-      } else if (element == BigMapToken) {
-        objectType = "BigMapToken";
-        return BigMapToken.prim == val!.prim;
-      } else if (element == AddressToken) {
-        objectType = "AddressToken";
-        return AddressToken.prim == val!.prim;
-      } else if (element == KeyHashToken) {
-        objectType = "KeyHashToken";
-        return KeyHashToken.prim == val!.prim;
-      } else if (element == NatToken) {
-        objectType = "NatToken";
-        return NatToken.prim == val!.prim;
-      } else if (element == UnitToken) {
-        objectType = "UnitToken";
-        return UnitToken.prim == val!.prim!.toLowerCase();
-      } else if (element == ContractToken) {
-        objectType = "ContractToken";
-        return ContractToken.prim == val!.prim;
-      } else if (element == LambdaToken) {
-        objectType = "LambdaToken";
-        return LambdaToken.prim == val!.prim;
-      } else if (element == ListToken) {
-        objectType = "ListToken";
-        return ListToken.prim == val!.prim;
-      } else if (element == TimestampToken) {
-        objectType = "TimestampToken";
-        return TimestampToken.prim == val!.prim;
-      } else if (element == MapToken) {
-        objectType = "MapToken";
-        return MapToken.prim == val!.prim;
-      } else if (element == StringToken) {
-        objectType = "StringToken";
-        return StringToken.prim == val!.prim;
-      } else if (element == BytesToken) {
-        objectType = "BytesToken";
-        return BytesToken.prim == val!.prim;
-      } else if (element == SetToken) {
-        objectType = "SetToken";
-        return SetToken.prim == val!.prim;
-      } else if (element == Bls12381frToken) {
-        objectType = "Bls12381frToken";
-        return Bls12381frToken.prim == val!.prim;
-      } else if (element == IntToken) {
-        objectType = "IntToken";
-        return IntToken.prim == val!.prim;
-      } else if (element == BoolToken) {
-        objectType = "BoolToken";
-        return BoolToken.prim == val!.prim;
-      } else if (element == MutezToken) {
-        objectType = "MutezToken";
-        return MutezToken.prim == val!.prim;
-      } else if (element == KeyToken) {
-        objectType = "KeyToken";
-        return KeyToken.prim == val!.prim;
-      }
-
-      return false;
-    },
-  );
-
-  if (t == null) {
-    throw new Exception(
-        'Malformed data expected a value with a valid prim property');
-  }
-
-  if (objectType == "PairToken") {
+  if (val.prim == PairToken.prim) {
     return PairToken(val, idx, createToken);
-  } else if (objectType == "OrToken") {
+  } else if (OrToken.prim == val.prim) {
     return OrToken(val, idx, createToken);
-  } else if (objectType == "OptionToken") {
+  } else if (OptionToken.prim == val.prim) {
     return OptionToken(val, idx, createToken);
-  } else if (objectType == "BigMapToken") {
+  } else if (BigMapToken.prim == val.prim) {
     return BigMapToken(val, idx, createToken);
-  } else if (objectType == "AddressToken") {
+  } else if (AddressToken.prim == val.prim) {
     return AddressToken(val, idx, createToken);
-  } else if (objectType == "KeyHashToken") {
+  } else if (KeyHashToken.prim == val.prim) {
     return KeyHashToken(val, idx, createToken);
-  } else if (objectType == "NatToken") {
+  } else if (NatToken.prim == val.prim) {
     return NatToken(val, idx, createToken);
-  } else if (objectType == "UnitToken") {
+  } else if (UnitToken.prim == val.prim!.toLowerCase()) {
     return UnitToken(val, idx, createToken);
-  } else if (objectType == "ContractToken") {
+  } else if (ContractToken.prim == val.prim) {
     return ContractToken(val, idx, createToken);
-  } else if (objectType == "LambdaToken") {
+  } else if (LambdaToken.prim == val.prim) {
     return LambdaToken(val, idx, createToken);
-  } else if (objectType == "ListToken") {
+  } else if (ListToken.prim == val.prim) {
     return ListToken(val, idx, createToken);
-  } else if (objectType == "TimestampToken") {
+  } else if (TimestampToken.prim == val.prim) {
     return TimestampToken(val, idx, createToken);
-  } else if (objectType == "MapToken") {
+  } else if (MapToken.prim == val.prim) {
     return MapToken(val, idx, createToken);
-  } else if (objectType == "StringToken") {
+  } else if (StringToken.prim == val.prim) {
     return StringToken(val, idx, createToken);
-  } else if (objectType == "BytesToken") {
+  } else if (BytesToken.prim == val.prim) {
     return BytesToken(val, idx, createToken);
-  } else if (objectType == "SetToken") {
+  } else if (SetToken.prim == val.prim) {
     return SetToken(val, idx, createToken);
-  } else if (objectType == "Bls12381frToken") {
+  } else if (Bls12381frToken.prim == val.prim) {
     return Bls12381frToken(val, idx, createToken);
-  } else if (objectType == "IntToken") {
+  } else if (IntToken.prim == val.prim) {
     return IntToken(val, idx, createToken);
-  } else if (objectType == "BoolToken") {
+  } else if (BoolToken.prim == val.prim) {
     return BoolToken(val, idx, createToken);
-  } else if (objectType == "MutezToken") {
+  } else if (MutezToken.prim == val.prim) {
     return MutezToken(val, idx, createToken);
-  } else if (objectType == "KeyToken") {
+  } else if (KeyToken.prim == val.prim) {
     return KeyToken(val, idx, createToken);
+  } else if (ChainIDToken.prim == val.prim) {
+    return ChainIDToken(val, idx, createToken);
+  } else if (SignatureToken.prim == val.prim) {
+    return SignatureToken(val, idx, createToken);
+  } else if (TicketToken.prim == val.prim) {
+    return TicketToken(val, idx, createToken);
   }
+  throw new Exception(
+      'Malformed data expected a value with a valid prim property');
 }

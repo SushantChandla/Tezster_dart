@@ -1,6 +1,6 @@
-import 'package:tezster_dart/contracts/utils/utils.dart';
 import 'package:tezster_dart/michelson_encoder/helpers/utils.dart';
 import 'package:tezster_dart/michelson_encoder/helpers/validators.dart';
+import 'package:tezster_dart/michelson_encoder/michelson_expression.dart';
 import 'package:tezster_dart/michelson_encoder/tokens/token.dart';
 
 class AddressToken extends ComparableToken {
@@ -19,8 +19,11 @@ class AddressToken extends ComparableToken {
   @override
   execute(val, {semantics}) {
     if (val is String) return val;
+    
+    if (val is MichelsonV1Expression) val = val.jsonCopy;
 
-    if (val['string'] != null) {
+
+    if (val ['string'] != null) {
       return val['string'];
     }
 

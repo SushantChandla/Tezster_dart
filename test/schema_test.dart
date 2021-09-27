@@ -31,23 +31,21 @@ void main() {
     };
   }
 
-  // var d = Directory('test/Carthagenet_1/');
-  // for (FileSystemEntity i in d.listSync()) {
-  //   if (i is File) {
-  //     test('Carthagenet_1 ${i.path} test', () async {
-  //       var data = await i.readAsString();
-  //       var json = jsonDecode(data);
-  //       var schema = Schema.fromFromScript(json);
-  //       var storage = json['storage'];
-  //       MichelsonV1Expression storageResponse;
-  //       if (storage is List) {
-  //         storageResponse = MichelsonV1Expression.j(storage[0]);
-  //       } else {
-  //         storageResponse = MichelsonV1Expression.j(storage);
-  //       }
-  //       var res = schema.execute(
-  //           storageResponse, _smartContractAbstractionSemantic());
-  //     });
-  // }
-  // }
+  var d = Directory('test/Carthagenet_1/');
+  int counter = 0;
+  for (FileSystemEntity i in d.listSync()) {
+    if (i is File) {
+      if (i.path.split('/').last != '.DS_Store')
+        test('${i.path} test', () async {
+          var data = await i.readAsString();
+          var json = jsonDecode(data);
+          var schema = Schema.fromscript(json);
+          var storage = json['storage'];
+          MichelsonV1Expression storageResponse;
+          storageResponse = MichelsonV1Expression.j(storage);
+          var res = schema.execute(
+              storageResponse, _smartContractAbstractionSemantic());
+        });
+    }
+  }
 }

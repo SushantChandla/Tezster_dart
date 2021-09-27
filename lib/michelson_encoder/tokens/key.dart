@@ -16,6 +16,7 @@ class KeyToken extends ComparableToken {
 
   @override
   execute(val, {semantics}) {
+    if(val is MichelsonV1Expression)val=val.jsonCopy;
     if (val.containsKey('string')) return val['string'];
 
     return encodeKeyHash(val['bytes']);
@@ -23,8 +24,9 @@ class KeyToken extends ComparableToken {
 
   @override
   encodeObject(val) {
+    if(val is MichelsonV1Expression)val=val.jsonCopy;
     _isValid(val);
-    return {String: val};
+    return {'string': val};
   }
 
   @override
@@ -53,6 +55,6 @@ class KeyToken extends ComparableToken {
       throw err;
     }
 
-    return {String: val};
+    return {'string': val};
   }
 }

@@ -76,7 +76,7 @@ class OrToken extends ComparableToken {
         return leftToken.execute(t, semantics: semantics);
       }
       return {
-        [leftToken.annot()]: leftToken.execute(t, semantics: semantics),
+        leftToken.annot(): leftToken.execute(t, semantics: semantics),
       };
     } else {
       throw Exception('Was expecting Left or Right prim but got : ${val.prim}');

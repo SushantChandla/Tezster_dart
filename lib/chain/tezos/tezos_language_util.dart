@@ -3,7 +3,7 @@ import 'package:tezster_dart/michelson_parser/michelson_parser.dart';
 class TezosLanguageUtil {
   static var primitiveRecordOrder = ["prim", "args", "annots"];
 
-  static String? translateMichelsonToMicheline(String code) {
+  static String translateMichelsonToMicheline(String code) {
     var result = MichelsonParser.parseMichelson(code);
     return result;
   }

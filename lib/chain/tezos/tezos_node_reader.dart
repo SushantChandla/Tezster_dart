@@ -23,7 +23,7 @@ class TezosNodeReader {
     return response != null ? response.toString() : '';
   }
 
-  static Future<Map<dynamic, dynamic>?> getBlockAtOffset(
+  static Future<Map<dynamic, dynamic>> getBlockAtOffset(
       String server, int offset,
       {String chainid = 'main'}) async {
     if (offset <= 0) {
@@ -31,11 +31,11 @@ class TezosNodeReader {
     }
     var head = await getBlock(server);
     var response = await HttpHelper.performGetRequest(
-        server, 'chains/$chainid/blocks/${head!['header']['level'] - offset}');
+        server, 'chains/$chainid/blocks/${head['header']['level'] - offset}');
     return response;
   }
 
-  static Future<Map<dynamic, dynamic>?> getBlock(String server,
+  static Future<Map<dynamic, dynamic>> getBlock(String server,
       {String hash = 'head', String chainid = 'main'}) async {
     var response = await HttpHelper.performGetRequest(
         server, 'chains/$chainid/blocks/$hash');

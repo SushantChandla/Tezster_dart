@@ -20,11 +20,12 @@ class BytesToken extends ComparableToken {
   }
 
   _convertUint8ArrayToHexString(val) {
-    return val is  Uint8List ? hex.encode(val) : val;
+    return val is Uint8List ? hex.encode(val) : val;
   }
 
   @override
   encodeObject(val) {
+    if (val is Map) val = val['bytes'];
     val = this._convertUint8ArrayToHexString(val);
     var err = this._isValid(val);
 
@@ -37,6 +38,7 @@ class BytesToken extends ComparableToken {
 
   @override
   execute(val, {semantics}) {
+    if (val is MichelsonV1Expression) val = val.jsonCopy;
     return val['bytes'];
   }
 
@@ -54,25 +56,24 @@ class BytesToken extends ComparableToken {
     return val;
   }
 
- 
   @override
   encode(List args) {
     var val = args.removeLast();
 
     var t = _convertUint8ArrayToHexString(val);
     var err = _isValid(t);
-    if (err!=null) {
+    if (err != null) {
       throw err;
     }
 
-    return { 'bytes': t.toString() };
+    return {'bytes': t.toString()};
   }
 
   @override
   Map toBigMapKey(val) {
-      return {
-      'key': { 'bytes': val },
-      'type': { 'prim': BytesToken.prim },
+    return {
+      'key': {'bytes': val},
+      'type': {'prim': BytesToken.prim},
     };
   }
 }

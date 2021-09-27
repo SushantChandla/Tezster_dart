@@ -5,16 +5,18 @@ import 'package:tezster_dart/contracts/utils/utils.dart';
 import 'package:tezster_dart/michelson_encoder/michelson_expression.dart';
 import 'package:tezster_dart/michelson_encoder/schema/storage.dart';
 
-var typeOfValueToFind = MichelsonV1Expression()
-  ..args = [{ 'prim': "string" }, { 'prim': "bytes" }]
-  ..annots = ['%metadata']
-  ..prim = 'big_map';
+var typeOfValueToFind = MichelsonV1Expression(prim: 'big_map', annots: [
+  '%metadata'
+], args: [
+  {'prim': "string"},
+  {'prim': "bytes"}
+]);
 
 class TezosStorageHandler {
   static final TEZOS_STORAGE_REGEX =
       RegExp(r'/^(?:\/\/(KT1\w{33})(?:\.(.+))?\/)?([\w|\%]+)$/');
 
-  static getMetaData(server,location, Contract contract) async {
+  static getMetaData(server, location, Contract contract) async {
     var parsedTezosStorageUri = _parseTezosStorageUri(location);
     if (!parsedTezosStorageUri) {
       throw new InvalidUri(location.toString());

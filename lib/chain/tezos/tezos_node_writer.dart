@@ -96,7 +96,7 @@ class TezosNodeWriter {
     return sendOperation(server, operations, signer, offset);
   }
 
-  static sendContractInvocationOperation(
+  static sendContractInvocationOperationBatch(
     String server,
     SoftSigner signer,
     KeyStoreModel keyStore,
@@ -132,6 +132,46 @@ class TezosNodeWriter {
         ),
       );
     }
+    var operations = await appendRevealOperation(server, keyStore.publicKey,
+        keyStore.publicKeyHash, counter - 1, [...transactions]);
+    return sendOperation(server, operations, signer, offset);
+  }
+
+  static sendContractInvocationOperation(
+    String server,
+    SoftSigner signer,
+    KeyStoreModel keyStore,
+    String contract,
+    int amount,
+    int fee,
+    int storageLimit,
+    int gasLimit,
+    String entrypoint,
+    dynamic parameters, {
+    var parameterFormat = TezosParameterFormat.Michelson,
+    offset = 54,
+  }) async {
+    var counter = await TezosNodeReader.getCounterForAccount(
+            server, keyStore.publicKeyHash) +
+        1;
+
+    List<OperationModel> transactions = [];
+
+    transactions.add(
+      constructContractInvocationOperation(
+        keyStore.publicKeyHash,
+        counter,
+        contract,
+        amount,
+        fee,
+        storageLimit,
+        gasLimit,
+        entrypoint,
+        parameters,
+        parameterFormat,
+      ),
+    );
+
     var operations = await appendRevealOperation(server, keyStore.publicKey,
         keyStore.publicKeyHash, counter - 1, [...transactions]);
     return sendOperation(server, operations, signer, offset);
@@ -177,7 +217,7 @@ class TezosNodeWriter {
       int storageLimit,
       int gasLimit,
       entrypoint,
-      String? parameters,
+      dynamic parameters,
       TezosParameterFormat parameterFormat) {
     var estimate = Estimate(gasLimit * 1500, storageLimit, 162, 250, fee);
     OperationModel transaction = new OperationModel(
@@ -193,7 +233,7 @@ class TezosNodeWriter {
     if (parameters != null) {
       if (parameterFormat == TezosParameterFormat.Michelson) {
         var michelineParams =
-            TezosLanguageUtil.translateMichelsonToMicheline(parameters)!;
+            TezosLanguageUtil.translateMichelsonToMicheline(parameters);
         transaction.parameters = {
           'entrypoint': entrypoint.isEmpty ? 'default' : entrypoint,
           'value': jsonDecode(michelineParams)
@@ -201,11 +241,11 @@ class TezosNodeWriter {
       } else if (parameterFormat == TezosParameterFormat.Micheline) {
         transaction.parameters = {
           'entrypoint': entrypoint.isEmpty ? 'default' : entrypoint,
-          'value': jsonDecode(parameters)
+          'value': parameters
         };
       } else if (parameterFormat == TezosParameterFormat.MichelsonLambda) {
-        var michelineLambda = TezosLanguageUtil.translateMichelsonToMicheline(
-            'code $parameters')!;
+        var michelineLambda =
+            TezosLanguageUtil.translateMichelsonToMicheline('code $parameters');
         transaction.parameters = {
           'entrypoint': entrypoint.isEmpty ? 'default' : entrypoint,
           'value': jsonDecode(michelineLambda)
@@ -248,7 +288,7 @@ class TezosNodeWriter {
   static Future<Map<String, Object?>> sendOperation(String server,
       List<OperationModel> operations, SoftSigner signer, int offset) async {
     var blockHead = await TezosNodeReader.getBlockAtOffset(server, offset);
-    var blockHash = blockHead!['hash'].toString().substring(0, 51);
+    var blockHash = blockHead['hash'].toString().substring(0, 51);
     var forgedOperationGroup = forgeOperations(blockHash, operations);
     var opSignature = signer.signOperation(Uint8List.fromList(hex.decode(
         TezosConstants.OperationGroupWatermark + forgedOperationGroup)));
@@ -333,7 +373,7 @@ class TezosNodeWriter {
     }
   }
 
-  static String? parseRPCOperationResult(result) {
+  static String parseRPCOperationResult(result) {
     if (result.status == 'failed') {
       return "${result.status}: ${result.errors.map((e) => '(${e.kind}: ${e.id})').join(', ')}";
     } else if (result.status == 'applied') {
@@ -368,9 +408,9 @@ class TezosNodeWriter {
     var parsedStorage;
     if (codeFormat == TezosParameterFormat.Michelson) {
       parsedCode =
-          jsonDecode(TezosLanguageUtil.translateMichelsonToMicheline(code)!);
+          jsonDecode(TezosLanguageUtil.translateMichelsonToMicheline(code));
       parsedStorage =
-          jsonDecode(TezosLanguageUtil.translateMichelsonToMicheline(storage)!);
+          jsonDecode(TezosLanguageUtil.translateMichelsonToMicheline(storage));
     } else if (codeFormat == TezosParameterFormat.Micheline) {
       parsedCode = jsonDecode(code);
       parsedStorage = jsonDecode(storage);

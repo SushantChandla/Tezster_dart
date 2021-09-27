@@ -34,6 +34,7 @@ class SetToken extends Token {
 
   @override
   execute(val, {semantics}) {
+    if (val is MichelsonV1Expression) val = val.jsonCopy;
     if (val.length < 1) {
       return val;
     }

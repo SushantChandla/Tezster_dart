@@ -7,13 +7,14 @@ class MutezToken extends ComparableToken {
 
   @override
   execute(val, {semantics}) {
+    if (val is MichelsonV1Expression) val = val.jsonCopy;
     return BigInt.parse(val[val.keys.first]);
   }
 
   @override
   encodeObject(val) {
     _isValid(val);
-    return {int: BigInt.parse(val.toString()).toString()};
+    return {'int': BigInt.parse(val.toString()).toString()};
   }
 
   _isValid(val) {

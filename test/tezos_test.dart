@@ -1,4 +1,5 @@
 import 'package:flutter_test/flutter_test.dart';
+import 'package:tezster_dart/chain/tezos/tezos_node_writer.dart';
 import 'package:tezster_dart/contracts/contractType.dart';
 import 'package:tezster_dart/contracts/tzip12/tzip12_contract.dart';
 import 'package:tezster_dart/contracts/tzip16/tzip16-contract.dart';
@@ -117,6 +118,36 @@ void main() {
     print(x);
   });
 
+  test("Call entry point", () async {
+    var contract = TezsterDart.getContract("https://florencenet.api.tez.ie",
+        "KT1P5FNjJ4EdeRFLz1PryUu6P83KpSy7jVoh");
+
+    var signer = await TezsterDart.createSigner(
+        TezsterDart.writeKeyWithHint(_keyStoreModel.secretKey, 'edsk'));
+
+    await contract.callEntrypoint(
+        signer: signer,
+        keyStore: _keyStoreModel,
+        amount: 111,
+        fee: 1000,
+        gasLimit: 10000,
+        storageLimit: 10000,
+        entrypoint: 'make_payment',
+        parameters: {"int": "0"},
+        parameterFormat: TezosParameterFormat.Micheline);
+  });
+  test("List Entry point", () async {
+    var contract = TezsterDart.getContract("https://florencenet.api.tez.ie",
+        "KT1P5FNjJ4EdeRFLz1PryUu6P83KpSy7jVoh");
+    print(await contract.listEntrypoints());
+  });
+
+  test("Get Contract Balance", () async {
+    var contract = TezsterDart.getContract("https://florencenet.api.tez.ie",
+        "KT1P5FNjJ4EdeRFLz1PryUu6P83KpSy7jVoh");
+    print(await contract.getBalance());
+  });
+
   test('Tzip 12 metadata test', () async {
     Tzip12Contract tzip12Contract = TezsterDart.getContract(
         'https://mainnet.api.tez.ie', 'KT1RJ6PbjHpwc3M5rw5s2Nbmefwbuwbdxton',
@@ -146,4 +177,8 @@ void main() {
     var d = TezosLanguageUtil.translateMichelineToHex(data);
     print(d);
   });
+
+  // group('FA1.2 Plenty Contract', () {
+    
+  // });
 }

@@ -21,7 +21,10 @@ class MichelsonStorageView implements View {
       this.viewName,
       this.viewParameterType});
 
-  findForbiddenInstructionInViewCode(dynamic code) {
+  findForbiddenInstructionInViewCode(List<dynamic> code) {
+    if (!(code is List<MichelsonV1Expression>)) {
+      code = code.map((e) => MichelsonV1Expression.j(e)).toList();
+    }
     const illegalInstructions = [
       'AMOUNT',
       'CREATEcontract',
@@ -36,27 +39,29 @@ class MichelsonStorageView implements View {
         if (instruction.prim == forbiddenInstruction) {
           throw new ForbiddenInstructionInViewCode(forbiddenInstruction);
         }
-        if (instruction.args != null && instruction.args.length != 0) {
-          this.findForbiddenInstructionInViewCode(instruction.args);
+        if (instruction.args != null && instruction.args!.length != 0) {
+          this.findForbiddenInstructionInViewCode(instruction.args!);
         }
       }
     }
   }
 
-  _illegalUseOfSelfInstruction(List<MichelsonV1Expression?> code) {
+  _illegalUseOfSelfInstruction(List<dynamic> code) {
+    if (!(code is List<MichelsonV1Expression>)) {
+      code = code.map((e) => MichelsonV1Expression.j(e)).toList();
+    }
     for (var instruction in code) {
-      if (instruction!.prim == 'SELF') {
+      if (instruction.prim == 'SELF') {
         var index = code.indexOf(instruction);
         var nextInstruction =
-            code[index + 1] != null ? code[index + 1]!.prim : null;
+            code[index + 1] != null ? code[index + 1].prim : null;
         if (nextInstruction != 'ADDRESS') {
           throw new ForbiddenInstructionInViewCode(
               'the instruction SELF should only be used before ADDRESS');
         }
       }
       if (instruction.args != null && instruction.args!.length != 0) {
-        _illegalUseOfSelfInstruction(
-            instruction.args as List<MichelsonV1Expression>);
+        _illegalUseOfSelfInstruction(instruction.args!);
       }
     }
   }
@@ -122,9 +127,12 @@ class MichelsonStorageView implements View {
   }
 
   _validateArgs(args, ParameterSchema schema, String? viewNameg) {
-    var sigs = schema.extractSignatures();
+    List sigs = schema.extractSignatures;
 
-    if (!sigs.find((x) => x.length == args.length)) {
+    if (sigs.firstWhere((x) => x.length == args.length, orElse: () {
+          return null;
+        }) ==
+        null) {
       throw new InvalidViewParameterError(viewNameg, sigs, args);
     }
   }
@@ -159,7 +167,7 @@ class MichelsonStorageView implements View {
   @override
   Future executeView(args) async {
     // validate view code against tzip-16 specifications
-    findForbiddenInstructionInViewCode(this.code);
+    findForbiddenInstructionInViewCode(this.code as List<dynamic>);
     _illegalUseOfSelfInstruction(this.code!);
 
     var formatArgsAndPara = formatArgsAndParameter(args);

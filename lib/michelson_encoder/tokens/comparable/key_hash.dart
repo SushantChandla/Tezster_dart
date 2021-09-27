@@ -1,5 +1,6 @@
 import 'package:tezster_dart/michelson_encoder/helpers/utils.dart';
 import 'package:tezster_dart/michelson_encoder/helpers/validators.dart';
+import 'package:tezster_dart/michelson_encoder/michelson_expression.dart';
 import 'package:tezster_dart/michelson_encoder/tokens/token.dart';
 
 class KeyHashToken extends ComparableToken {
@@ -17,6 +18,7 @@ class KeyHashToken extends ComparableToken {
 
   @override
   execute(val, {semantics}) {
+    if (val is MichelsonV1Expression) val = val.jsonCopy;
     if (val['string'] != null) {
       return val['string'];
     }
@@ -56,7 +58,7 @@ class KeyHashToken extends ComparableToken {
       throw err;
     }
 
-    return {String: val};
+    return {'string': val};
   }
 
   @override

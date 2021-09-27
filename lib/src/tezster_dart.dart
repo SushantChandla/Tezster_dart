@@ -319,7 +319,7 @@ class TezsterDart {
     assert(fee != null);
     assert(storageLimit != null);
     assert(gasLimit != null);
-    return await TezosNodeWriter.sendContractInvocationOperation(
+    return await TezosNodeWriter.sendContractInvocationOperationBatch(
         server,
         signer,
         keyStore,

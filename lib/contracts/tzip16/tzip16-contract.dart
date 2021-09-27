@@ -38,8 +38,8 @@ class Tzip16Contract extends Contract {
         super(address: address, rpcServer: rpcServer);
 
   BigMapAbstraction _findMetadataBigMap() {
-    var metadataBigMapId = contractSchema!.findFirstInTopLevelPair(
-        contractStorage, _metadataBigMapType);
+    var metadataBigMapId = contractSchema!
+        .findFirstInTopLevelPair(contractStorage, _metadataBigMapType);
 
     if (metadataBigMapId == null) {
       throw new BigMapMetadataNotFound();
@@ -92,12 +92,13 @@ class Tzip16Contract extends Contract {
   }
 
   dynamic _createViewImplementations(view, metadataViews) {
-    for (var viewImplementation in view?.implementations ?? []) {
-      if (view.name) {
-        var viewName = this._generateIndexedViewName(view.name, metadataViews);
+    for (var viewImplementation in view?['implementations'] ?? []) {
+      if (view['name'] != null) {
+        var viewName =
+            this._generateIndexedViewName(view['name'], metadataViews);
         var metadataView =
             this._viewFactory.getView(viewName, viewImplementation);
-        if (metadataView) {
+        if (metadataView != null) {
           metadataViews[viewName] = metadataView;
         } else {
           print(

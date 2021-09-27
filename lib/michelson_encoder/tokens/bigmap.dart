@@ -36,7 +36,7 @@ class BigMapToken extends Token {
   @override
   extractSchema() {
     return {
-      [this.keySchema?.extractSchema()]: this.valueSchema.extractSchema(),
+      this.keySchema?.extractSchema(): this.valueSchema.extractSchema(),
     };
   }
 

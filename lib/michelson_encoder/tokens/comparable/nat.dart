@@ -1,3 +1,4 @@
+import 'package:tezster_dart/michelson_encoder/michelson_expression.dart';
 import 'package:tezster_dart/michelson_encoder/tokens/token.dart';
 
 class NatToken extends ComparableToken {
@@ -27,6 +28,7 @@ class NatToken extends ComparableToken {
 
   @override
   execute(val, {semantics}) {
+    if (val is MichelsonV1Expression) val = val.jsonCopy;
     return val[val.keys.first];
   }
 
@@ -43,7 +45,7 @@ class NatToken extends ComparableToken {
       throw err;
     }
 
-    return {'int': val};
+    return {'int': val.toString()};
   }
 
   @override
@@ -60,7 +62,7 @@ class NatToken extends ComparableToken {
       throw err;
     }
 
-    return {int: BigInt.from(val)};
+    return {'int': BigInt.from(val).toString()};
   }
 
   @override

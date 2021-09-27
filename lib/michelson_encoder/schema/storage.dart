@@ -42,7 +42,7 @@ class Schema {
   }
 
   typecheck(val) {
-    if (this._root.runtimeType == BigMapToken && val.runtimeType == int) {
+    if (this._root.runtimeType == BigMapToken || val.runtimeType == int) {
       return true;
     }
     try {
@@ -100,45 +100,6 @@ class Schema {
     }
   }
 
-  // _findValue(schema, storage, valueToFind) {
-  //   if (_deepEqual(valueToFind, schema)) {
-  //     return storage;
-  //   }
-
-  //   if (schema is List ||
-  //       (schema is MichelsonV1Expression && schema.prim == 'pair') ||
-  //       schema is Map && schema['prim'] == 'pair') {
-  //     MichelsonV1Expression sch = collapse(schema);
-  //     MichelsonV1Expression str = collapse(storage, prim: 'Pair');
-  //     if (sch.args == null || str.args == null) {
-  //       throw new Exception('Tokens have no arguments'); // unlikely
-  //     }
-  //     var s = _findValue(sch.args[0], str.args[0], valueToFind);
-  //     if (s != null) return s;
-  //     if (sch.args.length >= 2 && str.args.length >= 2) {
-  //       var j = _findValue(sch.args[1], str.args[1], valueToFind);
-  //       if (j != null) return j;
-  //     }
-  //     return null;
-  //   }
-  // }
-
-  // _deepEqual(a, b) {
-  //   var ac = collapse(a);
-  //   var bc = collapse(b);
-  //   return ac.prim == bc.prim &&
-  //       (ac.args == null && bc.args == null ||
-  //           ac.args != null &&
-  //               bc.args != null &&
-  //               ac.args.length == bc.args.length &&
-  //               allListEqual(ac.args, bc.args) &&
-  //               (ac.annots == null && bc.annots == null ||
-  //                   ac.annots != null &&
-  //                       bc.annots != null &&
-  //                       ac.annots.length == bc.annots.length &&
-  //                       allListEqual(ac.annots, bc.annots)));
-  // }
-
   bool allListEqual(List a, List? b) {
     for (int i = 0; i < a.length; i++) {
       if (a[i].toString() != b![i].toString()) return false;
@@ -153,29 +114,6 @@ class Schema {
 
     return this._bigMap!.valueSchema.execute(key, semantics: semantics);
   }
-
-  // collapse(val, {prim = PairToken.prim}) {
-  //   if (val is List) {
-  //     return collapse({'prim': prim, 'args': val}, prim: prim);
-  //   }
-  //   if (val is Map) {
-  //     if (val['args'] != null) return MichelsonV1Expression.j(val);
-
-  //     return collapse(MichelsonV1Expression(
-  //       prim: prim,
-  //       args: val.values.toList(),
-  //     ));
-  //   }
-
-  //   if (val.prim == prim && val.args.length > 2) {
-  //     return val
-  //       ..args = [
-  //         val.args[0],
-  //         {'prim': prim, 'args': (val.args as List).sublist(1)}
-  //       ];
-  //   }
-  //   return val;
-  // }
 
   _deepEqualc(a, b) {
     return a['prim'] == b['prim'] &&

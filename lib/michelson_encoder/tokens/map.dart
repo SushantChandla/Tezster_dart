@@ -9,17 +9,11 @@ class MapToken extends Token {
 
   get valueSchema {
     MichelsonV1Expression data = MichelsonV1Expression.j(val!.args![1]);
-    // data.prim = this.val.args[1]['prim'];
-    // data.args = this.val.args[1]['args'];
-    // data.annots = this.val.args[1]['annots'];
     return this.createToken(data, 0);
   }
 
   ComparableToken? get keySchema {
     MichelsonV1Expression data = MichelsonV1Expression.j(val!.args![0]);
-    // data.prim = this.val.args[0]['prim'];
-    // data.args = this.val.args[0]['args'];
-    // data.annots = this.val.args[0]['annots'];
     return this.createToken(data, 0);
   }
 
@@ -34,10 +28,12 @@ class MapToken extends Token {
   @override
   execute(val, {semantics}) {
     var map = new MichelsonMap(this.val);
-
+    if (val is MichelsonV1Expression) {
+      val = val.args ?? [];
+    }
     val.forEach((current) {
       map.set(this.keySchema!.toKey(current['args'][0]),
-          this.valueSchema.execute(current['args'][1],semantics: semantics));
+          this.valueSchema.execute(current['args'][1], semantics: semantics));
     });
     return map;
   }
@@ -61,8 +57,7 @@ class MapToken extends Token {
       throw err;
     }
 
-    val.keys().toList().sort();
-    List<Map> data = [];
+  List<Map> data = [];
     val.keys().toList().forEach((key) {
       data.add({
         'prim': "Elt",
@@ -75,25 +70,24 @@ class MapToken extends Token {
 
     return data;
   }
-  
 
   @override
-  encode(args){
+  encode(args) {
     var val = args.removeLast();
 
     var err = isValid(val);
-    if (err!=null) {
+    if (err != null) {
       throw err;
     }
 
-    return val.keys
-      .sort((a, b) => this.keySchema!.compare(a, b))
-      .map((key) {
-        return {
-          prim: 'Elt',
-          args: [this.keySchema!.encodeObject(key), this.valueSchema.encodeObject(val.get(key))],
-        };
-      });
+    return val.keys.sort((a, b) => this.keySchema!.compare(a, b)).map((key) {
+      return {
+        prim: 'Elt',
+        args: [
+          this.keySchema!.encodeObject(key),
+          this.valueSchema.encodeObject(val.get(key))
+        ],
+      };
+    });
   }
-
 }
