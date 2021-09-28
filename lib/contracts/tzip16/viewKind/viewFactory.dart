@@ -16,16 +16,15 @@ class ViewFactory {
             '${viewName} is missing mandatory code or returnType property therefore it will be skipped.');
         return;
       }
-      return () {
-        var view = MichelsonStorageView(
-            viewName: viewName,
-            returnType: MichelsonV1Expression.j(viewValues['returnType']),
-            code: (viewValues['code'] as List)
-                .map((e) => MichelsonV1Expression.j(e))
-                .toList(),
-            viewParameterType: MichelsonV1Expression.j(viewValues['parameter']));
-        return view;
-      };
+
+      var view = MichelsonStorageView(
+          viewName: viewName,
+          returnType: MichelsonV1Expression.j(viewValues['returnType']),
+          code: (viewValues['code'] as List)
+              .map((e) => MichelsonV1Expression.j(e))
+              .toList(),
+          viewParameterType: MichelsonV1Expression.j(viewValues['parameter']));
+      return view;
     }
   }
 

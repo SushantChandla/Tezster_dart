@@ -27,6 +27,7 @@ class MetadataProvider {
     var sha256Hash = calculateSHA256Hash(metadata);
     var metadataJSON;
     try {
+      print(metadata);
       metadataJSON = jsonDecode(metadata);
     } catch (ex) {
       print("metaData found:$ex");

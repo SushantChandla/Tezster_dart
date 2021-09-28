@@ -269,4 +269,14 @@ class MichelsonStorageView implements View {
         '/chains/$chain/blocks/$block/helpers/scripts/run_code', code);
     return response;
   }
+
+  @override
+  String toString() {
+    return {
+      'viewName': '$viewName',
+      'returnType': returnType?.jsonCopy,
+      'code': code?.map((e) => e?.jsonCopy).toList(),
+      'viewParameterType': viewParameterType?.jsonCopy
+    }.toString();
+  }
 }

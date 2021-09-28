@@ -70,20 +70,20 @@ class Contract {
     required int gasLimit,
     String entrypoint = 'default',
     dynamic parameters,
-    TezosParameterFormat parameterFormat = TezosParameterFormat.Michelson,
+    TezosParameterFormat parameterFormat = TezosParameterFormat.Micheline,
     offset = 54,
   }) async {
-    await TezosNodeWriter.sendContractInvocationOperation(
+    await TezosNodeWriter.sendContractInvocationOperationBatch(
         rpcServer,
         signer,
         keyStore,
-        address,
-        amount,
+        [address],
+        [amount],
         fee,
         storageLimit,
         gasLimit,
-        entrypoint,
-        parameters,
+        [entrypoint],
+        [parameters],
         parameterFormat: parameterFormat,
         offset: offset);
   }

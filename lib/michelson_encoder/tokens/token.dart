@@ -1,4 +1,3 @@
-import 'package:flutter/material.dart';
 import 'package:tezster_dart/michelson_encoder/michelson_expression.dart';
 
 class TokenValidationError implements Exception {

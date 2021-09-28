@@ -15,13 +15,8 @@ import 'package:tezster_dart/chain/tezos/tezos_language_util.dart';
 import 'package:tezster_dart/chain/tezos/tezos_message_utils.dart';
 import 'package:tezster_dart/chain/tezos/tezos_node_reader.dart';
 import 'package:tezster_dart/chain/tezos/tezos_node_writer.dart';
-import 'package:tezster_dart/contracts/contract.dart';
-import 'package:tezster_dart/contracts/contractType.dart';
-import 'package:tezster_dart/contracts/tzip12/tzip12_contract.dart';
-import 'package:tezster_dart/contracts/tzip16/tzip16-contract.dart';
 import 'package:tezster_dart/helper/constants.dart';
 import 'package:tezster_dart/helper/http_helper.dart';
-import 'package:tezster_dart/michelson_parser/michelson_parser.dart';
 import 'package:tezster_dart/reporting/tezos/tezos_conseil_client.dart';
 import 'package:tezster_dart/src/soft-signer/soft_signer.dart';
 import 'package:tezster_dart/tezster_dart.dart';
@@ -167,7 +162,8 @@ class TezsterDart {
     List<int> normalizedPassphrase = stringNormalize("$email" + "$passphrase");
     String normString = String.fromCharCodes(normalizedPassphrase);
     String p = "mnemonic" + normString;
-    Uint8List seed = PBKDF2(hashAlgorithm: sha512).generateKey(m, p, 2048, 32) as Uint8List;
+    Uint8List seed =
+        PBKDF2(hashAlgorithm: sha512).generateKey(m, p, 2048, 32) as Uint8List;
     KeyPair keyPair = _sodium.cryptoSignSeedKeypair(seed);
     String skKey = GenerateKeys.readKeysWithHint(keyPair.sk!, '2bf64e07');
     String pkKey = GenerateKeys.readKeysWithHint(keyPair.pk!, '0d0f25d9');
@@ -377,17 +373,5 @@ class TezsterDart {
     assert(key != null);
     return await TezosNodeReader.getValueForBigMapKey(server, index, key,
         block: 'head', chainid: 'main');
-  }
-
-  static Contract getContract(String rpcServer, String address,
-      {ContractType contractType = ContractType.DEFAULT}) {
-    assert(rpcServer != null);
-    assert(address != null);
-    assert(contractType != null);
-    if (contractType == ContractType.Tzip12)
-      return Tzip12Contract(rpcServer: rpcServer, address: address);
-    if (contractType == ContractType.Tzip16)
-      return Tzip16Contract(rpcServer: rpcServer, address: address);
-    return Contract(rpcServer: rpcServer, address: address);
   }
 }

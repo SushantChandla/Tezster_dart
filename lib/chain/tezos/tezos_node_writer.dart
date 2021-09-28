@@ -15,9 +15,15 @@ import 'package:tezster_dart/types/tezos/tezos_chain_types.dart';
 import 'package:tezster_dart/utils/gas_fee_calculator.dart';
 
 class TezosNodeWriter {
-  static Future<Map<String, Object?>> sendTransactionOperation(String server,
-      SoftSigner signer, KeyStoreModel keyStore, String to, int amount, int fee,
-      {int offset = 54}) async {
+  static Future<Map<String, Object?>> sendTransactionOperation(
+    String server,
+    SoftSigner signer,
+    KeyStoreModel keyStore,
+    String to,
+    int amount,
+    int fee, {
+    int offset = 54,
+  }) async {
     var counter = await TezosNodeReader.getCounterForAccount(
             server, keyStore.publicKeyHash) +
         1;
@@ -106,7 +112,7 @@ class TezosNodeWriter {
     int storageLimit,
     int gasLimit,
     List<String> entrypoint,
-    List<String?> parameters, {
+    List<dynamic> parameters, {
     var parameterFormat = TezosParameterFormat.Michelson,
     offset = 54,
   }) async {
@@ -132,46 +138,6 @@ class TezosNodeWriter {
         ),
       );
     }
-    var operations = await appendRevealOperation(server, keyStore.publicKey,
-        keyStore.publicKeyHash, counter - 1, [...transactions]);
-    return sendOperation(server, operations, signer, offset);
-  }
-
-  static sendContractInvocationOperation(
-    String server,
-    SoftSigner signer,
-    KeyStoreModel keyStore,
-    String contract,
-    int amount,
-    int fee,
-    int storageLimit,
-    int gasLimit,
-    String entrypoint,
-    dynamic parameters, {
-    var parameterFormat = TezosParameterFormat.Michelson,
-    offset = 54,
-  }) async {
-    var counter = await TezosNodeReader.getCounterForAccount(
-            server, keyStore.publicKeyHash) +
-        1;
-
-    List<OperationModel> transactions = [];
-
-    transactions.add(
-      constructContractInvocationOperation(
-        keyStore.publicKeyHash,
-        counter,
-        contract,
-        amount,
-        fee,
-        storageLimit,
-        gasLimit,
-        entrypoint,
-        parameters,
-        parameterFormat,
-      ),
-    );
-
     var operations = await appendRevealOperation(server, keyStore.publicKey,
         keyStore.publicKeyHash, counter - 1, [...transactions]);
     return sendOperation(server, operations, signer, offset);

@@ -1,5 +1,5 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:tezster_dart/contracts/contractType.dart';
+import 'package:tezster_dart/contracts/contract.dart';
 import 'package:tezster_dart/contracts/tzip12/tzip12_contract.dart';
 import 'package:tezster_dart/contracts/tzip16/tzip16-contract.dart';
 import 'package:tezster_dart/chain/tezos/tezos_language_util.dart';
@@ -111,24 +111,59 @@ void main() {
   });
 
   test("Get Contract Storage", () async {
-    var contract = TezsterDart.getContract(
-        "https://mainnet.api.tez.ie", "KT1DLif2x9BtK6pUq9ZfFVVyW5wN2kau9rkW");
+    var contract = Contract(
+        rpcServer: "https://mainnet.api.tez.ie",
+        address: "KT1DLif2x9BtK6pUq9ZfFVVyW5wN2kau9rkW");
     Map? x = await contract.getStorage();
     print(x);
   });
 
+  test("Call entry point", () async {
+    var contract = Contract(
+        rpcServer: "https://florencenet.api.tez.ie",
+        address: "KT1P5FNjJ4EdeRFLz1PryUu6P83KpSy7jVoh");
+
+    var signer = await TezsterDart.createSigner(
+        TezsterDart.writeKeyWithHint(_keyStoreModel.secretKey, 'edsk'));
+
+    await contract.callEntrypoint(
+        signer: signer,
+        keyStore: _keyStoreModel,
+        amount: 111,
+        fee: 1000,
+        gasLimit: 10000,
+        storageLimit: 10000,
+        entrypoint: 'make_payment',
+        parameters: {"int": "0"},
+        parameterFormat: TezosParameterFormat.Micheline);
+  });
+  test("List Entry point", () async {
+    var contract = Contract(
+        rpcServer: "https://florencenet.api.tez.ie",
+        address: "KT1P5FNjJ4EdeRFLz1PryUu6P83KpSy7jVoh");
+    print(await contract.listEntrypoints());
+  });
+
+  test("Get Contract Balance", () async {
+    var contract = Contract(
+        rpcServer: "https://florencenet.api.tez.ie",
+        address: "KT1P5FNjJ4EdeRFLz1PryUu6P83KpSy7jVoh");
+    print(await contract.getBalance());
+  });
+
   test('Tzip 12 metadata test', () async {
-    Tzip12Contract tzip12Contract = TezsterDart.getContract(
-        'https://mainnet.api.tez.ie', 'KT1RJ6PbjHpwc3M5rw5s2Nbmefwbuwbdxton',
-        contractType: ContractType.Tzip12) as Tzip12Contract;
+    Tzip12Contract tzip12Contract = Tzip12Contract(
+        rpcServer: 'https://mainnet.api.tez.ie',
+        address: 'KT1RJ6PbjHpwc3M5rw5s2Nbmefwbuwbdxton');
     var metaData = await tzip12Contract.getMetadata();
     print(metaData);
   });
 
   test('Tzip 16 metadata View test', () async {
-    Tzip16Contract tzip16Contract = TezsterDart.getContract(
-        'https://mainnet.api.tez.ie', 'KT1StkBRUfJD9AuHAE4oQVi49qLQhsgeDcU1',
-        contractType: ContractType.Tzip16) as Tzip16Contract;
+    Tzip16Contract tzip16Contract = Tzip16Contract(
+      rpcServer: 'https://mainnet.api.tez.ie',
+      address: 'KT1StkBRUfJD9AuHAE4oQVi49qLQhsgeDcU1',
+    );
     var metaView = await tzip16Contract.metadataViews();
     print(metaView);
   });
@@ -145,5 +180,180 @@ void main() {
         """{"prim":"Right","args":[{"prim":"Left","args":[{"prim":"Left","args":[{"prim":"Pair","args":[{"prim":"Pair","args":[{"int":"331"},{"int":"99"}]},{"string":"tz1QQpKV6gd6VvGeSVddpXv85Y7mSJ4MVLdc"}]}]}]}]}""";
     var d = TezosLanguageUtil.translateMichelineToHex(data);
     print(d);
+  });
+
+  group('Contract entrypoint call', () {
+    Contract contract = Contract(
+      rpcServer: 'https://florencenet.api.tez.ie',
+      address: 'KT1P5FNjJ4EdeRFLz1PryUu6P83KpSy7jVoh',
+    );
+    test('new text', () async {
+      var signer = await TezsterDart.createSigner(
+          TezsterDart.writeKeyWithHint(_keyStoreModel.secretKey, 'edsk'));
+      await contract.callEntrypoint(
+          signer: signer,
+          keyStore: _keyStoreModel,
+          amount: 1000,
+          fee: 1000,
+          storageLimit: 10000,
+          gasLimit: 10000,
+          entrypoint: 'make_payment',
+          parameterFormat: TezosParameterFormat.Micheline,
+          parameters: {'int': "0"});
+    });
+  });
+
+  group('FA1.2 Test Contract', () {
+    var tzip16Contract = Tzip16Contract(
+        rpcServer: 'https://florencenet.api.tez.ie',
+        address: 'KT1BE4qBBERXDW1g3Bg1WRmDvhBo5d1z33Y5');
+    test('List All Entrypoints', () async {
+      print(await tzip16Contract.listEntrypoints());
+    });
+
+    test('Mint tokens', () async {
+      var signer = await TezsterDart.createSigner(
+          TezsterDart.writeKeyWithHint(_keyStoreModel.secretKey, 'edsk'));
+      await tzip16Contract.callEntrypoint(
+        signer: signer,
+        keyStore: _keyStoreModel,
+        amount: 30000,
+        fee: 10000,
+        storageLimit: 10000,
+        gasLimit: 19061,
+        entrypoint: 'mint',
+        parameterFormat: TezosParameterFormat.Micheline,
+        parameters: {
+          "prim": "Pair",
+          "args": [
+            {"string": "tz1fzigtWPgCvyP5coc8aE9F97PQ2NBJmZPh"},
+            {"int": "11"}
+          ]
+        },
+      );
+    }, timeout: Timeout(Duration(minutes: 1)));
+
+    test('get meta Views', () async {
+      print(await tzip16Contract.metadataViews());
+    });
+    test('get Metadata', () async {
+      print(await tzip16Contract.getMetadata());
+    });
+    test('get balance', () async {
+      print(await tzip16Contract.getBalance());
+    });
+
+    test('update mataData', () async {
+      var signer = await TezsterDart.createSigner(
+          TezsterDart.writeKeyWithHint(_keyStoreModel.secretKey, 'edsk'));
+      await tzip16Contract.callEntrypoint(
+        signer: signer,
+        keyStore: _keyStoreModel,
+        amount: 30000,
+        fee: 10000,
+        storageLimit: 10000,
+        gasLimit: 19061,
+        entrypoint: 'update_metadata',
+        parameterFormat: TezosParameterFormat.Micheline,
+        parameters: {
+          "prim": "Pair",
+          "args": [
+            {"string": "name"},
+            {"bytes": "736f6d657468696e67"}
+          ]
+        },
+      );
+    }, timeout: Timeout(Duration(minutes: 1)));
+  });
+
+  group('FA 2 Test Contract', () {
+    Tzip12Contract contract = Tzip12Contract(
+        address: 'KT1SWUeugRgAuAHNQcLvjrf9iEX6taPnx7SA',
+        rpcServer: 'https://florencenet.api.tez.ie');
+
+    test('List All Entrypoints', () async {
+      print(await contract.listEntrypoints());
+    });
+
+    test('get balance', () async {
+      print(await contract.getBalance());
+    });
+
+    test('get meta Views', () async {
+      print(await contract.metadataViews());
+    });
+    test('get Metadata', () async {
+      print(await contract.getMetadata());
+    });
+
+    test('update metaData', () async {
+      var signer = await TezsterDart.createSigner(
+          TezsterDart.writeKeyWithHint(_keyStoreModel.secretKey, 'edsk'));
+      await contract.callEntrypoint(
+        signer: signer,
+        keyStore: _keyStoreModel,
+        amount: 30000,
+        fee: 10000,
+        storageLimit: 10000,
+        gasLimit: 19061,
+        entrypoint: 'set_metadata',
+        parameterFormat: TezosParameterFormat.Micheline,
+        parameters: {
+          "prim": "Pair",
+          "args": [
+            {"string": ""},
+            {
+              "bytes":
+                  "697066733a2f2f516d5434714d42414b367171587672397379337a5641577859395868387369794c44387577327731555437344759"
+            }
+          ]
+        },
+      );
+    }, timeout: Timeout(Duration(minutes: 1)));
+
+    test('Mint tokens', () async {
+      var signer = await TezsterDart.createSigner(
+          TezsterDart.writeKeyWithHint(_keyStoreModel.secretKey, 'edsk'));
+      await contract.callEntrypoint(
+        signer: signer,
+        keyStore: _keyStoreModel,
+        amount: 1000,
+        fee: 10000,
+        storageLimit: 10000,
+        gasLimit: 19061,
+        entrypoint: 'mint',
+        parameterFormat: TezosParameterFormat.Micheline,
+        parameters: {
+          "prim": "Pair",
+          "args": [
+            {
+              "prim": "Pair",
+              "args": [
+                {"string": "tz1fzigtWPgCvyP5coc8aE9F97PQ2NBJmZPh"},
+                {"int": "1000"}
+              ]
+            },
+            {
+              "prim": "Pair",
+              "args": [
+                [
+                  {
+                    "prim": "Elt",
+                    "args": [
+                      {"string": "Something"},
+                      {
+                        "bytes":
+                            "697066733a2f2f516d5434714d42414b367171587672397379337a5641577859395868387369794c44387577327731555437344759"
+                      }
+                    ]
+                  }
+                ],
+                {"int": "1"}
+              ]
+            }
+          ]
+        },
+      );
+    }, timeout: Timeout(Duration(minutes: 1)));
   });
 }
