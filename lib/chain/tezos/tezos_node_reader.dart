@@ -1,11 +1,11 @@
 import 'package:tezster_dart/helper/http_helper.dart';
 
 class TezosNodeReader {
-  static Future<int> getCounterForAccount(String server, String publicKeyHash,
+  static Future<BigInt> getCounterForAccount(String server, String publicKeyHash,
       {String chainid = 'main'}) async {
     var response = await HttpHelper.performGetRequest(server,
         'chains/$chainid/blocks/head/context/contracts/$publicKeyHash/counter');
-    return int.parse(response.toString().replaceAll('"', ''), radix: 10);
+    return BigInt.parse(response, radix: 10);
   }
 
   static Future<bool> isManagerKeyRevealedForAccount(

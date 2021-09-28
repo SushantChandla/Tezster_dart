@@ -13,8 +13,8 @@ class TezosMessageUtils {
     return hex.encode(bs58check.decode(branch).sublist(2).toList());
   }
 
-  static String writeInt(int value) {
-    if (value < 0) {
+  static String writeInt(BigInt value) {
+    if (value < BigInt.from(0)) {
       throw new Exception('Use writeSignedInt to encode negative numbers');
     }
     var byteHexList = Uint8List.fromList(hex.decode(twoByteHex(value)));
@@ -25,14 +25,14 @@ class TezosMessageUtils {
     return result;
   }
 
-  static String twoByteHex(int n) {
-    if (n < 128) {
+  static String twoByteHex(BigInt n) {
+    if (n < BigInt.from(128)) {
       var s = ('0' + n.toRadixString(16));
       return s.substring(s.length - 2);
     }
     String h = '';
-    if (n > 2147483648) {
-      var r = BigInt.from(n);
+    if (n > BigInt.from(2147483648)) {
+      var r = n;
       while (r.compareTo(BigInt.zero) != 0) {
         var _h = ('0' + (r & BigInt.from(127)).toRadixString(16));
         h = _h.substring(_h.length - 2) + h;
@@ -40,8 +40,8 @@ class TezosMessageUtils {
       }
     } else {
       var r = n;
-      while (r > 0) {
-        var _h = ('0' + (r & 127).toRadixString(16));
+      while (r > BigInt.from(0)) {
+        var _h = ('0' + (r & BigInt.from(127)).toRadixString(16));
         h = _h.substring(_h.length - 2) + h;
         r = r >> 7;
       }
@@ -253,7 +253,7 @@ class TezosMessageUtils {
       case 'int':
         return '0500' + writeSignedInt(value);
       case 'nat':
-        return '0500' + writeInt(int.parse(value));
+        return '0500' + writeInt(BigInt.parse(value));
       case 'string':
         return '0501' + writeString(value)!;
       case 'key_hash':

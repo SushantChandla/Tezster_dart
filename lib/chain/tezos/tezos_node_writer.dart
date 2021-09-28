@@ -26,7 +26,7 @@ class TezosNodeWriter {
   }) async {
     var counter = await TezosNodeReader.getCounterForAccount(
             server, keyStore.publicKeyHash) +
-        1;
+        BigInt.from(1);
 
     var estimate = Estimate(TezosConstants.DefaultTransactionGasLimit * 1000,
         TezosConstants.DefaultTransactionStorageLimit, 162, 250, fee);
@@ -41,8 +41,12 @@ class TezosNodeWriter {
       storageLimit: estimate.storageLimit,
     );
 
-    var operations = await appendRevealOperation(server, keyStore.publicKey,
-        keyStore.publicKeyHash, counter - 1, <OperationModel>[transaction]);
+    var operations = await appendRevealOperation(
+        server,
+        keyStore.publicKey,
+        keyStore.publicKeyHash,
+        counter - BigInt.from(1),
+        <OperationModel>[transaction]);
     return sendOperation(server, operations, signer, offset);
   }
 
@@ -50,7 +54,7 @@ class TezosNodeWriter {
       KeyStoreModel keyStore, String delegate, int fee, offset) async {
     var counter = await TezosNodeReader.getCounterForAccount(
             server, keyStore.publicKeyHash) +
-        1;
+        BigInt.from(1);
 
     var estimate = Estimate(TezosConstants.DefaultDelegationGasLimit * 1000,
         TezosConstants.DefaultDelegationStorageLimit, 162, 250, fee);
@@ -66,7 +70,7 @@ class TezosNodeWriter {
     );
 
     var operations = await appendRevealOperation(server, keyStore.publicKey,
-        keyStore.publicKeyHash, counter - 1, [delegation]);
+        keyStore.publicKeyHash, counter - BigInt.from(1), [delegation]);
     return sendOperation(server, operations, signer, offset);
   }
 
@@ -85,7 +89,7 @@ class TezosNodeWriter {
       int offset) async {
     var counter = await TezosNodeReader.getCounterForAccount(
             server, keyStore.publicKeyHash) +
-        1;
+        BigInt.from(1);
     var operation = constructContractOriginationOperation(
         keyStore,
         amount,
@@ -98,7 +102,7 @@ class TezosNodeWriter {
         codeFormat,
         counter);
     var operations = await appendRevealOperation(server, keyStore.publicKey,
-        keyStore.publicKeyHash, counter - 1, [operation]);
+        keyStore.publicKeyHash, counter - BigInt.from(1), [operation]);
     return sendOperation(server, operations, signer, offset);
   }
 
@@ -118,7 +122,7 @@ class TezosNodeWriter {
   }) async {
     var counter = await TezosNodeReader.getCounterForAccount(
             server, keyStore.publicKeyHash) +
-        1;
+        BigInt.from(1);
 
     List<OperationModel> transactions = [];
 
@@ -126,7 +130,7 @@ class TezosNodeWriter {
       transactions.add(
         constructContractInvocationOperation(
           keyStore.publicKeyHash,
-          counter + i,
+          counter + BigInt.from(i),
           contract[i],
           amount[i],
           fee,
@@ -139,7 +143,7 @@ class TezosNodeWriter {
       );
     }
     var operations = await appendRevealOperation(server, keyStore.publicKey,
-        keyStore.publicKeyHash, counter - 1, [...transactions]);
+        keyStore.publicKeyHash, counter -BigInt.from(1), [...transactions]);
     return sendOperation(server, operations, signer, offset);
   }
 
@@ -157,7 +161,7 @@ class TezosNodeWriter {
       String server, signer, KeyStoreModel keyStore, fee, offset) async {
     var counter = (await TezosNodeReader.getCounterForAccount(
             server, keyStore.publicKeyHash)) +
-        1;
+        BigInt.from(1);
     var estimate = Estimate(10000 * 1000, 0, 162, 250, fee);
 
     var revealOp = OperationModel(
@@ -176,7 +180,7 @@ class TezosNodeWriter {
 
   static OperationModel constructContractInvocationOperation(
       String publicKeyHash,
-      int counter,
+      BigInt counter,
       String contract,
       int amount,
       int fee,
@@ -227,11 +231,11 @@ class TezosNodeWriter {
       String server,
       String? publicKey,
       String publicKeyHash,
-      int accountOperationIndex,
+      BigInt accountOperationIndex,
       List<OperationModel> operations) async {
     bool isKeyRevealed = await TezosNodeReader.isManagerKeyRevealedForAccount(
         server, publicKeyHash);
-    var counter = accountOperationIndex + 1;
+    var counter = accountOperationIndex + BigInt.from(1);
     if (!isKeyRevealed) {
       OperationModel revealOp = OperationModel(
         counter: counter,
@@ -243,7 +247,7 @@ class TezosNodeWriter {
         publicKey: publicKey,
       );
       for (var index = 0; index < operations.length; index++) {
-        var c = accountOperationIndex + 2 + index;
+        var c = accountOperationIndex + BigInt.from(index + 2);
         operations[index].counter = c;
       }
       return <OperationModel>[revealOp, ...operations];
@@ -369,7 +373,7 @@ class TezosNodeWriter {
       String code,
       String storage,
       TezosParameterFormat codeFormat,
-      int counter) {
+      BigInt counter) {
     var parsedCode;
     var parsedStorage;
     if (codeFormat == TezosParameterFormat.Michelson) {

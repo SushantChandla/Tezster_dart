@@ -5,7 +5,7 @@ class OperationModel {
   String? amount;
   int storageLimit;
   int? gasLimit;
-  int? counter;
+  BigInt? counter;
   String? fee;
   String? source;
   String kind;

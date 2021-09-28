@@ -16,20 +16,20 @@ class TezosMessageCodec {
   }
 
   static String encodeActivation(activation) {
-    var hex = TezosMessageUtils.writeInt(4);
+    var hex = TezosMessageUtils.writeInt(BigInt.from(4));
     hex += TezosMessageUtils.writeAddress(activation.pkh).substring(4);
     hex += activation.secret;
     return hex;
   }
 
   static String encodeTransaction(OperationModel message) {
-    String hex = TezosMessageUtils.writeInt(108);
+    String hex = TezosMessageUtils.writeInt(BigInt.from(108));
     hex += TezosMessageUtils.writeAddress(message.source!).substring(2);
-    hex += TezosMessageUtils.writeInt(int.parse(message.fee!));
+    hex += TezosMessageUtils.writeInt(BigInt.parse(message.fee!));
     hex += TezosMessageUtils.writeInt(message.counter!);
-    hex += TezosMessageUtils.writeInt(message.gasLimit!);
-    hex += TezosMessageUtils.writeInt(message.storageLimit);
-    hex += TezosMessageUtils.writeInt(int.parse(message.amount!));
+    hex += TezosMessageUtils.writeInt(BigInt.from(message.gasLimit!));
+    hex += TezosMessageUtils.writeInt(BigInt.from(message.storageLimit));
+    hex += TezosMessageUtils.writeInt(BigInt.parse(message.amount!));
     hex += TezosMessageUtils.writeAddress(message.destination!);
     if (message.parameters != null) {
       var composite = message.parameters!;
@@ -71,23 +71,23 @@ class TezosMessageCodec {
   }
 
   static String encodeReveal(OperationModel message) {
-    var hex = TezosMessageUtils.writeInt(107);
+    var hex = TezosMessageUtils.writeInt(BigInt.from(107));
     hex += TezosMessageUtils.writeAddress(message.source!).substring(2);
-    hex += TezosMessageUtils.writeInt(int.parse(message.fee!));
+    hex += TezosMessageUtils.writeInt(BigInt.parse(message.fee!));
     hex += TezosMessageUtils.writeInt(message.counter!);
-    hex += TezosMessageUtils.writeInt(message.gasLimit!);
-    hex += TezosMessageUtils.writeInt(message.storageLimit);
+    hex += TezosMessageUtils.writeInt(BigInt.from(message.gasLimit!));
+    hex += TezosMessageUtils.writeInt(BigInt.from(message.storageLimit));
     hex += TezosMessageUtils.writePublicKey(message.publicKey!);
     return hex;
   }
 
   static String encodeDelegation(OperationModel delegation) {
-    var hex = TezosMessageUtils.writeInt(110);
+    var hex = TezosMessageUtils.writeInt(BigInt.from(110));
     hex += TezosMessageUtils.writeAddress(delegation.source!).substring(2);
-    hex += TezosMessageUtils.writeInt(int.parse(delegation.fee!));
+    hex += TezosMessageUtils.writeInt(BigInt.parse(delegation.fee!));
     hex += TezosMessageUtils.writeInt(delegation.counter!);
-    hex += TezosMessageUtils.writeInt(delegation.gasLimit!);
-    hex += TezosMessageUtils.writeInt(delegation.storageLimit);
+    hex += TezosMessageUtils.writeInt(BigInt.from(delegation.gasLimit!));
+    hex += TezosMessageUtils.writeInt(BigInt.from(delegation.storageLimit));
     if (delegation.delegate != null && delegation.delegate!.isNotEmpty) {
       hex += TezosMessageUtils.writeBoolean(true);
       hex += TezosMessageUtils.writeAddress(delegation.delegate!).substring(2);
@@ -98,13 +98,13 @@ class TezosMessageCodec {
   }
 
   static String encodeOrigination(OperationModel origination) {
-    var hex = TezosMessageUtils.writeInt(109);
+    var hex = TezosMessageUtils.writeInt(BigInt.from(109));
     hex += TezosMessageUtils.writeAddress(origination.source!).substring(2);
-    hex += TezosMessageUtils.writeInt(int.parse(origination.fee!));
+    hex += TezosMessageUtils.writeInt(BigInt.parse(origination.fee!));
     hex += TezosMessageUtils.writeInt(origination.counter!);
-    hex += TezosMessageUtils.writeInt(origination.gasLimit!);
-    hex += TezosMessageUtils.writeInt(origination.storageLimit);
-    hex += TezosMessageUtils.writeInt(int.parse(origination.amount!));
+    hex += TezosMessageUtils.writeInt( BigInt.from(origination.gasLimit!));
+    hex += TezosMessageUtils.writeInt(BigInt.from(origination.storageLimit));
+    hex += TezosMessageUtils.writeInt(BigInt.parse(origination.amount!));
 
     if (origination.delegate != null) {
       hex += TezosMessageUtils.writeBoolean(true);
