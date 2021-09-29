@@ -214,7 +214,7 @@ void main() {
     test('Mint tokens', () async {
       var signer = await TezsterDart.createSigner(
           TezsterDart.writeKeyWithHint(_keyStoreModel.secretKey, 'edsk'));
-      await tzip16Contract.callEntrypoint(
+      print(await tzip16Contract.callEntrypoint(
         signer: signer,
         keyStore: _keyStoreModel,
         amount: 30000,
@@ -230,7 +230,7 @@ void main() {
             {"int": "11"}
           ]
         },
-      );
+      ));
     }, timeout: Timeout(Duration(minutes: 1)));
 
     test('get meta Views', () async {
@@ -246,7 +246,7 @@ void main() {
     test('update mataData', () async {
       var signer = await TezsterDart.createSigner(
           TezsterDart.writeKeyWithHint(_keyStoreModel.secretKey, 'edsk'));
-      await tzip16Contract.callEntrypoint(
+      print(await tzip16Contract.callEntrypoint(
         signer: signer,
         keyStore: _keyStoreModel,
         amount: 30000,
@@ -262,7 +262,7 @@ void main() {
             {"bytes": "736f6d657468696e67"}
           ]
         },
-      );
+      ));
     }, timeout: Timeout(Duration(minutes: 1)));
   });
 
@@ -289,7 +289,7 @@ void main() {
     test('update metaData', () async {
       var signer = await TezsterDart.createSigner(
           TezsterDart.writeKeyWithHint(_keyStoreModel.secretKey, 'edsk'));
-      await contract.callEntrypoint(
+      print(await contract.callEntrypoint(
         signer: signer,
         keyStore: _keyStoreModel,
         amount: 30000,
@@ -308,7 +308,7 @@ void main() {
             }
           ]
         },
-      );
+      ));
     }, timeout: Timeout(Duration(minutes: 1)));
 
     test('Mint tokens', () async {

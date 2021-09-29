@@ -61,7 +61,7 @@ class Contract {
         responseJson: false);
   }
 
-  Future callEntrypoint({
+  Future<Map> callEntrypoint({
     required SoftSigner signer,
     required KeyStoreModel keyStore,
     required int amount,
@@ -73,7 +73,7 @@ class Contract {
     TezosParameterFormat parameterFormat = TezosParameterFormat.Micheline,
     offset = 54,
   }) async {
-    await TezosNodeWriter.sendContractInvocationOperationBatch(
+    Map data = await TezosNodeWriter.sendContractInvocationOperationBatch(
         rpcServer,
         signer,
         keyStore,
@@ -86,6 +86,10 @@ class Contract {
         [parameters],
         parameterFormat: parameterFormat,
         offset: offset);
+    if (!(data['operationGroupID'] is String)) {
+      throw Exception(data['operationGroupID'].toString());
+    }
+    return data;
   }
 
   dynamic _smartContractAbstractionSemantic() {

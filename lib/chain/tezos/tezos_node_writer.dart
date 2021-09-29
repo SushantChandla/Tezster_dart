@@ -74,7 +74,7 @@ class TezosNodeWriter {
     return sendOperation(server, operations, signer, offset);
   }
 
-  static sendContractOriginationOperation(
+  static Future<Map<String, dynamic>> sendContractOriginationOperation(
       String server,
       SoftSigner signer,
       KeyStoreModel keyStore,
@@ -106,7 +106,7 @@ class TezosNodeWriter {
     return sendOperation(server, operations, signer, offset);
   }
 
-  static sendContractInvocationOperationBatch(
+  static Future<Map<String, dynamic>> sendContractInvocationOperationBatch(
     String server,
     SoftSigner signer,
     KeyStoreModel keyStore,
@@ -143,12 +143,15 @@ class TezosNodeWriter {
       );
     }
     var operations = await appendRevealOperation(server, keyStore.publicKey,
-        keyStore.publicKeyHash, counter -BigInt.from(1), [...transactions]);
+        keyStore.publicKeyHash, counter - BigInt.from(1), [...transactions]);
     return sendOperation(server, operations, signer, offset);
   }
 
-  static sendIdentityActivationOperation(String server, SoftSigner signer,
-      KeyStoreModel keyStore, String activationCode) async {
+  static Future<Map<String, dynamic>> sendIdentityActivationOperation(
+      String server,
+      SoftSigner signer,
+      KeyStoreModel keyStore,
+      String activationCode) async {
     var activation = OperationModel(
       kind: 'activate_account',
       pkh: keyStore.publicKeyHash,
@@ -255,7 +258,7 @@ class TezosNodeWriter {
     return operations;
   }
 
-  static Future<Map<String, Object?>> sendOperation(String server,
+  static Future<Map<String, dynamic>> sendOperation(String server,
       List<OperationModel> operations, SoftSigner signer, int offset) async {
     var blockHead = await TezosNodeReader.getBlockAtOffset(server, offset);
     var blockHash = blockHead['hash'].toString().substring(0, 51);
@@ -359,7 +362,7 @@ class TezosNodeWriter {
         server,
         'injection/operation?chain=$chainid',
         hex.encode(opPair['bytes'] as List<int>));
-    response = response.toString().replaceAll('"', '');
+    response = jsonDecode(response);
     return response;
   }
 
