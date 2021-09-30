@@ -114,7 +114,7 @@ void main() {
     var contract = Contract(
         rpcServer: "https://mainnet.api.tez.ie",
         address: "KT1DLif2x9BtK6pUq9ZfFVVyW5wN2kau9rkW");
-    Map? x = await contract.getStorage();
+    Map x = await contract.getStorage();
     print(x);
   });
 
