@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:tezster_dart/chain/tezos/tezos_node_writer.dart';
 import 'package:tezster_dart/contracts/big_map.dart';
 import 'package:tezster_dart/contracts/sapling_state_abstraction.dart';
@@ -118,4 +120,13 @@ class Contract {
       }
     };
   }
+}
+
+class TezsterHelper {
+  /// It is a helper function to convert a string of data to bytes
+  /// It is only for UTF8 char set.
+  static String stringTobytes(String data) => utf8
+      .encode(data)
+      .map((byte) => byte.toRadixString(16).toUpperCase())
+      .join();
 }

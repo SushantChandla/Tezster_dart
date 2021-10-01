@@ -356,4 +356,6 @@ void main() {
       );
     }, timeout: Timeout(Duration(minutes: 1)));
   });
+  test('Converrt string to bytes',
+      () => print(TezsterHelper.stringTobytes('Hello world')));
 }
