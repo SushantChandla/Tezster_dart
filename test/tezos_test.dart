@@ -137,7 +137,7 @@ void main() {
         parameters: {"int": "0"},
         parameterFormat: TezosParameterFormat.Micheline);
   });
-  test("List Entry point", () async {
+  test("List Entry points", () async {
     var contract = Contract(
         rpcServer: "https://florencenet.api.tez.ie",
         address: "KT1P5FNjJ4EdeRFLz1PryUu6P83KpSy7jVoh");
@@ -187,7 +187,7 @@ void main() {
       rpcServer: 'https://florencenet.api.tez.ie',
       address: 'KT1P5FNjJ4EdeRFLz1PryUu6P83KpSy7jVoh',
     );
-    test('new text', () async {
+    test('Invoke entrypoint', () async {
       var signer = await TezsterDart.createSigner(
           TezsterDart.writeKeyWithHint(_keyStoreModel.secretKey, 'edsk'));
       await contract.callEntrypoint(
@@ -233,7 +233,7 @@ void main() {
       ));
     }, timeout: Timeout(Duration(minutes: 1)));
 
-    test('get meta Views', () async {
+    test('get metaViews', () async {
       print(await tzip16Contract.metadataViews());
     });
     test('get Metadata', () async {
@@ -243,7 +243,7 @@ void main() {
       print(await tzip16Contract.getBalance());
     });
 
-    test('update mataData', () async {
+    test('update metaData', () async {
       var signer = await TezsterDart.createSigner(
           TezsterDart.writeKeyWithHint(_keyStoreModel.secretKey, 'edsk'));
       print(await tzip16Contract.callEntrypoint(
@@ -279,7 +279,7 @@ void main() {
       print(await contract.getBalance());
     });
 
-    test('get meta Views', () async {
+    test('get metaViews', () async {
       print(await contract.metadataViews());
     });
     test('get Metadata', () async {
